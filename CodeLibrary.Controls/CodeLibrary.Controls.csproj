@@ -1,0 +1,394 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4DD58E8F-4D0A-495B-9DC2-C391D540A8AD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CodeLibrary.Controls</RootNamespace>
+    <AssemblyName>CodeLibrary.Controls</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\CollectionListBox\AfterLabelEditEventArgs.cs" />
+    <Compile Include="Controls\CollectionListBox\CollectionListBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CollectionListBox\CollectionListBox.designer.cs">
+      <DependentUpon>CollectionListBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CollectionListBox\DescriptionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CollectionListBox\DescriptionControl.designer.cs">
+      <DependentUpon>DescriptionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CollectionListBox\FormTypeSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\CollectionListBox\FormTypeSelector.Designer.cs">
+      <DependentUpon>FormTypeSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CollectionListBox\TypeList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CollectionListBox\TypeList.designer.cs">
+      <DependentUpon>TypeList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Container.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\DialogButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DialogButton.Designer.cs">
+      <DependentUpon>DialogButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources1.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\CollectionListBox\CollectionListBox.resx">
+      <DependentUpon>CollectionListBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CollectionListBox\DescriptionControl.resx">
+      <DependentUpon>DescriptionControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CollectionListBox\FormTypeSelector.resx">
+      <DependentUpon>FormTypeSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CollectionListBox\TypeList.resx">
+      <DependentUpon>TypeList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DialogButton.resx">
+      <DependentUpon>DialogButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Add.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignCenter.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignJustify.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignLeft.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignRight.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bold.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bottom.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Color.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Copy.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Cut.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DecreaseIndent.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Down.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Erase.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IncreaseIndent.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Italic.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Left.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\New.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenFile.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Paste.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Properties.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Redo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Remove.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Right.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Toolbox.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\top.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Underline.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Undo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\up.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Add1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignCenter1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignJustify1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignLeft1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignRight1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bold1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bottom1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Color1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Copy1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Cut1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DecreaseIndent1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Down1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Erase1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IncreaseIndent1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Italic1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Left1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\New1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenFile1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Paste1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Properties1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Redo1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Remove1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Right1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Toolbox1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\top1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Underline1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Undo1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\up1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignCenter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignJustify.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignLeft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AlignRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DecreaseIndent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Erase.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IncreaseIndent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Italic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\move_white_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\New.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Properties.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Redo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Toolbox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Underline.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\up.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

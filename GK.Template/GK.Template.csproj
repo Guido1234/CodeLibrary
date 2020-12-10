@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F43BE9CD-2140-4984-AAB0-559AE1B5714E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GK.Template</RootNamespace>
+    <AssemblyName>GK.Template</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\DataCommandParameterAttribute.cs" />
+    <Compile Include="Attributes\DataCommandAttribute.cs" />
+    <Compile Include="Attributes\FormatMethodAttribute.cs" />
+    <Compile Include="Attributes\FormatMethodParameterAttribute.cs" />
+    <Compile Include="Data.cs" />
+    <Compile Include="DataCommands\DataCommandBase.cs" />
+    <Compile Include="DataCommands\DataDirectories.cs" />
+    <Compile Include="DataSourceCollection.cs" />
+    <Compile Include="DataSource.cs" />
+    <Compile Include="DevToys\CsvStreamReader.cs" />
+    <Compile Include="DevToys\CsvStreamWriter.cs" />
+    <Compile Include="DevToys\HtmlChar.cs" />
+    <Compile Include="Methods\MethodCamelCaseLower.cs" />
+    <Compile Include="Methods\MethodKeepQuoted.cs" />
+    <Compile Include="Methods\MethodLoremIpsum.cs" />
+    <Compile Include="Methods\MethodSkipData.cs" />
+    <Compile Include="Methods\MethodBase.cs" />
+    <Compile Include="Methods\MethodAsciiValue.cs" />
+    <Compile Include="Methods\MethodDec.cs" />
+    <Compile Include="Methods\MethodHex..cs" />
+    <Compile Include="Methods\MethodFromBase64.cs" />
+    <Compile Include="Methods\MethodHash256.cs" />
+    <Compile Include="Methods\MethodHash512.cs" />
+    <Compile Include="Methods\MethodRandomBSN.cs" />
+    <Compile Include="Methods\MethodToBase64.cs" />
+    <Compile Include="Methods\MethodHashCode.cs" />
+    <Compile Include="Methods\MethodCalc.cs" />
+    <Compile Include="Methods\MethodIF.cs" />
+    <Compile Include="Methods\MethodFileToBinary.cs" />
+    <Compile Include="Methods\MethodNetToSqlTypeConvertor.cs" />
+    <Compile Include="PlaceHolder.cs" />
+    <Compile Include="PlaceHolderMethods.cs" />
+    <Compile Include="StringTemplateItem.cs" />
+    <Compile Include="DataCommands\DataFiles.cs" />
+    <Compile Include="DataCommands\DataTextFilePositionBased.cs" />
+    <Compile Include="DataCommands\DataTextFile.cs" />
+    <Compile Include="DataCommands\DataRepeat.cs" />
+    <Compile Include="DataCommands\DataCsvFile.cs" />
+    <Compile Include="MethodInstance.cs" />
+    <Compile Include="Methods\MethodSplit.cs" />
+    <Compile Include="Methods\MethodHtmlDecode.cs" />
+    <Compile Include="Methods\MethodCastFormat.cs" />
+    <Compile Include="Methods\MethodSqlAscii.cs" />
+    <Compile Include="Methods\MethodHtmlEncode.cs" />
+    <Compile Include="Methods\MethodSurround.cs" />
+    <Compile Include="Methods\MethodDefault.cs" />
+    <Compile Include="Methods\MethodCycle.cs" />
+    <Compile Include="Methods\MethodChoose.cs" />
+    <Compile Include="Methods\MethodCurrentDate.cs" />
+    <Compile Include="Methods\MethodReverse.cs" />
+    <Compile Include="Methods\MethodRandomCityName.cs" />
+    <Compile Include="Methods\MethodRandomFirstName.cs" />
+    <Compile Include="Methods\MethodRandomLastName.cs" />
+    <Compile Include="Methods\MethodSubString.cs" />
+    <Compile Include="Methods\MethodReplace.cs" />
+    <Compile Include="Methods\MethodTrimLengthLeft.cs" />
+    <Compile Include="Methods\MethodTrimLengthRight.cs" />
+    <Compile Include="Methods\MethodRandomItem.cs" />
+    <Compile Include="Methods\MethodCamelCaseUpper.cs" />
+    <Compile Include="Methods\MethodLowerCase.cs" />
+    <Compile Include="Methods\MethodUpperCase.cs" />
+    <Compile Include="Methods\MethodEmptyGuid.cs" />
+    <Compile Include="Methods\MethodGuid.cs" />
+    <Compile Include="Methods\MethodLineNumber.cs" />
+    <Compile Include="Methods\MethodPadLeft.cs" />
+    <Compile Include="Methods\MethodPadRight.cs" />
+    <Compile Include="Methods\MethodRandom.cs" />
+    <Compile Include="Methods\MethodTrim.cs" />
+    <Compile Include="Methods\MethodTruncateLeft.cs" />
+    <Compile Include="Methods\MethodTruncateRight.cs" />
+    <Compile Include="Resources\CodeSnippetResources.Designer.cs">
+      <DependentUpon>CodeSnippetResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\RandomResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RandomResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StringTemplate.cs" />
+    <Compile Include="Utils\BooleanUtility.cs" />
+    <Compile Include="Utils\ConvertUtility.cs" />
+    <Compile Include="Utils\EnumUtility.cs" />
+    <Compile Include="Utils\HelpWriter.cs" />
+    <Compile Include="Utils\PathUtility.cs" />
+    <Compile Include="Utils\SqlDataUtility.cs" />
+    <Compile Include="Utils\TimeSpanUtility.cs" />
+    <Compile Include="Utils\Utils.cs" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\CodeSnippetResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeSnippetResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\RandomResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RandomResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DataCommands\DataCommands.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

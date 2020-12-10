@@ -1,0 +1,6 @@
+﻿Directories("Path",[Recursive true/false])
+Files("Path","*.*",[Recursive true/false])
+CsvFile("Path")
+Repeat(10)
+TextFile("Path")
+PositionBasedFile("Path", [Positions x,x,x,x])
