@@ -33,7 +33,7 @@ namespace CodeLibrary
             _FavoriteHelper = new FavoriteHelper(favoriteLibrariesToolStripMenuItem, _fileHelper);
             _fastColoredTextBoxBoxHelper = new FastColoredTextBoxHelper(tbCode, tbPath, this, contextMenuStripPopup, listBoxInsight);
             _selectionHelper = new TextSelectionHelper(tbCode);
-            _treeHelper = new TreeviewHelper(treeViewLibrary, this, _fastColoredTextBoxBoxHelper, contextMenuStripLibrary, contextMenuStripTrashcan, _fileHelper);
+            _treeHelper = new TreeviewHelper(this, _fastColoredTextBoxBoxHelper, _fileHelper);
             _fileHelper.TreeHelper = _treeHelper;
             _bookmarkHelper = new BookmarkHelper(_treeHelper, bookMarkItemsMenu, _fastColoredTextBoxBoxHelper, collectionListBoxBookmarks);
 
@@ -47,11 +47,29 @@ namespace CodeLibrary
             treeViewLibrary.Width = containerTreeview.Width;
             treeViewLibrary.Height = containerTreeview.Height - 29;
 
+            containerCode.Location = new Point(0, 28);
+            containerCode.Size = new Size(splitContainer1.Panel2.Width, splitContainer1.Panel2.Height - 52);
+            containerCode.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+
+            containerImage.Location = new Point(0, 28);
+            containerImage.Size = new Size(splitContainer1.Panel2.Width, splitContainer1.Panel2.Height - 52);
+            containerImage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            imageViewer.Dock = DockStyle.Fill;
+
+            containerCode.BringToFront();
+
+            tbCode.Dock = DockStyle.Fill;
+
+
             containerBookmarks.Parent = containerLeft;
             containerBookmarks.Dock = DockStyle.Fill;
 
+
+
             containerTreeview.BringToFront();
         }
+
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -106,7 +124,7 @@ namespace CodeLibrary
 
         private void AddRootToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.treeViewLibrary.SelectedNode = _treeHelper.CreateNewRootNode();
+            treeViewLibrary.SelectedNode = _treeHelper.CreateNewRootNode();
             tbCode.Focus();
         }
 
@@ -114,7 +132,7 @@ namespace CodeLibrary
         {
             if (_fileHelper.TempNode != null)
             {
-                this.treeViewLibrary.SelectedNode = _treeHelper.CreateNewNode(_fileHelper.TempNode);
+                treeViewLibrary.SelectedNode = _treeHelper.CreateNewNode(_fileHelper.TempNode);
                 tbCode.Focus();
                 return;
             }
@@ -127,7 +145,7 @@ namespace CodeLibrary
 
             if (treeViewLibrary.SelectedNode != null)
             {
-                this.treeViewLibrary.SelectedNode = _treeHelper.CreateNewNode(treeViewLibrary.SelectedNode);
+                treeViewLibrary.SelectedNode = _treeHelper.CreateNewNode(treeViewLibrary.SelectedNode);
                 tbCode.Focus();
                 return;
             }
@@ -238,45 +256,6 @@ namespace CodeLibrary
                 Clipboard.Clear();
         }
 
-        private void DarkTheme()
-        {
-            Config.DarkMode = true;
-            Config.HighContrastMode = false;
-            darkToolStripMenuItem.Checked = true;
-            lightToolStripMenuItem.Checked = false;
-            highContrastToolStripMenuItem.Checked = false;
-
-            textBoxFind.BackColor = Color.FromArgb(255, 40, 40, 40);
-            textBoxFind.ForeColor = Color.LightYellow;
-            buttonFind.BackColor = Color.FromArgb(255, 100, 100, 100);
-            buttonFind.ForeColor = Color.White;
-
-            menuStrip1.ForeColor = Color.White;
-            menuStrip1.BackColor = Color.FromArgb(255, 100, 100, 100);
-
-            mainToolStripMenuItem.BackColor = Color.FromArgb(255, 100, 100, 100);
-            ForeColor = Color.White;
-            BackColor = Color.FromArgb(255, 100, 100, 100);
-            treeViewLibrary.ForeColor = Color.White;
-            treeViewLibrary.BackColor = Color.FromArgb(255, 75, 75, 75);
-            tbCode.IndentBackColor = Color.FromArgb(255, 75, 75, 75);
-            tbCode.BackColor = Color.FromArgb(255, 40, 40, 40);
-            tbCode.CaretColor = Color.White;
-            tbCode.ForeColor = Color.LightGray;
-            tbCode.SelectionColor = Color.Red;
-            tbCode.LineNumberColor = Color.LightSeaGreen;
-            tbPath.ForeColor = Color.White;
-            tbPath.BackColor = Color.FromArgb(255, 100, 100, 100);
-            pictureBox1.BackColor = Color.FromArgb(255, 100, 100, 100);
-            containerTreeview.BackColor = Color.FromArgb(255, 75, 75, 75);
-            containerBookmarks.BackColor = Color.FromArgb(255, 75, 75, 75); ;
-            containerLeft.BackColor = Color.FromArgb(255, 75, 75, 75);
-
-            collectionListBoxBookmarks.DarkTheme();
-
-            tbCode.DarkStyle();
-            tbCode.Refresh();
-        }
 
         private void DarkToolStripMenuItem_Click(object sender, EventArgs e) => DarkTheme();
 
@@ -359,13 +338,13 @@ namespace CodeLibrary
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Title = "Export text file",
-                FileName = this.treeViewLibrary.SelectedNode.Text
+                FileName = treeViewLibrary.SelectedNode.Text
             };
             DialogResult _dr = saveFileDialog.ShowDialog();
             if (_dr != DialogResult.OK)
                 return;
 
-            CodeSnippet snippet = _treeHelper.FromNode(this.treeViewLibrary.SelectedNode);
+            CodeSnippet snippet = _treeHelper.FromNode(treeViewLibrary.SelectedNode);
             File.WriteAllText(saveFileDialog.FileName, snippet.Code);
         }
 
@@ -374,7 +353,7 @@ namespace CodeLibrary
             _preSearchSelectedId = string.IsNullOrEmpty(_treeHelper.SelectedId) ? _preSearchSelectedId : _treeHelper.SelectedId;
 
             Cursor.Current = Cursors.WaitCursor;
-            Dictionary<string, TreeNode> _result = _fileHelper.CodeCollectionToForm(this.textBoxFind.Text);
+            Dictionary<string, TreeNode> _result = _fileHelper.CodeCollectionToForm(textBoxFind.Text);
             if (_result.ContainsKey(_preSearchSelectedId))
             {
                 _treeHelper.SetSelectedNode(_result[_preSearchSelectedId], true);
@@ -436,45 +415,7 @@ namespace CodeLibrary
 
         private void GoToSiteToolStripMenuItem_Click(object sender, EventArgs e) => System.Diagnostics.Process.Start("https://sourceforge.net/u/guidok915");
 
-        private void HighContrastTheme()
-        {
-            Config.DarkMode = true;
-            Config.HighContrastMode = true;
-            darkToolStripMenuItem.Checked = false;
-            lightToolStripMenuItem.Checked = false;
-            highContrastToolStripMenuItem.Checked = true;
 
-            textBoxFind.BackColor = Color.FromArgb(255, 10, 10, 10);
-            textBoxFind.ForeColor = Color.LightYellow;
-            buttonFind.BackColor = Color.FromArgb(255, 60, 60, 60);
-            buttonFind.ForeColor = Color.White;
-
-            menuStrip1.ForeColor = Color.White;
-            menuStrip1.BackColor = Color.FromArgb(255, 60, 60, 60);
-
-            mainToolStripMenuItem.BackColor = Color.FromArgb(255, 60, 60, 60);
-            ForeColor = Color.White;
-            BackColor = Color.FromArgb(255, 100, 100, 100);
-            treeViewLibrary.ForeColor = Color.White;
-            treeViewLibrary.BackColor = Color.FromArgb(255, 35, 35, 35);
-            tbCode.IndentBackColor = Color.FromArgb(255, 35, 35, 35);
-            tbCode.BackColor = Color.FromArgb(255, 10, 10, 10);
-            tbCode.CaretColor = Color.White;
-            tbCode.ForeColor = Color.LightGray;
-            tbCode.SelectionColor = Color.Red;
-            tbCode.LineNumberColor = Color.LightSeaGreen;
-            tbPath.ForeColor = Color.White;
-            tbPath.BackColor = Color.FromArgb(255, 60, 60, 60);
-            pictureBox1.BackColor = Color.FromArgb(255, 60, 60, 60);
-            containerTreeview.BackColor = Color.FromArgb(255, 35, 35, 35);
-            containerBookmarks.BackColor = Color.FromArgb(255, 35, 35, 35);
-            containerLeft.BackColor = Color.FromArgb(255, 35, 35, 35);
-
-            collectionListBoxBookmarks.HighContrastTheme();
-
-            tbCode.HighContrastStyle();
-            tbCode.Refresh();
-        }
 
         private void HighContrastToolStripMenuItem_Click(object sender, EventArgs e) => HighContrastTheme();
 
@@ -533,6 +474,105 @@ namespace CodeLibrary
 
         private void InsertGuidToolStripMenuItem1_Click(object sender, EventArgs e) => _fastColoredTextBoxBoxHelper.SelectedText = Guid.NewGuid().ToString();
 
+        private void DarkTheme()
+        {
+            Config.DarkMode = true;
+            Config.HighContrastMode = false;
+            darkToolStripMenuItem.Checked = true;
+            lightToolStripMenuItem.Checked = false;
+            highContrastToolStripMenuItem.Checked = false;
+
+            textBoxFind.BackColor = Color.FromArgb(255, 40, 40, 40);
+            textBoxFind.ForeColor = Color.LightYellow;
+            buttonFind.BackColor = Color.FromArgb(255, 100, 100, 100);
+            buttonFind.ForeColor = Color.White;
+
+            menuStrip1.ForeColor = Color.White;
+            menuStrip1.BackColor = Color.FromArgb(255, 100, 100, 100);
+
+            mainToolStripMenuItem.BackColor = Color.FromArgb(255, 100, 100, 100);
+            ForeColor = Color.White;
+            BackColor = Color.FromArgb(255, 100, 100, 100);
+            treeViewLibrary.ForeColor = Color.White;
+            treeViewLibrary.BackColor = Color.FromArgb(255, 75, 75, 75);
+            tbCode.IndentBackColor = Color.FromArgb(255, 75, 75, 75);
+            tbCode.BackColor = Color.FromArgb(255, 40, 40, 40);
+            tbCode.CaretColor = Color.White;
+            tbCode.ForeColor = Color.LightGray;
+            tbCode.SelectionColor = Color.Red;
+            tbCode.LineNumberColor = Color.LightSeaGreen;
+            tbPath.ForeColor = Color.White;
+            tbPath.BackColor = Color.FromArgb(255, 100, 100, 100);
+            pictureBox1.BackColor = Color.FromArgb(255, 100, 100, 100);
+            containerTreeview.BackColor = Color.FromArgb(255, 75, 75, 75);
+            containerBookmarks.BackColor = Color.FromArgb(255, 75, 75, 75); ;
+            containerLeft.BackColor = Color.FromArgb(255, 75, 75, 75);
+            
+            containerInfoBar.BackColor = Color.FromArgb(255, 75, 75, 75);
+            label2.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            label4.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            lblStart.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            lblEnd.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            labelZoomPerc.ForeColor = Color.FromArgb(255, 255, 255, 255);
+
+            imageViewer.BackColor = Color.FromArgb(255, 0, 0, 0);
+
+            collectionListBoxBookmarks.DarkTheme();
+
+            tbCode.DarkStyle();
+            tbCode.Refresh();
+        }
+
+        private void HighContrastTheme()
+        {
+            Config.DarkMode = true;
+            Config.HighContrastMode = true;
+            darkToolStripMenuItem.Checked = false;
+            lightToolStripMenuItem.Checked = false;
+            highContrastToolStripMenuItem.Checked = true;
+
+            textBoxFind.BackColor = Color.FromArgb(255, 10, 10, 10);
+            textBoxFind.ForeColor = Color.LightYellow;
+            buttonFind.BackColor = Color.FromArgb(255, 60, 60, 60);
+            buttonFind.ForeColor = Color.White;
+
+            menuStrip1.ForeColor = Color.White;
+            menuStrip1.BackColor = Color.FromArgb(255, 60, 60, 60);
+
+            mainToolStripMenuItem.BackColor = Color.FromArgb(255, 60, 60, 60);
+            ForeColor = Color.White;
+            BackColor = Color.FromArgb(255, 100, 100, 100);
+            treeViewLibrary.ForeColor = Color.White;
+            treeViewLibrary.BackColor = Color.FromArgb(255, 35, 35, 35);
+            tbCode.IndentBackColor = Color.FromArgb(255, 35, 35, 35);
+            tbCode.BackColor = Color.FromArgb(255, 10, 10, 10);
+            tbCode.CaretColor = Color.White;
+            tbCode.ForeColor = Color.LightGray;
+            tbCode.SelectionColor = Color.Red;
+            tbCode.LineNumberColor = Color.LightSeaGreen;
+            tbPath.ForeColor = Color.White;
+            tbPath.BackColor = Color.FromArgb(255, 60, 60, 60);
+            pictureBox1.BackColor = Color.FromArgb(255, 60, 60, 60);
+            containerTreeview.BackColor = Color.FromArgb(255, 35, 35, 35);
+            containerBookmarks.BackColor = Color.FromArgb(255, 35, 35, 35);
+            containerLeft.BackColor = Color.FromArgb(255, 35, 35, 35);
+            
+            containerInfoBar.BackColor = Color.FromArgb(255, 35, 35, 35);
+            label2.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            label4.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            lblStart.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            lblEnd.ForeColor = Color.FromArgb(255, 255, 255, 255);
+            labelZoomPerc.ForeColor = Color.FromArgb(255, 255, 255, 255);
+
+            imageViewer.BackColor = Color.FromArgb(255, 0, 0, 0);
+
+            collectionListBoxBookmarks.HighContrastTheme();
+
+            tbCode.HighContrastStyle();
+            tbCode.Refresh();
+        }
+
+
         private void LightTheme()
         {
             Config.DarkMode = false;
@@ -568,6 +608,15 @@ namespace CodeLibrary
             containerTreeview.BackColor = Color.FromArgb(255, 255, 255, 255);
             containerBookmarks.BackColor = Color.FromArgb(255, 255, 255, 255);
             containerLeft.BackColor = Color.FromArgb(255, 255, 255, 255);
+            
+            containerInfoBar.BackColor = Color.FromArgb(255, 255, 255, 255);
+            label2.ForeColor = Color.FromArgb(255, 0, 0, 0);
+            label4.ForeColor = Color.FromArgb(255, 0, 0, 0);
+            lblStart.ForeColor = Color.FromArgb(255, 0, 0, 0);
+            lblEnd.ForeColor = Color.FromArgb(255, 0, 0, 0);
+            labelZoomPerc.ForeColor = Color.FromArgb(255, 0, 0, 0);
+
+            imageViewer.BackColor = Color.FromArgb(255, 125, 125, 125); 
 
             collectionListBoxBookmarks.HighContrastTheme();
 
@@ -878,6 +927,26 @@ namespace CodeLibrary
         }
 
         private void changeTypeToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void xMLToolStripMenuItem_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.XML);
+
+        private void jSToolStripMenuItem_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.JS);
+
+        private void pHPToolStripMenuItem_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.PHP);
+
+        private void luaToolStripMenuItem_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.Lua);
+
+        private void xMLToolStripMenuItem1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.XML);
+
+        private void jSToolStripMenuItem1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.JS);
+
+        private void pHPToolStripMenuItem1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.PHP);
+
+        private void luaToolStripMenuItem1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.Lua);
+
+        private void containerImage_Click(object sender, EventArgs e)
         {
 
         }

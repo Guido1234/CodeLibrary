@@ -58,7 +58,7 @@
             this.dialogButton1.TextOk = "Ok";
             this.dialogButton1.TextRetry = "Retry";
             this.dialogButton1.TextYes = "Yes";
-            this.dialogButton1.DialogButtonClick += new Controls.DialogButton.DialogButtonClickEventHandler(this.DialogButton1_DialogButtonClick);
+            this.dialogButton1.DialogButtonClick += new DialogButton.DialogButtonClickEventHandler(this.DialogButton1_DialogButtonClick);
             // 
             // FormTypeSelector
             // 

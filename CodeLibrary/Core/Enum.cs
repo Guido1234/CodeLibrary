@@ -8,11 +8,22 @@ namespace CodeLibrary
         CSharp = 1,
         SQL = 2,
         VB = 3,
-        None = 4,
+        None = 4, // Plain Text
         HTML = 5,
         Template = 6,
+        XML = 7,
+        PHP = 8,
+        Lua = 9,
+        JS = 11,
 
         [Browsable(false)]
-        System = 10
+        Image = 100,
+
+        [Browsable(false)]
+        System = 10,
+
+        [Browsable(false)]
+        UnSuported = 9999
+
     }
 }

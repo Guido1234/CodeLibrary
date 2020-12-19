@@ -71,7 +71,7 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addRootToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem38 = new System.Windows.Forms.ToolStripMenuItem();
+            this.addFolderToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.addFolderToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem23 = new System.Windows.Forms.ToolStripSeparator();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,6 +90,10 @@
             this.sQLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hTMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.xMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.jSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pHPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.luaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem43 = new System.Windows.Forms.ToolStripSeparator();
             this.templateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quickRenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -156,15 +160,18 @@
             this.treeViewLibrary = new System.Windows.Forms.TreeView();
             this.buttonFind = new System.Windows.Forms.Button();
             this.textBoxFind = new System.Windows.Forms.TextBox();
+            this.containerImage = new CodeLibrary.Controls.Container();
+            this.imageViewer = new CodeLibrary.Controls.Controls.ImageViewer();
+            this.containerCode = new CodeLibrary.Controls.Container();
+            this.listBoxInsight = new System.Windows.Forms.ListBox();
+            this.tbCode = new FastColoredTextBoxNS.FastColoredTextBox();
             this.labelZoomPerc = new System.Windows.Forms.Label();
             this.hScrollBarZoom = new System.Windows.Forms.HScrollBar();
-            this.listBoxInsight = new System.Windows.Forms.ListBox();
             this.lblEnd = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.lblStart = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.tbCode = new FastColoredTextBoxNS.FastColoredTextBox();
             this.contextMenuStripTrashcan = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.emptyTrashcanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem15 = new System.Windows.Forms.ToolStripSeparator();
@@ -195,6 +202,10 @@
             this.sQLToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.vBToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.hTMLToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.xMLToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.jSToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.pHPToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.luaToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem44 = new System.Windows.Forms.ToolStripSeparator();
             this.templateToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.quickRenameToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -211,6 +222,10 @@
             this.toolStripMenuItem45 = new System.Windows.Forms.ToolStripSeparator();
             this.contextMenuSnippetBookmarks = new System.Windows.Forms.ToolStripMenuItem();
             this.timerClipboard = new System.Windows.Forms.Timer(this.components);
+            this.contextMenuImage = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.containerInfoBar = new CodeLibrary.Controls.Container();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStripPopup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -220,10 +235,14 @@
             this.containerBookmarks.SuspendLayout();
             this.containerLeft.SuspendLayout();
             this.containerTreeview.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.containerImage.SuspendLayout();
+            this.containerCode.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbCode)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuStripTrashcan.SuspendLayout();
             this.contextMenuStripLibrary.SuspendLayout();
+            this.contextMenuImage.SuspendLayout();
+            this.containerInfoBar.SuspendLayout();
             this.SuspendLayout();
             // 
             // imageList1
@@ -240,6 +259,7 @@
             this.imageList1.Images.SetKeyName(7, "html 16.png");
             this.imageList1.Images.SetKeyName(8, "Sql 16.png");
             this.imageList1.Images.SetKeyName(9, "VB 16.png");
+            this.imageList1.Images.SetKeyName(10, "image_16x16.png");
             // 
             // menuStrip1
             // 
@@ -583,7 +603,7 @@
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addToolStripMenuItem,
             this.addRootToolStripMenuItem,
-            this.toolStripMenuItem38,
+            this.addFolderToolStripMenuItem2,
             this.addFolderToolStripMenuItem1,
             this.toolStripMenuItem23,
             this.searchToolStripMenuItem,
@@ -625,16 +645,16 @@
             this.addRootToolStripMenuItem.Text = "Add Root";
             this.addRootToolStripMenuItem.Click += new System.EventHandler(this.AddRootToolStripMenuItem_Click);
             // 
-            // toolStripMenuItem38
+            // addFolderToolStripMenuItem2
             // 
-            this.toolStripMenuItem38.BackColor = System.Drawing.SystemColors.Control;
-            this.toolStripMenuItem38.Image = global::CodeLibrary.Properties.Resources.folder_add_32x32;
-            this.toolStripMenuItem38.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripMenuItem38.Name = "toolStripMenuItem38";
-            this.toolStripMenuItem38.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            this.addFolderToolStripMenuItem2.BackColor = System.Drawing.SystemColors.Control;
+            this.addFolderToolStripMenuItem2.Image = global::CodeLibrary.Properties.Resources.folder_add_32x32;
+            this.addFolderToolStripMenuItem2.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.addFolderToolStripMenuItem2.Name = "addFolderToolStripMenuItem2";
+            this.addFolderToolStripMenuItem2.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.N)));
-            this.toolStripMenuItem38.Size = new System.Drawing.Size(223, 38);
-            this.toolStripMenuItem38.Text = "Add Folder";
+            this.addFolderToolStripMenuItem2.Size = new System.Drawing.Size(223, 38);
+            this.addFolderToolStripMenuItem2.Text = "Add Folder";
             // 
             // addFolderToolStripMenuItem1
             // 
@@ -711,6 +731,10 @@
             this.sQLToolStripMenuItem,
             this.vBToolStripMenuItem,
             this.hTMLToolStripMenuItem,
+            this.xMLToolStripMenuItem,
+            this.jSToolStripMenuItem,
+            this.pHPToolStripMenuItem,
+            this.luaToolStripMenuItem,
             this.toolStripMenuItem43,
             this.templateToolStripMenuItem});
             this.changeTypeToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.document_rename_32x32;
@@ -726,14 +750,14 @@
             this.folderToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.folderToolStripMenuItem.Name = "folderToolStripMenuItem";
             this.folderToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D1)));
-            this.folderToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
+            this.folderToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
             this.folderToolStripMenuItem.Text = "Folder";
             this.folderToolStripMenuItem.Click += new System.EventHandler(this.FolderToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(193, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(160, 6);
             // 
             // noneToolStripMenuItem
             // 
@@ -741,14 +765,14 @@
             this.noneToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
             this.noneToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D2)));
-            this.noneToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
             this.noneToolStripMenuItem.Text = "None";
             this.noneToolStripMenuItem.Click += new System.EventHandler(this.NoneToolStripMenuItem_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(193, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(160, 6);
             // 
             // cToolStripMenuItem
             // 
@@ -756,7 +780,7 @@
             this.cToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.cToolStripMenuItem.Name = "cToolStripMenuItem";
             this.cToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D3)));
-            this.cToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
+            this.cToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
             this.cToolStripMenuItem.Text = "C#";
             this.cToolStripMenuItem.Click += new System.EventHandler(this.CToolStripMenuItem_Click);
             // 
@@ -766,7 +790,7 @@
             this.sQLToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.sQLToolStripMenuItem.Name = "sQLToolStripMenuItem";
             this.sQLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D4)));
-            this.sQLToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
+            this.sQLToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
             this.sQLToolStripMenuItem.Text = "SQL";
             this.sQLToolStripMenuItem.Click += new System.EventHandler(this.SQLToolStripMenuItem_Click);
             // 
@@ -776,7 +800,7 @@
             this.vBToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.vBToolStripMenuItem.Name = "vBToolStripMenuItem";
             this.vBToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D5)));
-            this.vBToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
+            this.vBToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
             this.vBToolStripMenuItem.Text = "VB";
             this.vBToolStripMenuItem.Click += new System.EventHandler(this.VBToolStripMenuItem_Click);
             // 
@@ -786,21 +810,58 @@
             this.hTMLToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.hTMLToolStripMenuItem.Name = "hTMLToolStripMenuItem";
             this.hTMLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D6)));
-            this.hTMLToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
+            this.hTMLToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
             this.hTMLToolStripMenuItem.Text = "HTML";
             this.hTMLToolStripMenuItem.Click += new System.EventHandler(this.HTMLToolStripMenuItem_Click);
+            // 
+            // xMLToolStripMenuItem
+            // 
+            this.xMLToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.text_document_32x32;
+            this.xMLToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.xMLToolStripMenuItem.Name = "xMLToolStripMenuItem";
+            this.xMLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D7)));
+            this.xMLToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
+            this.xMLToolStripMenuItem.Text = "XML";
+            this.xMLToolStripMenuItem.Click += new System.EventHandler(this.xMLToolStripMenuItem_Click);
+            // 
+            // jSToolStripMenuItem
+            // 
+            this.jSToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.text_document_32x32;
+            this.jSToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.jSToolStripMenuItem.Name = "jSToolStripMenuItem";
+            this.jSToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
+            this.jSToolStripMenuItem.Text = "JS";
+            this.jSToolStripMenuItem.Click += new System.EventHandler(this.jSToolStripMenuItem_Click);
+            // 
+            // pHPToolStripMenuItem
+            // 
+            this.pHPToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.text_document_32x32;
+            this.pHPToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.pHPToolStripMenuItem.Name = "pHPToolStripMenuItem";
+            this.pHPToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
+            this.pHPToolStripMenuItem.Text = "PHP";
+            this.pHPToolStripMenuItem.Click += new System.EventHandler(this.pHPToolStripMenuItem_Click);
+            // 
+            // luaToolStripMenuItem
+            // 
+            this.luaToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.text_document_32x32;
+            this.luaToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.luaToolStripMenuItem.Name = "luaToolStripMenuItem";
+            this.luaToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
+            this.luaToolStripMenuItem.Text = "Lua";
+            this.luaToolStripMenuItem.Click += new System.EventHandler(this.luaToolStripMenuItem_Click);
             // 
             // toolStripMenuItem43
             // 
             this.toolStripMenuItem43.Name = "toolStripMenuItem43";
-            this.toolStripMenuItem43.Size = new System.Drawing.Size(193, 6);
+            this.toolStripMenuItem43.Size = new System.Drawing.Size(160, 6);
             // 
             // templateToolStripMenuItem
             // 
             this.templateToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.document_rename_32x32;
             this.templateToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.templateToolStripMenuItem.Name = "templateToolStripMenuItem";
-            this.templateToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
+            this.templateToolStripMenuItem.Size = new System.Drawing.Size(163, 38);
             this.templateToolStripMenuItem.Text = "Template";
             this.templateToolStripMenuItem.Click += new System.EventHandler(this.TemplateToolStripMenuItem_Click);
             // 
@@ -1115,7 +1176,7 @@
             this.tbPath.Location = new System.Drawing.Point(1, 3);
             this.tbPath.Name = "tbPath";
             this.tbPath.ReadOnly = true;
-            this.tbPath.Size = new System.Drawing.Size(769, 20);
+            this.tbPath.Size = new System.Drawing.Size(782, 20);
             this.tbPath.TabIndex = 3;
             // 
             // contextMenuStripPopup
@@ -1266,16 +1327,11 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.labelZoomPerc);
-            this.splitContainer1.Panel2.Controls.Add(this.hScrollBarZoom);
-            this.splitContainer1.Panel2.Controls.Add(this.listBoxInsight);
-            this.splitContainer1.Panel2.Controls.Add(this.lblEnd);
-            this.splitContainer1.Panel2.Controls.Add(this.label4);
-            this.splitContainer1.Panel2.Controls.Add(this.lblStart);
-            this.splitContainer1.Panel2.Controls.Add(this.label2);
+            this.splitContainer1.Panel2.Controls.Add(this.containerInfoBar);
+            this.splitContainer1.Panel2.Controls.Add(this.containerImage);
+            this.splitContainer1.Panel2.Controls.Add(this.containerCode);
             this.splitContainer1.Panel2.Controls.Add(this.tbPath);
             this.splitContainer1.Panel2.Controls.Add(this.pictureBox1);
-            this.splitContainer1.Panel2.Controls.Add(this.tbCode);
             this.splitContainer1.Size = new System.Drawing.Size(1120, 601);
             this.splitContainer1.SplitterDistance = 368;
             this.splitContainer1.SplitterWidth = 3;
@@ -1387,95 +1443,46 @@
             this.textBoxFind.TabIndex = 1;
             this.textBoxFind.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TextBoxFind_KeyUp);
             // 
-            // labelZoomPerc
+            // containerImage
             // 
-            this.labelZoomPerc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelZoomPerc.AutoSize = true;
-            this.labelZoomPerc.Location = new System.Drawing.Point(728, 581);
-            this.labelZoomPerc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.labelZoomPerc.Name = "labelZoomPerc";
-            this.labelZoomPerc.Size = new System.Drawing.Size(13, 13);
-            this.labelZoomPerc.TabIndex = 14;
-            this.labelZoomPerc.Text = "0";
+            this.containerImage.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.containerImage.Controls.Add(this.imageViewer);
+            this.containerImage.Location = new System.Drawing.Point(3, 289);
+            this.containerImage.Name = "containerImage";
+            this.containerImage.Size = new System.Drawing.Size(486, 218);
+            this.containerImage.TabIndex = 18;
+            this.containerImage.Text = "container2";
+            this.containerImage.Click += new System.EventHandler(this.containerImage_Click);
             // 
-            // hScrollBarZoom
+            // imageViewer
             // 
-            this.hScrollBarZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBarZoom.Location = new System.Drawing.Point(553, 581);
-            this.hScrollBarZoom.Maximum = 200;
-            this.hScrollBarZoom.Minimum = 50;
-            this.hScrollBarZoom.Name = "hScrollBarZoom";
-            this.hScrollBarZoom.Size = new System.Drawing.Size(154, 14);
-            this.hScrollBarZoom.TabIndex = 13;
-            this.hScrollBarZoom.Value = 50;
-            this.hScrollBarZoom.Scroll += new System.Windows.Forms.ScrollEventHandler(this.HScrollBarZoom_Scroll);
+            this.imageViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.imageViewer.Location = new System.Drawing.Point(67, 20);
+            this.imageViewer.Name = "imageViewer";
+            this.imageViewer.Size = new System.Drawing.Size(110, 159);
+            this.imageViewer.TabIndex = 0;
+            // 
+            // containerCode
+            // 
+            this.containerCode.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.containerCode.Controls.Add(this.listBoxInsight);
+            this.containerCode.Controls.Add(this.tbCode);
+            this.containerCode.Location = new System.Drawing.Point(0, 28);
+            this.containerCode.Name = "containerCode";
+            this.containerCode.Size = new System.Drawing.Size(486, 255);
+            this.containerCode.TabIndex = 17;
+            this.containerCode.Text = "container1";
             // 
             // listBoxInsight
             // 
             this.listBoxInsight.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxInsight.FormattingEnabled = true;
             this.listBoxInsight.ItemHeight = 15;
-            this.listBoxInsight.Location = new System.Drawing.Point(3, 27);
+            this.listBoxInsight.Location = new System.Drawing.Point(3, 187);
             this.listBoxInsight.Name = "listBoxInsight";
-            this.listBoxInsight.Size = new System.Drawing.Size(455, 49);
-            this.listBoxInsight.TabIndex = 12;
+            this.listBoxInsight.Size = new System.Drawing.Size(316, 49);
+            this.listBoxInsight.TabIndex = 16;
             this.listBoxInsight.Visible = false;
-            // 
-            // lblEnd
-            // 
-            this.lblEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblEnd.AutoSize = true;
-            this.lblEnd.Location = new System.Drawing.Point(115, 581);
-            this.lblEnd.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblEnd.Name = "lblEnd";
-            this.lblEnd.Size = new System.Drawing.Size(13, 13);
-            this.lblEnd.TabIndex = 11;
-            this.lblEnd.Text = "0";
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(83, 581);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 13);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "End:";
-            // 
-            // lblStart
-            // 
-            this.lblStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblStart.AutoSize = true;
-            this.lblStart.Location = new System.Drawing.Point(36, 581);
-            this.lblStart.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblStart.Name = "lblStart";
-            this.lblStart.Size = new System.Drawing.Size(13, 13);
-            this.lblStart.TabIndex = 9;
-            this.lblStart.Text = "0";
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(0, 581);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(32, 13);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Start:";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(775, 8);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox1.TabIndex = 6;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
             // 
             // tbCode
             // 
@@ -1508,17 +1515,95 @@
             this.tbCode.Language = FastColoredTextBoxNS.Language.CSharp;
             this.tbCode.LeftBracket = '(';
             this.tbCode.LeftBracket2 = '{';
-            this.tbCode.Location = new System.Drawing.Point(3, 30);
+            this.tbCode.Location = new System.Drawing.Point(3, 3);
             this.tbCode.Name = "tbCode";
             this.tbCode.Paddings = new System.Windows.Forms.Padding(0);
             this.tbCode.RightBracket = ')';
             this.tbCode.RightBracket2 = '}';
             this.tbCode.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.tbCode.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("tbCode.ServiceColors")));
-            this.tbCode.Size = new System.Drawing.Size(758, 548);
-            this.tbCode.TabIndex = 5;
+            this.tbCode.Size = new System.Drawing.Size(442, 178);
+            this.tbCode.TabIndex = 15;
             this.tbCode.Zoom = 100;
-            this.tbCode.SelectionChanged += new System.EventHandler(this.TbCode_SelectionChanged);
+            // 
+            // labelZoomPerc
+            // 
+            this.labelZoomPerc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelZoomPerc.AutoSize = true;
+            this.labelZoomPerc.Location = new System.Drawing.Point(709, 4);
+            this.labelZoomPerc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelZoomPerc.Name = "labelZoomPerc";
+            this.labelZoomPerc.Size = new System.Drawing.Size(13, 13);
+            this.labelZoomPerc.TabIndex = 14;
+            this.labelZoomPerc.Text = "0";
+            // 
+            // hScrollBarZoom
+            // 
+            this.hScrollBarZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScrollBarZoom.Location = new System.Drawing.Point(553, 4);
+            this.hScrollBarZoom.Maximum = 200;
+            this.hScrollBarZoom.Minimum = 50;
+            this.hScrollBarZoom.Name = "hScrollBarZoom";
+            this.hScrollBarZoom.Size = new System.Drawing.Size(154, 14);
+            this.hScrollBarZoom.TabIndex = 13;
+            this.hScrollBarZoom.Value = 50;
+            this.hScrollBarZoom.Scroll += new System.Windows.Forms.ScrollEventHandler(this.HScrollBarZoom_Scroll);
+            // 
+            // lblEnd
+            // 
+            this.lblEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblEnd.AutoSize = true;
+            this.lblEnd.Location = new System.Drawing.Point(110, 5);
+            this.lblEnd.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblEnd.Name = "lblEnd";
+            this.lblEnd.Size = new System.Drawing.Size(13, 13);
+            this.lblEnd.TabIndex = 11;
+            this.lblEnd.Text = "0";
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(77, 5);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "End:";
+            // 
+            // lblStart
+            // 
+            this.lblStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblStart.AutoSize = true;
+            this.lblStart.Location = new System.Drawing.Point(38, 5);
+            this.lblStart.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblStart.Name = "lblStart";
+            this.lblStart.Size = new System.Drawing.Size(13, 13);
+            this.lblStart.TabIndex = 9;
+            this.lblStart.Text = "0";
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(2, 5);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(32, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "Start:";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(788, 8);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 6;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
             // 
             // contextMenuStripTrashcan
             // 
@@ -1708,6 +1793,10 @@
             this.sQLToolStripMenuItem1,
             this.vBToolStripMenuItem1,
             this.hTMLToolStripMenuItem1,
+            this.xMLToolStripMenuItem1,
+            this.jSToolStripMenuItem1,
+            this.pHPToolStripMenuItem1,
+            this.luaToolStripMenuItem1,
             this.toolStripMenuItem44,
             this.templateToolStripMenuItem1});
             this.changeTypeToolStripMenuItem1.Image = global::CodeLibrary.Properties.Resources.document_rename_32x32;
@@ -1780,6 +1869,42 @@
             this.hTMLToolStripMenuItem1.Size = new System.Drawing.Size(138, 38);
             this.hTMLToolStripMenuItem1.Text = "HTML";
             this.hTMLToolStripMenuItem1.Click += new System.EventHandler(this.HTMLToolStripMenuItem1_Click);
+            // 
+            // xMLToolStripMenuItem1
+            // 
+            this.xMLToolStripMenuItem1.Image = global::CodeLibrary.Properties.Resources.text_document_32x32;
+            this.xMLToolStripMenuItem1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.xMLToolStripMenuItem1.Name = "xMLToolStripMenuItem1";
+            this.xMLToolStripMenuItem1.Size = new System.Drawing.Size(138, 38);
+            this.xMLToolStripMenuItem1.Text = "XML";
+            this.xMLToolStripMenuItem1.Click += new System.EventHandler(this.xMLToolStripMenuItem1_Click);
+            // 
+            // jSToolStripMenuItem1
+            // 
+            this.jSToolStripMenuItem1.Image = global::CodeLibrary.Properties.Resources.text_document_32x32;
+            this.jSToolStripMenuItem1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.jSToolStripMenuItem1.Name = "jSToolStripMenuItem1";
+            this.jSToolStripMenuItem1.Size = new System.Drawing.Size(138, 38);
+            this.jSToolStripMenuItem1.Text = "JS";
+            this.jSToolStripMenuItem1.Click += new System.EventHandler(this.jSToolStripMenuItem1_Click);
+            // 
+            // pHPToolStripMenuItem1
+            // 
+            this.pHPToolStripMenuItem1.Image = global::CodeLibrary.Properties.Resources.text_document_32x32;
+            this.pHPToolStripMenuItem1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.pHPToolStripMenuItem1.Name = "pHPToolStripMenuItem1";
+            this.pHPToolStripMenuItem1.Size = new System.Drawing.Size(138, 38);
+            this.pHPToolStripMenuItem1.Text = "PHP";
+            this.pHPToolStripMenuItem1.Click += new System.EventHandler(this.pHPToolStripMenuItem1_Click);
+            // 
+            // luaToolStripMenuItem1
+            // 
+            this.luaToolStripMenuItem1.Image = global::CodeLibrary.Properties.Resources.text_document_32x32;
+            this.luaToolStripMenuItem1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.luaToolStripMenuItem1.Name = "luaToolStripMenuItem1";
+            this.luaToolStripMenuItem1.Size = new System.Drawing.Size(138, 38);
+            this.luaToolStripMenuItem1.Text = "Lua";
+            this.luaToolStripMenuItem1.Click += new System.EventHandler(this.luaToolStripMenuItem1_Click);
             // 
             // toolStripMenuItem44
             // 
@@ -1900,6 +2025,46 @@
             this.contextMenuSnippetBookmarks.Size = new System.Drawing.Size(173, 38);
             this.contextMenuSnippetBookmarks.Text = "Bookmarks";
             // 
+            // contextMenuImage
+            // 
+            this.contextMenuImage.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveImageToolStripMenuItem,
+            this.setToClipboardToolStripMenuItem});
+            this.contextMenuImage.Name = "contextMenuImage";
+            this.contextMenuImage.Size = new System.Drawing.Size(176, 80);
+            // 
+            // saveImageToolStripMenuItem
+            // 
+            this.saveImageToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.save_32x32;
+            this.saveImageToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
+            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(175, 38);
+            this.saveImageToolStripMenuItem.Text = "Save Image";
+            // 
+            // setToClipboardToolStripMenuItem
+            // 
+            this.setToClipboardToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.copy_32x32;
+            this.setToClipboardToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.setToClipboardToolStripMenuItem.Name = "setToClipboardToolStripMenuItem";
+            this.setToClipboardToolStripMenuItem.Size = new System.Drawing.Size(175, 38);
+            this.setToClipboardToolStripMenuItem.Text = "Set to Clipboard";
+            // 
+            // containerInfoBar
+            // 
+            this.containerInfoBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.containerInfoBar.BackColor = System.Drawing.SystemColors.Control;
+            this.containerInfoBar.Controls.Add(this.label2);
+            this.containerInfoBar.Controls.Add(this.lblStart);
+            this.containerInfoBar.Controls.Add(this.label4);
+            this.containerInfoBar.Controls.Add(this.labelZoomPerc);
+            this.containerInfoBar.Controls.Add(this.lblEnd);
+            this.containerInfoBar.Controls.Add(this.hScrollBarZoom);
+            this.containerInfoBar.Location = new System.Drawing.Point(3, 579);
+            this.containerInfoBar.Name = "containerInfoBar";
+            this.containerInfoBar.Size = new System.Drawing.Size(746, 19);
+            this.containerInfoBar.TabIndex = 19;
+            // 
             // FormCodeLibrary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1926,18 +2091,21 @@
             this.containerLeft.ResumeLayout(false);
             this.containerTreeview.ResumeLayout(false);
             this.containerTreeview.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.containerImage.ResumeLayout(false);
+            this.containerCode.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.tbCode)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.contextMenuStripTrashcan.ResumeLayout(false);
             this.contextMenuStripLibrary.ResumeLayout(false);
+            this.contextMenuImage.ResumeLayout(false);
+            this.containerInfoBar.ResumeLayout(false);
+            this.containerInfoBar.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TreeView treeViewLibrary;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem mainToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
@@ -1955,8 +2123,6 @@
         private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replaceToolStripMenuItem;
         private System.Windows.Forms.TextBox tbPath;
-        private FastColoredTextBoxNS.FastColoredTextBox tbCode;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripPopup;
         private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem1;
@@ -2002,7 +2168,6 @@
         private System.Windows.Forms.ToolStripMenuItem yYYYMMDDHHMMToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem30;
         private System.Windows.Forms.ToolStripMenuItem copyWithMarkupToolStripMenuItem1;
-        private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem10;
         public System.Windows.Forms.ToolStripMenuItem wordwrapToolStripMenuItem;
         private System.Windows.Forms.Label lblEnd;
@@ -2012,7 +2177,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem21;
         private System.Windows.Forms.ToolStripMenuItem renameNoteToSelectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem35;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripTrashcan;
         private System.Windows.Forms.ToolStripMenuItem emptyTrashcanToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem addRootToolStripMenuItem;
@@ -2024,7 +2188,7 @@
         public System.Windows.Forms.ToolStripMenuItem markImportantToolStripMenuItem1;
         public System.Windows.Forms.ToolStripMenuItem moveUpToolStripMenuItem1;
         public System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem1;
-        public System.Windows.Forms.ToolStripMenuItem toolStripMenuItem38;
+        public System.Windows.Forms.ToolStripMenuItem addFolderToolStripMenuItem2;
         public System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem1;
         public System.Windows.Forms.ToolStripMenuItem addFolderToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem1;
@@ -2056,7 +2220,6 @@
         public System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importLibraryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportLibraryToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripLibrary;
         public System.Windows.Forms.ToolStripMenuItem setAlarmToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem toolStripMenuItem39;
         public System.Windows.Forms.ToolStripMenuItem pluginsToolStripEditMenuItem;
@@ -2077,9 +2240,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem40;
         private System.Windows.Forms.ToolStripMenuItem importFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToTextFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem nodeDefaultsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem41;
-        private System.Windows.Forms.ToolStripMenuItem nodeDefaultsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem favoriteLibrariesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addCurrentToFavoriteToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem42;
@@ -2087,7 +2248,6 @@
         private System.Windows.Forms.ToolStripMenuItem templateToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem44;
         private System.Windows.Forms.ToolStripMenuItem templateToolStripMenuItem1;
-        private System.Windows.Forms.ListBox listBoxInsight;
         private System.Windows.Forms.ToolStripMenuItem bookmarksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ToggleBookMarkMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem46;
@@ -2114,10 +2274,34 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem22;
         private System.Windows.Forms.ToolStripMenuItem switchLast2DocumentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem23;
-        private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem24;
+        private System.Windows.Forms.ToolStripMenuItem xMLToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem jSToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pHPToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem luaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem xMLToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem jSToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem pHPToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem luaToolStripMenuItem1;
+        private System.Windows.Forms.ListBox listBoxInsight;
+        private FastColoredTextBoxNS.FastColoredTextBox tbCode;
+        public Controls.Container containerCode;
+        public Controls.Container containerImage;
+        public Controls.Controls.ImageViewer imageViewer;
+        public System.Windows.Forms.ToolStripMenuItem nodeDefaultsToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem nodeDefaultsToolStripMenuItem1;
+        public System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem1;
+        public System.Windows.Forms.ContextMenuStrip contextMenuImage;
+        public System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem setToClipboardToolStripMenuItem;
+        public System.Windows.Forms.ContextMenuStrip contextMenuStripTrashcan;
+        public System.Windows.Forms.ContextMenuStrip contextMenuStripPopup;
+        internal System.Windows.Forms.TreeView treeViewLibrary;
+        internal System.Windows.Forms.ContextMenuStrip contextMenuStripLibrary;
+        public System.Windows.Forms.SplitContainer splitContainer1;
+        public Controls.Container containerInfoBar;
     }
 }
 

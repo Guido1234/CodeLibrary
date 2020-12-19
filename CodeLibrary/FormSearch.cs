@@ -43,13 +43,29 @@ namespace CodeLibrary
                     tbCode.Language = FastColoredTextBoxNS.Language.VB;
                     break;
 
+                case CodeType.JS:
+                    tbCode.Language = FastColoredTextBoxNS.Language.JS;
+                    break;
+
+                case CodeType.XML:
+                    tbCode.Language = FastColoredTextBoxNS.Language.XML;
+                    break;
+
+                case CodeType.PHP:
+                    tbCode.Language = FastColoredTextBoxNS.Language.PHP;
+                    break;
+
+                case CodeType.Lua:
+                    tbCode.Language = FastColoredTextBoxNS.Language.Lua;
+                    break;
+
+
                 case CodeType.None:
                     tbCode.Language = FastColoredTextBoxNS.Language.Custom;
                     break;
 
                 case CodeType.HTML:
                     tbCode.Language = FastColoredTextBoxNS.Language.HTML;
-
                     break;
             }
         }

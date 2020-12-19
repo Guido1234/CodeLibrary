@@ -3,6 +3,7 @@ using DevToys;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,8 +12,8 @@ namespace CodeLibrary
 {
     public class TreeviewHelper
     {
-        private readonly ContextMenuStrip _contextMenuStripPopup;
-        private readonly ContextMenuStrip _contextMenuStripTrashcan;
+        //private readonly ContextMenuStrip _contextMenuStripPopup;
+        //private readonly ContextMenuStrip _contextMenuStripTrashcan;
         private readonly FastColoredTextBoxHelper _fastColoredTextBoxHelper;
         private readonly FileHelper _fileHelper;
         private readonly FixedQueue<TreeNode> _LastTwo = new FixedQueue<TreeNode>(2);
@@ -22,15 +23,13 @@ namespace CodeLibrary
         private string _SelectedId;
         private bool _timerTick = false;
 
-        public TreeviewHelper(TreeView treeViewLibrary, FormCodeLibrary mainform, FastColoredTextBoxHelper fastColoredTextBoxHelper, ContextMenuStrip contextMenuStripPopup, ContextMenuStrip contextMenuStripTrashcan, FileHelper fileHelper)
+        public TreeviewHelper(FormCodeLibrary mainform, FastColoredTextBoxHelper fastColoredTextBoxHelper, FileHelper fileHelper)
         {
-            _treeViewLibrary = treeViewLibrary;
+            _treeViewLibrary = mainform.treeViewLibrary;
             _mainform = mainform;
-            _contextMenuStripPopup = contextMenuStripPopup;
             _fileHelper = fileHelper;
-            _contextMenuStripTrashcan = contextMenuStripTrashcan;
             _fastColoredTextBoxHelper = fastColoredTextBoxHelper;
-            treeViewLibrary.AllowDrop = true;
+            _treeViewLibrary.AllowDrop = true;
             _treeViewLibrary.ItemDrag += new ItemDragEventHandler(this.TreeViewLibrary_ItemDrag);
             _treeViewLibrary.AfterSelect += new TreeViewEventHandler(this.TreeViewLibrary_AfterSelect);
             _treeViewLibrary.BeforeSelect += new TreeViewCancelEventHandler(this.TreeViewLibrary_BeforeSelect);
@@ -39,9 +38,32 @@ namespace CodeLibrary
             _treeViewLibrary.DragOver += new DragEventHandler(this.TreeViewLibrary_DragOver);
             _treeViewLibrary.KeyUp += new KeyEventHandler(this.TreeViewLibrary_KeyUp);
             _treeViewLibrary.MouseUp += new MouseEventHandler(this.TreeViewLibrary_MouseUp);
+           
+            _mainform.imageViewer.ImageMouseClick += ImageViewer_ImageMouseClick;
+            _mainform.setToClipboardToolStripMenuItem.Click += SetToClipboardToolStripMenuItem_Click;
+            _mainform.saveImageToolStripMenuItem.Click += SaveImageToolStripMenuItem_Click;
+
             _timer.Interval = 1000;
             _timer.Tick += Timer_Tick;
             _timer.Start();
+        }
+
+        private void SaveImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog _dialog = new SaveFileDialog();
+            _dialog.Filter = "JPEG Image|*.jpg";
+            DialogResult _result = _dialog.ShowDialog();
+            if (_result == DialogResult.OK)
+            {
+                string _filename = _dialog.FileName;
+                byte[] _bytes = ConvertImageToByteArray(_mainform.imageViewer.Image, 100L);
+                File.WriteAllBytes(_filename, _bytes);
+            }
+        }
+
+        private void SetToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetImage(_mainform.imageViewer.Image);
         }
 
         public string SelectedId
@@ -56,6 +78,16 @@ namespace CodeLibrary
                 _fileHelper.SelectedId = _SelectedId;
             }
         }
+
+
+        private void ImageViewer_ImageMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                _mainform.contextMenuImage.Show(Cursor.Position.X, Cursor.Position.Y);
+            }
+        }
+
 
         public void ChangeType(TreeNode node, CodeType type)
         {
@@ -86,15 +118,39 @@ namespace CodeLibrary
                 case "cs":
                     return CodeType.CSharp;
 
+                case "js":
+                case "ts":
+                case "json":
+                    return CodeType.JS;
+
+                case "txt":
+                case "inf":
+                case "info":
+                case "nfo":
+                case "md":
+                    return CodeType.None;
+
                 case "html":
-                case "xml":
                 case "htm":
                     return CodeType.HTML;
 
+                case "resx":
+                case "xml":
+                case "xmlt":
+                case "xlt":
+                case "xslt":
+                    return CodeType.XML;
+
                 case "sql":
                     return CodeType.SQL;
+
+                case "jpg":
+                case "jpeg":
+                case "png":
+                case "bmp":
+                    return CodeType.Image;
             }
-            return CodeType.None;
+            return CodeType.UnSuported;
         }
 
         public TreeNode CreateNewFolderNode(TreeNode parent)
@@ -301,6 +357,15 @@ namespace CodeLibrary
             return (snippet.CodeType == CodeType.System && snippet.Id == Constants.TRASHCAN);
         }
 
+        public bool IsImage(TreeNode node)
+        {
+            if (node == null)
+                return false;
+
+            CodeSnippet snippet = CodeLib.Instance.Library.Get(node.Name);
+            return (snippet.CodeType == CodeType.Image);
+        }
+
         public void MarkImportant()
         {
             if (IsSystem(_treeViewLibrary.SelectedNode))
@@ -380,9 +445,36 @@ namespace CodeLibrary
             if (setHistory)
                 _LastTwo.Add(node);
 
-            _fastColoredTextBoxHelper.CodeToScreen(_snippet);
-            _treeViewLibrary.SelectedNode = node;
-            SetLibraryMenuState();
+            switch(_snippet.CodeType)
+            {
+                case CodeType.Image:
+                    _mainform.containerCode.Visible = false;
+                    _mainform.containerImage.Visible = true;
+                    _mainform.imageViewer.setImage(_snippet.Blob);
+                    _mainform.containerInfoBar.Visible = false;
+
+                    break;
+                case CodeType.CSharp:
+                case CodeType.Folder:
+                case CodeType.HTML:
+                case CodeType.JS:
+                case CodeType.Lua:
+                case CodeType.None:
+                case CodeType.PHP:
+                case CodeType.SQL:
+                case CodeType.System:
+                case CodeType.Template:
+                case CodeType.VB:
+                case CodeType.XML:
+                    _mainform.containerCode.Visible = true;
+                    _mainform.containerImage.Visible = false;
+                    _fastColoredTextBoxHelper.CodeToScreen(_snippet);
+                    _treeViewLibrary.SelectedNode = node;
+                    _mainform.containerInfoBar.Visible = true;
+
+                    SetLibraryMenuState();
+                    break;
+            }           
         }
 
         public void SplitDocument(TreeNode parent, string text, string splitter)
@@ -413,10 +505,32 @@ namespace CodeLibrary
 
             foreach (string filename in _filenames)
             {
-                FileInfo _fileInfo = new FileInfo(filename);
-                var _type = CodeTypeByExtension(_fileInfo);
-                string _text = File.ReadAllText(filename);
-                CreateNewNode(targetNode.Nodes, _type, _fileInfo.Name, _text);
+                FileInfo _file = new FileInfo(filename);
+                var _type = CodeTypeByExtension(_file);
+
+                switch (_type)
+                {
+                    case CodeType.Image:
+                        byte[] _imageData = File.ReadAllBytes(filename);
+                        AddImageNode(targetNode, _imageData, _file.Name);
+                        break;
+                    case CodeType.CSharp:
+                    case CodeType.HTML:
+                    case CodeType.JS:
+                    case CodeType.Lua:
+                    case CodeType.PHP:
+                    case CodeType.VB:
+                    case CodeType.None:
+                    case CodeType.SQL:
+                    case CodeType.XML:
+                    case CodeType.Template:
+                        string _text = File.ReadAllText(filename);
+                        CreateNewNode(targetNode.Nodes, _type, _file.Name, _text);
+                        break;
+                    case CodeType.System:
+                    case CodeType.UnSuported:
+                        break;
+                }               
             }
         }
 
@@ -482,29 +596,33 @@ namespace CodeLibrary
 
         private void SetLibraryMenuState()
         {
-            _mainform.addToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.toolStripMenuItem38.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
+            _mainform.addToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
+            _mainform.addFolderToolStripMenuItem2.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
             _mainform.removeToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsInTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.changeTypeToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.quickRenameToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
+            _mainform.changeTypeToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
+            _mainform.quickRenameToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
             _mainform.markImportantToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
             _mainform.copyPathToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
             _mainform.moveUpToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
             _mainform.moveDownToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
             _mainform.removeToolStripMenuItem1.Enabled = !IsInTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.addToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.addFolderToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
+            _mainform.addToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
+            _mainform.addFolderToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
             _mainform.removeToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsInTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.addAndPasteToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.changeTypeToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.quickRenameToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
+            _mainform.addAndPasteToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
+            _mainform.changeTypeToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
+            _mainform.quickRenameToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
             _mainform.copyPathToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
             _mainform.moveUpToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
             _mainform.moveDownToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.fileToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
+            _mainform.fileToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
             _mainform.markImportantToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
             _mainform.toolStripMenuItem39.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.setAlarmToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
+            _mainform.setAlarmToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
+            _mainform.propertiesToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
+            _mainform.nodeDefaultsToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
+            _mainform.nodeDefaultsToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
+            _mainform.propertiesToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -635,6 +753,56 @@ namespace CodeLibrary
             SetLibraryMenuState();
         }
 
+        private static byte[] ConvertImageToByteArray(Image imageToConvert, long quality)
+        {
+            ImageCodecInfo jgpEncoder = GetEncoder(ImageFormat.Jpeg);
+            Encoder myEncoder = Encoder.Quality;
+            EncoderParameters myEncoderParameters = new EncoderParameters(1);
+            myEncoderParameters.Param[0] = new EncoderParameter(myEncoder, quality);
+            ImageCodecInfo.GetImageEncoders();
+
+            byte[] Ret;
+            try
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    imageToConvert.Save(ms, jgpEncoder, myEncoderParameters);
+                    Ret = ms.ToArray();
+                }
+            }
+            catch (Exception) { throw; }
+            return Ret;
+        }
+        private static ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+            return null;
+        }
+
+        private void AddImageNode(TreeNode parentNode, Image image, string name)
+        {
+            byte[] _imageData = ConvertImageToByteArray(image, 33L);
+            AddImageNode(parentNode, _imageData, name);
+        }
+
+        private void AddImageNode(TreeNode parentNode, byte[] _imageData, string name)
+        {
+            CodeSnippet snippet = new CodeSnippet() { Code = "", CodeType = CodeType.Image, Locked = false, Name = name, Blob = _imageData };
+            CodeLib.Instance.Library.Add(snippet);
+
+            int _imageIndex = 0;
+            TreeNode _node = parentNode.Nodes.Add(snippet.Name, snippet.Name, _imageIndex, _imageIndex);
+            _node.Name = snippet.Id;
+            ChangeType(_node, CodeType.Image);
+        }
+
         private void TreeViewLibrary_KeyUp(object sender, KeyEventArgs e)
         {
             SetLibraryMenuState();
@@ -647,6 +815,51 @@ namespace CodeLibrary
             if (e.KeyCode == Keys.Delete && e.Shift)
             {
                 RemoveNode(_treeViewLibrary.SelectedNode, true);
+                return;
+            }
+            if (e.KeyCode == Keys.V && e.Control && e.Shift)
+            {
+                if (Clipboard.ContainsText())
+                {
+                    string _text = Clipboard.GetText();
+
+                    string[] _lines = Utils.SplitLines(_text);
+                    foreach (string line in _lines)
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            CreateNewNode(_treeViewLibrary.SelectedNode.Nodes, CodeType.None, line, "");
+                        }
+                    }
+                }
+            }
+
+            if (e.KeyCode == Keys.V && e.Control)
+            {
+                if (Clipboard.ContainsImage())
+                {
+                    AddImageNode(_treeViewLibrary.SelectedNode, Clipboard.GetImage(), "image");
+                }
+                if (Clipboard.ContainsText())
+                {
+                    CreateNewNode(_treeViewLibrary.SelectedNode.Nodes, CodeType.None, "New Note", Clipboard.GetText());
+                }
+                if (Clipboard.ContainsFileDropList())
+                {
+                    List<string> items = new List<string>();
+                    foreach(string s in Clipboard.GetFileDropList())
+                    {
+                        items.Add(s);
+                    }
+                    if (items.Count > 0)
+                    { 
+                        AddFiles(_treeViewLibrary.SelectedNode, items.ToArray());
+                    }
+                }
+                if (Clipboard.ContainsAudio())
+                {
+
+                }
                 return;
             }
 
@@ -684,11 +897,11 @@ namespace CodeLibrary
 
                 if (IsTrashcan(_treeViewLibrary.SelectedNode))
                 {
-                    _contextMenuStripTrashcan.Show(Cursor.Position.X, Cursor.Position.Y);
+                    _mainform.contextMenuStripTrashcan.Show(Cursor.Position.X, Cursor.Position.Y);
                     return;
                 }
 
-                _contextMenuStripPopup.Show(Cursor.Position.X, Cursor.Position.Y);
+                _mainform.contextMenuStripLibrary.Show(Cursor.Position.X, Cursor.Position.Y);
             }
         }
     }

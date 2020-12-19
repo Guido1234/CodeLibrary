@@ -90,9 +90,11 @@ namespace CodeLibrary
 
         public void CodeToScreen(CodeSnippet snippet)
         {
+            _fastColoredTextBox.BeginUpdate();
             initSnippet = true;
             _currentSnippet = snippet;
             SetEditorCodeType(snippet.CodeType);
+            
             _fastColoredTextBox.Text = _currentSnippet.Code;
             _fastColoredTextBox.ClearUndo();
             _textboxPath.Text = _currentSnippet.Path;
@@ -120,6 +122,8 @@ namespace CodeLibrary
 
             initSnippet = false;
             _mainform.wordwrapToolStripMenuItem.Checked = _currentSnippet.Wordwrap;
+
+            _fastColoredTextBox.EndUpdate();
         }
 
         public void Copy() => _fastColoredTextBox.Copy();
@@ -168,23 +172,44 @@ namespace CodeLibrary
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.SQL;
                     break;
-
                 case CodeType.VB:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.VB;
                     break;
-
                 case CodeType.None:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.Custom;
                     break;
-
                 case CodeType.HTML:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.HTML;
+                    break;
 
+                case CodeType.XML:
+                    CodeInsight.Instance.SetInsightHandler(null);
+                    _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.XML;
+                    break;
+                case CodeType.JS:
+                    CodeInsight.Instance.SetInsightHandler(null);
+                    _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.JS;
+                    break;
+                case CodeType.PHP:
+                    CodeInsight.Instance.SetInsightHandler(null);
+                    _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.PHP;
+                    break;
+                case CodeType.Lua:
+                    CodeInsight.Instance.SetInsightHandler(null);
+                    _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.Lua;
                     break;
             }
+
+            //string _text = _fastColoredTextBox.Text;
+            //_fastColoredTextBox.Clear();
+            //_fastColoredTextBox.Text = _text;
+            _fastColoredTextBox.DoCaretVisible();
+            _fastColoredTextBox.Invalidate();
+            //_fastColoredTextBox.Update();
+            //_fastColoredTextBox.Refresh();
         }
 
         public void SetWordWrap()

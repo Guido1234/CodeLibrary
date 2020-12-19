@@ -211,6 +211,10 @@ namespace CodeLibrary
                 case CodeType.VB:
                     return 9;
 
+                case CodeType.JS:
+                case CodeType.PHP:
+                case CodeType.XML:
+                case CodeType.Lua:
                 case CodeType.None:
                     return 1;
 
@@ -219,6 +223,9 @@ namespace CodeLibrary
 
                 case CodeType.SQL:
                     return 8;
+
+                case CodeType.Image:
+                    return 10;
             }
             return 0;
         }
@@ -253,7 +260,6 @@ namespace CodeLibrary
                 switch (fi.Extension.ToLower())
                 {
                     case "cs":
-                    case "js":
                         codetype = CodeType.CSharp;
                         break;
 
@@ -273,6 +279,20 @@ namespace CodeLibrary
                     case "tsql":
                     case "sql":
                         codetype = CodeType.SQL;
+                        break;
+
+                    case "xml":
+                    case "xmlt":
+                        codetype = CodeType.XML;
+                        break;
+                    case "js":
+                        codetype = CodeType.JS;
+                        break;
+                    case "php":
+                        codetype = CodeType.PHP;
+                        break;
+                    case "lua":
+                        codetype = CodeType.Lua;
                         break;
                 }
                 TreeHelper.CreateNewRootNode(codetype, fi.Name, text);

@@ -50,12 +50,12 @@ namespace DevToys
         private Expression<Func<TPOCO, int>> _AutoNumberField;
         private int _AutonumberStepSize = 1;
         private TimeSpan _ExpirationTime = TimeSpan.Zero;
-        private Func<TPOCO, TPRIMARYKEY> _IndexFunctionPrimaryKey;
+        private readonly Func<TPOCO, TPRIMARYKEY> _IndexFunctionPrimaryKey;
         private Dictionary<TPRIMARYKEY, TPOCO> _Items = new Dictionary<TPRIMARYKEY, TPOCO>();
         private Dictionary<string, LookupItem<dynamic>> _Lookupfunctions;
         private bool _MustRebuild = false; // indicates whether the lookups should be rebuild-ed.
-        private Dictionary<TPRIMARYKEY, int> _PhysicalIndexes1 = new Dictionary<TPRIMARYKEY, int>();
-        private Dictionary<int, TPRIMARYKEY> _PhysicalIndexes2 = new Dictionary<int, TPRIMARYKEY>();
+        private readonly Dictionary<TPRIMARYKEY, int> _PhysicalIndexes1 = new Dictionary<TPRIMARYKEY, int>();
+        private readonly Dictionary<int, TPRIMARYKEY> _PhysicalIndexes2 = new Dictionary<int, TPRIMARYKEY>();
         private bool _SupressPropertyChanged = false;
 
         public DictionaryList(Func<TPOCO, TPRIMARYKEY> predecate) => _IndexFunctionPrimaryKey = predecate;
@@ -274,14 +274,33 @@ namespace DevToys
                     primaryKeys.Add(id);
                 }
             }
-            return removeRange(primaryKeys);
+            return RemoveRange((IEnumerable<TPRIMARYKEY>)primaryKeys);
         }
 
-        public List<TPOCO> RemoveRange(IEnumerable<TPRIMARYKEY> primaryKeys) => removeRange(primaryKeys.ToList());
+        public List<TPOCO> RemoveRange(IEnumerable<TPRIMARYKEY> primaryKeys)
+        {
+            MustRebuild = true;
+            List<TPOCO> removed = new List<TPOCO>();
+            foreach (TPRIMARYKEY primaryKey in primaryKeys)
+            {
+                if (_Items.ContainsKey(primaryKey))
+                {
+                    TPOCO item = _Items[primaryKey];
+                    removed.Add(item);
+                    UnRegisterPropertyChanged(item);
+                    _Items.Remove(primaryKey);
+                }
+            }
 
-        public List<TPOCO> RemoveRange(params TPRIMARYKEY[] primaryKeys) => removeRange(primaryKeys.ToList());
+            if (RaiseEvents)
+                ItemsRemoved(this, new ItemsRemovedEventArgs<TPOCO>(removed));
 
-        public List<TPOCO> RemoveRange(List<TPRIMARYKEY> primaryKeys) => removeRange(primaryKeys);
+            return removed;
+        }
+
+        public List<TPOCO> RemoveRange(params TPRIMARYKEY[] primaryKeys) => RemoveRange((IEnumerable<TPRIMARYKEY>)primaryKeys.ToList());
+
+        public List<TPOCO> RemoveRange(List<TPRIMARYKEY> primaryKeys) => RemoveRange((IEnumerable<TPRIMARYKEY>)primaryKeys);
 
         public void SetAlternativeIndexer(Func<TPOCO, TPRIMARYKEY> predecate)
         {
@@ -436,26 +455,7 @@ namespace DevToys
                 ((INotifyPropertyChanged)item).PropertyChanged += Propertychanged_PropertyChanged;
         }
 
-        private List<TPOCO> removeRange(IEnumerable<TPRIMARYKEY> primaryKeys)
-        {
-            MustRebuild = true;
-            List<TPOCO> removed = new List<TPOCO>();
-            foreach (TPRIMARYKEY primaryKey in primaryKeys)
-            {
-                if (_Items.ContainsKey(primaryKey))
-                {
-                    TPOCO item = _Items[primaryKey];
-                    removed.Add(item);
-                    UnRegisterPropertyChanged(item);
-                    _Items.Remove(primaryKey);
-                }
-            }
 
-            if (RaiseEvents)
-                ItemsRemoved(this, new ItemsRemovedEventArgs<TPOCO>(removed));
-
-            return removed;
-        }
 
         private void UnRegisterPropertyChanged(TPOCO item)
         {

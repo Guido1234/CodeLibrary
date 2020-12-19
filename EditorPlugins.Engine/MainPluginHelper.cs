@@ -12,13 +12,13 @@ namespace EditorPlugins.Engine
 {
     public class MainPluginHelper
     {
-        private Dictionary<string, ToolStripMenuItem> _CategoryMenus = new Dictionary<string, ToolStripMenuItem>();
-        private ToolStripMenuItem _contextMenuPluginMenuItem;
-        private ToolStripMenuItem _editMenuPluginMenuItem;
+        private readonly Dictionary<string, ToolStripMenuItem> _CategoryMenus = new Dictionary<string, ToolStripMenuItem>();
+        private readonly ToolStripMenuItem _contextMenuPluginMenuItem;
+        private readonly ToolStripMenuItem _editMenuPluginMenuItem;
         private FastColoredTextBox _fastColoredTextBox;
-        private Dictionary<string, ToolStripItem> _MenuItems = new Dictionary<string, ToolStripItem>();
-        private DictionaryList<PluginContainer, string> _Plugins = new DictionaryList<PluginContainer, string>(p => p.Id);
-        private TextSelectionHelper _selectionHelper;
+        private readonly Dictionary<string, ToolStripItem> _MenuItems = new Dictionary<string, ToolStripItem>();
+        private readonly DictionaryList<PluginContainer, string> _Plugins = new DictionaryList<PluginContainer, string>(p => p.Id);
+        private readonly TextSelectionHelper _selectionHelper;
 
         public MainPluginHelper(FastColoredTextBox fastColoredTextBox, ToolStripMenuItem editMenuPluginMenuItem, ToolStripMenuItem contextMenuPluginMenuItem)
         {
@@ -89,7 +89,6 @@ namespace EditorPlugins.Engine
 
         public void SetMenuState(ToolStripMenuItem menu)
         {
-            bool _editorHasSelectedText = !string.IsNullOrEmpty(_fastColoredTextBox.SelectedText);
             foreach (PluginContainer pluginContainer in _Plugins)
             {
                 string _name = $"{menu.Name}_{pluginContainer.Id}";
@@ -133,7 +132,7 @@ namespace EditorPlugins.Engine
                     _plugin.Apply(_selInfo);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
 
@@ -183,7 +182,7 @@ namespace EditorPlugins.Engine
         {
             if (menu == null)
                 return;
-
+             
             menu.DropDownItems.Clear();
 
             CreateCategoryMenuItems(menu);

@@ -89,6 +89,11 @@ namespace CodeLibrary
         [DataMember(Name = "Wordwrap")]
         public bool Wordwrap { get; set; }
 
+
+        [Browsable(false)]
+        [DataMember(Name = "Blob")]
+        public byte[] Blob { get; set; }
+
         public static CodeSnippet NewRoot(string text, CodeType codetype, string name) => new CodeSnippet() { Code = text, CodeType = codetype, Locked = false, Name = name, Path = name };
 
         public static CodeSnippet TrashcanSnippet() => new CodeSnippet() { Code = string.Empty, CodeType = CodeType.System, Name = Constants.TRASHCAN_TITLE, Path = Constants.TRASHCAN_TITLE, Id = Constants.TRASHCAN };

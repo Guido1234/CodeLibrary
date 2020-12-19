@@ -8,6 +8,17 @@ namespace CodeLibrary
     public partial class FormAbout : Form
     {
         private readonly string _Content = @"
+Version 1.8:
+-   Paste in Treeviewer (Ctrl-V) 
+    -   FileList: inserts all files below current note.
+    -   Text: Note contents contains clipboard contents.
+    -   Image: Paste image into Treeviewer, Image is displayed instead of code editor.
+
+-   Paste in Treeviewer (Ctrl-Shift-V): Splits text in lines and creates a note for every line.
+
+-   Drag / Drop into treeviewer supports images (jpg / png / bmp)
+
+
 Version 1.7:
 -   Fixed Version number bug.
 

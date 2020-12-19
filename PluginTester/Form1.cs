@@ -78,7 +78,7 @@ namespace PluginTester
                     plugin.Apply(_selInfo);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }

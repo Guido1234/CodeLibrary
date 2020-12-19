@@ -217,6 +217,7 @@ namespace FastColoredTextBoxNS
                 case Language.Lua:
                     LuaSyntaxHighlight(range);
                     break;
+
                 default:
                     break;
             }
@@ -1467,6 +1468,7 @@ namespace FastColoredTextBoxNS
         SQL,
         PHP,
         JS,
-        Lua
+        Lua,
+        Search
     }
 }

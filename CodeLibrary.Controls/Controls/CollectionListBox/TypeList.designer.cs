@@ -35,7 +35,7 @@
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.treeViewTypes = new System.Windows.Forms.TreeView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.descriptionControl1 = new Controls.DescriptionControl();
+            this.descriptionControl1 = new DescriptionControl();
             this.contextMenuViewMode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.listViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();

@@ -320,5 +320,48 @@ namespace CodeLibrary.Core
                     return streamReader.ReadToEnd();
             }
         }
+
+
+        public static string[] SplitLines(string text)
+        {
+            var _result = new List<string>();
+            var _partBuilder = new StringBuilder();
+            var _textCharArray = text.ToCharArray();
+            var _prevChar = (char)0;
+
+            for (int ii = 0; ii < _textCharArray.Length; ii++)
+            {
+                char _currChar = _textCharArray[ii];
+
+                if (_currChar == '\n' && _prevChar == '\r')
+                {
+                    _partBuilder.Length--;
+                    _result.Add(_partBuilder.ToString());
+                    _partBuilder = new StringBuilder();
+                    _prevChar = (char)0;
+                    continue;
+                }
+                if (_currChar == '\n' && _prevChar != '\r')
+                {
+                    _result.Add(_partBuilder.ToString());
+                    _partBuilder = new StringBuilder();
+                    _prevChar = (char)0;
+                    continue;
+                }
+                if (_prevChar == '\n' || _prevChar == '\r')
+                {
+                    if (_currChar != '\r' && _currChar != '\n')
+                        _partBuilder.Append(_currChar);
+
+                    _result.Add(_partBuilder.ToString());
+                    _partBuilder = new StringBuilder();
+                    _prevChar = _textCharArray[ii];
+                    continue;
+                }
+                _partBuilder.Append(_currChar);
+                _prevChar = _textCharArray[ii];
+            }
+            return _result.ToArray();
+        }
     }
 }
