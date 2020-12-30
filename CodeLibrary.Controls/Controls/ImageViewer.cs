@@ -37,7 +37,10 @@ namespace CodeLibrary.Controls.Controls
             _Offset = new Point(0, 0);
             Image _image = ConvertByteArrayToImage(imagedata);
             picture.Image = _image;
+            picture.Width = _image.Width;
+            picture.Height = _image.Height;
             picture.SizeMode = PictureBoxSizeMode.Zoom;
+            
             Center();
         }
 
@@ -61,10 +64,6 @@ namespace CodeLibrary.Controls.Controls
             var img = Image.FromStream(ms);
             ms.Close();
             return img;
-        }
-
-        private void ImageViewer_Load(object sender, EventArgs e)
-        {
         }
 
         private void ImageViewer_MouseClick(object sender, MouseEventArgs e)

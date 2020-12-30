@@ -36,9 +36,9 @@ namespace CodeLibrary.Controls.Controls
             // picture
             // 
             this.picture.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.picture.Location = new System.Drawing.Point(158, 142);
+            this.picture.Location = new System.Drawing.Point(3, 3);
             this.picture.Name = "picture";
-            this.picture.Size = new System.Drawing.Size(217, 124);
+            this.picture.Size = new System.Drawing.Size(539, 465);
             this.picture.TabIndex = 0;
             this.picture.TabStop = false;
             // 
@@ -49,7 +49,6 @@ namespace CodeLibrary.Controls.Controls
             this.Controls.Add(this.picture);
             this.Name = "ImageViewer";
             this.Size = new System.Drawing.Size(545, 499);
-            this.Load += new System.EventHandler(this.ImageViewer_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picture)).EndInit();
             this.ResumeLayout(false);
 
