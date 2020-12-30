@@ -42,10 +42,72 @@ namespace CodeLibrary
             _mainform.imageViewer.ImageMouseClick += ImageViewer_ImageMouseClick;
             _mainform.setToClipboardToolStripMenuItem.Click += SetToClipboardToolStripMenuItem_Click;
             _mainform.saveImageToolStripMenuItem.Click += SaveImageToolStripMenuItem_Click;
+            _mainform.copyAsBase64StringToolStripMenuItem.Click += CopyAsBase64StringToolStripMenuItem_Click;
+            _mainform.copyAsHTMLIMGToolStripMenuItem.Click += CopyAsHTMLIMGToolStripMenuItem_Click;
+
+            _mainform.pasteFilelistToolStripMenuItem.Click += PasteFilelistToolStripMenuItem_Click;
+            _mainform.pasteImageCompressedToolStripMenuItem.Click += PasteImageCompressedToolStripMenuItem_Click;
+            _mainform.pasteImageNoCompressionToolStripMenuItem.Click += PasteImageNoCompressionToolStripMenuItem_Click;
+            _mainform.pasteTextPerLineToolStripMenuItem.Click += PasteTextPerLineToolStripMenuItem_Click;
+            _mainform.pasteTextToolStripMenuItem.Click += PasteTextToolStripMenuItem_Click;
 
             _timer.Interval = 1000;
             _timer.Tick += Timer_Tick;
             _timer.Start();
+        }
+
+        private void PasteTextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Clipboard.ContainsText())
+            {
+                CreateNewNode(_treeViewLibrary.SelectedNode.Nodes, CodeType.None, "New Note", Clipboard.GetText());
+            }            
+        }
+
+        private void PasteTextPerLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Clipboard.ContainsText())
+            {
+                PasteClipBoardEachLine();
+            }
+        }
+
+        private void PasteImageNoCompressionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Clipboard.ContainsImage())
+            {
+                AddImageNodeNoCompression(_treeViewLibrary.SelectedNode, Clipboard.GetImage(), "image");
+            }
+        }
+
+        private void PasteImageCompressedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Clipboard.ContainsImage())
+            {
+                AddImageNode(_treeViewLibrary.SelectedNode, Clipboard.GetImage(), "image");
+            }
+        }
+
+        private void PasteFilelistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Clipboard.ContainsFileDropList())
+            {
+                PasteClipBoardFileList();
+            }
+        }
+
+        private void CopyAsHTMLIMGToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CodeSnippet _snippet = CodeLib.Instance.Library.Get(_SelectedId);
+            string _base64 = Convert.ToBase64String(_snippet.Blob);
+            Clipboard.SetText(string.Format(@"<img src=""data:image/png;base64,{0}"" />", _base64));
+        }
+
+        private void CopyAsBase64StringToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CodeSnippet _snippet = CodeLib.Instance.Library.Get(_SelectedId);
+            string _base64 = Convert.ToBase64String(_snippet.Blob);
+            Clipboard.SetText(_base64);
         }
 
         private void SaveImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -596,8 +658,8 @@ namespace CodeLibrary
 
         private void SetLibraryMenuState()
         {
-            _mainform.addToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
-            _mainform.addFolderToolStripMenuItem2.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
+            _mainform.addToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode); //&& !IsImage(_treeViewLibrary.SelectedNode);
+            _mainform.addFolderToolStripMenuItem2.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);// && !IsImage(_treeViewLibrary.SelectedNode); 
             _mainform.removeToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsInTrashcan(_treeViewLibrary.SelectedNode);
             _mainform.changeTypeToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
             _mainform.quickRenameToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
@@ -606,10 +668,9 @@ namespace CodeLibrary
             _mainform.moveUpToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
             _mainform.moveDownToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
             _mainform.removeToolStripMenuItem1.Enabled = !IsInTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.addToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
-            _mainform.addFolderToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
+            _mainform.addToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode); //&& !IsImage(_treeViewLibrary.SelectedNode); 
+            _mainform.addFolderToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode); //&& !IsImage(_treeViewLibrary.SelectedNode); 
             _mainform.removeToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsInTrashcan(_treeViewLibrary.SelectedNode);
-            _mainform.addAndPasteToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
             _mainform.changeTypeToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
             _mainform.quickRenameToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode); 
             _mainform.copyPathToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode);
@@ -623,6 +684,14 @@ namespace CodeLibrary
             _mainform.nodeDefaultsToolStripMenuItem.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
             _mainform.nodeDefaultsToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
             _mainform.propertiesToolStripMenuItem1.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
+
+            _mainform.pasteFilelistToolStripMenuItem.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsFileDropList();
+            _mainform.pasteImageCompressedToolStripMenuItem.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsImage();
+            _mainform.pasteImageNoCompressionToolStripMenuItem.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsImage();
+            _mainform.pasteTextPerLineToolStripMenuItem.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsText();
+            _mainform.pasteTextToolStripMenuItem.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsText();
+
+
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -753,6 +822,22 @@ namespace CodeLibrary
             SetLibraryMenuState();
         }
 
+        private static byte[] ConvertImageToByteArray(Image imageToConvert)
+        {
+            byte[] Ret;
+            try
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    imageToConvert.Save(ms, ImageFormat.Jpeg);
+                    Ret = ms.ToArray();
+                }
+            }
+            catch (Exception) { throw; }
+            return Ret;
+        }
+
+
         private static byte[] ConvertImageToByteArray(Image imageToConvert, long quality)
         {
             ImageCodecInfo jgpEncoder = GetEncoder(ImageFormat.Jpeg);
@@ -773,6 +858,7 @@ namespace CodeLibrary
             catch (Exception) { throw; }
             return Ret;
         }
+
         private static ImageCodecInfo GetEncoder(ImageFormat format)
         {
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
@@ -792,6 +878,12 @@ namespace CodeLibrary
             AddImageNode(parentNode, _imageData, name);
         }
 
+        private void AddImageNodeNoCompression(TreeNode parentNode, Image image, string name)
+        {
+            byte[] _imageData = ConvertImageToByteArray(image);
+            AddImageNode(parentNode, _imageData, name);
+        }
+
         private void AddImageNode(TreeNode parentNode, byte[] _imageData, string name)
         {
             CodeSnippet snippet = new CodeSnippet() { Code = "", CodeType = CodeType.Image, Locked = false, Name = name, Blob = _imageData };
@@ -801,6 +893,33 @@ namespace CodeLibrary
             TreeNode _node = parentNode.Nodes.Add(snippet.Name, snippet.Name, _imageIndex, _imageIndex);
             _node.Name = snippet.Id;
             ChangeType(_node, CodeType.Image);
+        }
+
+        private void PasteClipBoardEachLine()
+        {
+            string _text = Clipboard.GetText();
+
+            string[] _lines = Utils.SplitLines(_text);
+            foreach (string line in _lines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    CreateNewNode(_treeViewLibrary.SelectedNode.Nodes, CodeType.None, line, "");
+                }
+            } 
+        }
+
+        private void PasteClipBoardFileList()
+        {
+            List<string> items = new List<string>();
+            foreach (string s in Clipboard.GetFileDropList())
+            {
+                items.Add(s);
+            }
+            if (items.Count > 0)
+            {
+                AddFiles(_treeViewLibrary.SelectedNode, items.ToArray());
+            }
         }
 
         private void TreeViewLibrary_KeyUp(object sender, KeyEventArgs e)
@@ -821,16 +940,7 @@ namespace CodeLibrary
             {
                 if (Clipboard.ContainsText())
                 {
-                    string _text = Clipboard.GetText();
-
-                    string[] _lines = Utils.SplitLines(_text);
-                    foreach (string line in _lines)
-                    {
-                        if (!string.IsNullOrWhiteSpace(line))
-                        {
-                            CreateNewNode(_treeViewLibrary.SelectedNode.Nodes, CodeType.None, line, "");
-                        }
-                    }
+                    PasteClipBoardEachLine();
                 }
             }
 
@@ -846,15 +956,7 @@ namespace CodeLibrary
                 }
                 if (Clipboard.ContainsFileDropList())
                 {
-                    List<string> items = new List<string>();
-                    foreach(string s in Clipboard.GetFileDropList())
-                    {
-                        items.Add(s);
-                    }
-                    if (items.Count > 0)
-                    { 
-                        AddFiles(_treeViewLibrary.SelectedNode, items.ToArray());
-                    }
+                    PasteClipBoardFileList();
                 }
                 if (Clipboard.ContainsAudio())
                 {

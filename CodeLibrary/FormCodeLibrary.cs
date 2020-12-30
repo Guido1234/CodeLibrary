@@ -9,6 +9,7 @@ using System.IO;
 using System.Security;
 using System.Windows.Forms;
 
+
 namespace CodeLibrary
 {
     public partial class FormCodeLibrary : Form
@@ -51,6 +52,11 @@ namespace CodeLibrary
             containerCode.Size = new Size(splitContainer1.Panel2.Width, splitContainer1.Panel2.Height - 52);
             containerCode.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
+            containerHtmlEditor.Location = new Point(0, 28);
+            containerHtmlEditor.Size = new Size(splitContainer1.Panel2.Width, splitContainer1.Panel2.Height - 52);
+            containerHtmlEditor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+            
 
             containerImage.Location = new Point(0, 28);
             containerImage.Size = new Size(splitContainer1.Panel2.Width, splitContainer1.Panel2.Height - 52);
@@ -77,15 +83,7 @@ namespace CodeLibrary
             _frmAbout.ShowDialog(this);
         }
 
-        private void AddAndPasteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (treeViewLibrary.SelectedNode == null)
-                return;
 
-            this.treeViewLibrary.SelectedNode = _treeHelper.CreateNewNode(treeViewLibrary.SelectedNode);
-            tbCode.Focus();
-            tbCode.Paste();
-        }
 
         private void AddCurrentToFavoriteToolStripMenuItem_Click(object sender, EventArgs e) => _FavoriteHelper.AddCurrentToFavorite();
 
@@ -946,9 +944,7 @@ namespace CodeLibrary
 
         private void luaToolStripMenuItem1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.Lua);
 
-        private void containerImage_Click(object sender, EventArgs e)
-        {
 
-        }
+
     }
 }

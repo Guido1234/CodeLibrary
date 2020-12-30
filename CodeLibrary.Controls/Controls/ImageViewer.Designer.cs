@@ -35,6 +35,7 @@ namespace CodeLibrary.Controls.Controls
             // 
             // picture
             // 
+            this.picture.Cursor = System.Windows.Forms.Cursors.SizeAll;
             this.picture.Location = new System.Drawing.Point(158, 142);
             this.picture.Name = "picture";
             this.picture.Size = new System.Drawing.Size(217, 124);

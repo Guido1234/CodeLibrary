@@ -8,6 +8,19 @@ namespace CodeLibrary
     public partial class FormAbout : Form
     {
         private readonly string _Content = @"
+Version 1.9:
+-   Added Clipboard menu to Note context menu item.
+    -   Menu items depending on clipboard content.
+    -   Added paste image without compression.
+
+-   Image context menu (rightclick on image itself) 
+    -   Added 'copy as Base64 String'
+    -   Added 'copy as Html IMG'
+
+-   Image can be moved around.
+
+-   Adding notes beneath images.
+
 Version 1.8:
 -   Paste in Treeviewer (Ctrl-V) 
     -   FileList: inserts all files below current note.
