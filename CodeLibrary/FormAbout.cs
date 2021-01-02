@@ -23,6 +23,8 @@ Version 1.9:
 
 -   Images default orginal size.
 
+-   Html Preview window for Html / Xml
+
 Version 1.8:
 -   Paste in Treeviewer (Ctrl-V) 
     -   FileList: inserts all files below current note.

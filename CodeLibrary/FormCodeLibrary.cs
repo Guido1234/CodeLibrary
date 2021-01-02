@@ -48,6 +48,7 @@ namespace CodeLibrary
             treeViewLibrary.Width = containerTreeview.Width;
             treeViewLibrary.Height = containerTreeview.Height - 29;
 
+            
             containerCode.Location = new Point(0, 28);
             containerCode.Size = new Size(splitContainer1.Panel2.Width, splitContainer1.Panel2.Height - 52);
             containerCode.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -58,6 +59,8 @@ namespace CodeLibrary
             webBrowser.Dock = DockStyle.Fill;
             webBrowser.AllowWebBrowserDrop = false;
             webBrowser.DocumentText = "";
+
+            splitContainerCode.Dock = DockStyle.Fill;
 
             containerImage.Location = new Point(0, 28);
             containerImage.Size = new Size(splitContainer1.Panel2.Width, splitContainer1.Panel2.Height - 52);
@@ -877,6 +880,9 @@ namespace CodeLibrary
 
         private void WordwrapToolStripMenuItem_Click(object sender, EventArgs e) => _fastColoredTextBoxBoxHelper.SetWordWrap();
 
+        private void hTMLPreviewToolStripMenuItem_Click(object sender, EventArgs e) => _fastColoredTextBoxBoxHelper.SwitchHtmlPreview();
+
+
         private void HScrollBarZoom_Scroll(object sender, ScrollEventArgs e)
         {
             tbCode.Zoom = hScrollBarZoom.Value;
@@ -944,7 +950,6 @@ namespace CodeLibrary
         private void pHPToolStripMenuItem1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.PHP);
 
         private void luaToolStripMenuItem1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.Lua);
-
 
 
     }

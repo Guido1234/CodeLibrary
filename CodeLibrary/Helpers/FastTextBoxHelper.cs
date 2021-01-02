@@ -156,50 +156,61 @@ namespace CodeLibrary
                 case CodeType.Template:
                     CodeInsight.Instance.SetInsightHandler(new TemplateCodeInsightHandler());
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.CSharp;
+                    _mainform.splitContainerCode.Panel2Collapsed = true;
                     break;
 
                 case CodeType.CSharp:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.CSharp;
+                    _mainform.splitContainerCode.Panel2Collapsed = true;
                     break;
 
                 case CodeType.Folder:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.Custom;
+                    _mainform.splitContainerCode.Panel2Collapsed = true;
                     break;
 
                 case CodeType.SQL:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.SQL;
+                    _mainform.splitContainerCode.Panel2Collapsed = true;
                     break;
                 case CodeType.VB:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.VB;
+                    _mainform.splitContainerCode.Panel2Collapsed = true;
                     break;
                 case CodeType.None:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.Custom;
+                    _mainform.splitContainerCode.Panel2Collapsed = true;
                     break;
                 case CodeType.HTML:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.HTML;
+                    _mainform.splitContainerCode.Panel2Collapsed = !_currentSnippet.HtmlPreview;
                     break;
 
                 case CodeType.XML:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.XML;
+                    _mainform.splitContainerCode.Panel2Collapsed = !_currentSnippet.HtmlPreview;
                     break;
                 case CodeType.JS:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.JS;
+                    _mainform.splitContainerCode.Panel2Collapsed = true;
                     break;
                 case CodeType.PHP:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.PHP;
+                    _mainform.splitContainerCode.Panel2Collapsed = true;
                     break;
                 case CodeType.Lua:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _fastColoredTextBox.Language = FastColoredTextBoxNS.Language.Lua;
+                    _mainform.splitContainerCode.Panel2Collapsed = true;
                     break;
             }
 
@@ -220,6 +231,17 @@ namespace CodeLibrary
             _currentSnippet.Wordwrap = !_currentSnippet.Wordwrap;
             _fastColoredTextBox.WordWrap = _currentSnippet.Wordwrap;
             _mainform.wordwrapToolStripMenuItem.Checked = _currentSnippet.Wordwrap;
+        }
+
+
+        public void SwitchHtmlPreview()
+        {
+            if (_currentSnippet == null)
+                return;
+
+            _currentSnippet.HtmlPreview = !_currentSnippet.HtmlPreview;            
+            _mainform.hTMLPreviewToolStripMenuItem.Checked = _currentSnippet.HtmlPreview;
+            _mainform.splitContainerCode.Panel2Collapsed = !_currentSnippet.HtmlPreview;
         }
 
         public void ShowFindDialog() => _fastColoredTextBox.ShowFindDialog();
@@ -336,6 +358,11 @@ namespace CodeLibrary
 
         private void TbCode_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (!_mainform.splitContainerCode.Panel2Collapsed)
+            {
+                _mainform.webBrowser.DocumentText = _fastColoredTextBox.Text;
+            }
+
             if (initSnippet)
                 return;
 

@@ -161,7 +161,6 @@
             this.buttonFind = new System.Windows.Forms.Button();
             this.textBoxFind = new System.Windows.Forms.TextBox();
             this.containerHtmlEditor = new CodeLibrary.Controls.Container();
-            this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.containerInfoBar = new CodeLibrary.Controls.Container();
             this.label2 = new System.Windows.Forms.Label();
             this.lblStart = new System.Windows.Forms.Label();
@@ -172,8 +171,10 @@
             this.containerImage = new CodeLibrary.Controls.Container();
             this.imageViewer = new CodeLibrary.Controls.Controls.ImageViewer();
             this.containerCode = new CodeLibrary.Controls.Container();
-            this.listBoxInsight = new System.Windows.Forms.ListBox();
+            this.splitContainerCode = new System.Windows.Forms.SplitContainer();
             this.tbCode = new FastColoredTextBoxNS.FastColoredTextBox();
+            this.listBoxInsight = new System.Windows.Forms.ListBox();
+            this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.contextMenuStripTrashcan = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.emptyTrashcanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -235,6 +236,7 @@
             this.copyAsBase64StringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyAsHTMLIMGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.container1 = new CodeLibrary.Controls.Container();
+            this.hTMLPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStripPopup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -244,10 +246,13 @@
             this.containerBookmarks.SuspendLayout();
             this.containerLeft.SuspendLayout();
             this.containerTreeview.SuspendLayout();
-            this.containerHtmlEditor.SuspendLayout();
             this.containerInfoBar.SuspendLayout();
             this.containerImage.SuspendLayout();
             this.containerCode.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerCode)).BeginInit();
+            this.splitContainerCode.Panel1.SuspendLayout();
+            this.splitContainerCode.Panel2.SuspendLayout();
+            this.splitContainerCode.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbCode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuStripTrashcan.SuspendLayout();
@@ -985,6 +990,7 @@
             this.modeToolStripMenuItem,
             this.toolStripMenuItem10,
             this.wordwrapToolStripMenuItem,
+            this.hTMLPreviewToolStripMenuItem,
             this.toolStripMenuItem6,
             this.configurePluginsToolStripMenuItem,
             this.toolStripMenuItem48,
@@ -1003,7 +1009,7 @@
             this.modeToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.lightbulb_32x32;
             this.modeToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
-            this.modeToolStripMenuItem.Size = new System.Drawing.Size(188, 38);
+            this.modeToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
             this.modeToolStripMenuItem.Text = "Mode";
             // 
             // darkToolStripMenuItem
@@ -1035,38 +1041,38 @@
             // toolStripMenuItem10
             // 
             this.toolStripMenuItem10.Name = "toolStripMenuItem10";
-            this.toolStripMenuItem10.Size = new System.Drawing.Size(185, 6);
+            this.toolStripMenuItem10.Size = new System.Drawing.Size(193, 6);
             // 
             // wordwrapToolStripMenuItem
             // 
             this.wordwrapToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.text_document_wrap_32x32;
             this.wordwrapToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.wordwrapToolStripMenuItem.Name = "wordwrapToolStripMenuItem";
-            this.wordwrapToolStripMenuItem.Size = new System.Drawing.Size(188, 38);
+            this.wordwrapToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
             this.wordwrapToolStripMenuItem.Text = "Wordwrap";
             this.wordwrapToolStripMenuItem.Click += new System.EventHandler(this.WordwrapToolStripMenuItem_Click);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(185, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(193, 6);
             // 
             // configurePluginsToolStripMenuItem
             // 
             this.configurePluginsToolStripMenuItem.Name = "configurePluginsToolStripMenuItem";
-            this.configurePluginsToolStripMenuItem.Size = new System.Drawing.Size(188, 38);
+            this.configurePluginsToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
             this.configurePluginsToolStripMenuItem.Text = "Configure Plugins";
             this.configurePluginsToolStripMenuItem.Click += new System.EventHandler(this.ConfigurePluginsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem48
             // 
             this.toolStripMenuItem48.Name = "toolStripMenuItem48";
-            this.toolStripMenuItem48.Size = new System.Drawing.Size(185, 6);
+            this.toolStripMenuItem48.Size = new System.Drawing.Size(193, 6);
             // 
             // clipboardMonitorToolStripMenuItem
             // 
             this.clipboardMonitorToolStripMenuItem.Name = "clipboardMonitorToolStripMenuItem";
-            this.clipboardMonitorToolStripMenuItem.Size = new System.Drawing.Size(188, 38);
+            this.clipboardMonitorToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
             this.clipboardMonitorToolStripMenuItem.Text = "Clipboard Monitor";
             this.clipboardMonitorToolStripMenuItem.Click += new System.EventHandler(this.ClipboardMonitorToolStripMenuItem_Click);
             // 
@@ -1186,7 +1192,7 @@
             this.tbPath.Location = new System.Drawing.Point(1, 3);
             this.tbPath.Name = "tbPath";
             this.tbPath.ReadOnly = true;
-            this.tbPath.Size = new System.Drawing.Size(791, 20);
+            this.tbPath.Size = new System.Drawing.Size(792, 20);
             this.tbPath.TabIndex = 3;
             // 
             // contextMenuStripPopup
@@ -1457,21 +1463,12 @@
             // containerHtmlEditor
             // 
             this.containerHtmlEditor.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.containerHtmlEditor.Controls.Add(this.webBrowser);
             this.containerHtmlEditor.Location = new System.Drawing.Point(3, 394);
             this.containerHtmlEditor.Name = "containerHtmlEditor";
             this.containerHtmlEditor.Size = new System.Drawing.Size(483, 99);
             this.containerHtmlEditor.TabIndex = 19;
             this.containerHtmlEditor.Text = "container2";
             this.containerHtmlEditor.Visible = false;
-            // 
-            // webBrowser
-            // 
-            this.webBrowser.Location = new System.Drawing.Point(5, 6);
-            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(134, 84);
-            this.webBrowser.TabIndex = 0;
             // 
             // containerInfoBar
             // 
@@ -1486,7 +1483,7 @@
             this.containerInfoBar.Controls.Add(this.hScrollBarZoom);
             this.containerInfoBar.Location = new System.Drawing.Point(3, 579);
             this.containerInfoBar.Name = "containerInfoBar";
-            this.containerInfoBar.Size = new System.Drawing.Size(755, 19);
+            this.containerInfoBar.Size = new System.Drawing.Size(756, 19);
             this.containerInfoBar.TabIndex = 19;
             // 
             // label2
@@ -1526,7 +1523,7 @@
             // 
             this.labelZoomPerc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelZoomPerc.AutoSize = true;
-            this.labelZoomPerc.Location = new System.Drawing.Point(718, 4);
+            this.labelZoomPerc.Location = new System.Drawing.Point(719, 4);
             this.labelZoomPerc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelZoomPerc.Name = "labelZoomPerc";
             this.labelZoomPerc.Size = new System.Drawing.Size(13, 13);
@@ -1547,7 +1544,7 @@
             // hScrollBarZoom
             // 
             this.hScrollBarZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBarZoom.Location = new System.Drawing.Point(562, 4);
+            this.hScrollBarZoom.Location = new System.Drawing.Point(563, 4);
             this.hScrollBarZoom.Maximum = 200;
             this.hScrollBarZoom.Minimum = 50;
             this.hScrollBarZoom.Name = "hScrollBarZoom";
@@ -1577,24 +1574,31 @@
             // containerCode
             // 
             this.containerCode.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.containerCode.Controls.Add(this.listBoxInsight);
-            this.containerCode.Controls.Add(this.tbCode);
+            this.containerCode.Controls.Add(this.splitContainerCode);
             this.containerCode.Location = new System.Drawing.Point(0, 28);
             this.containerCode.Name = "containerCode";
             this.containerCode.Size = new System.Drawing.Size(486, 255);
             this.containerCode.TabIndex = 17;
             this.containerCode.Text = "container1";
             // 
-            // listBoxInsight
+            // splitContainerCode
             // 
-            this.listBoxInsight.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBoxInsight.FormattingEnabled = true;
-            this.listBoxInsight.ItemHeight = 15;
-            this.listBoxInsight.Location = new System.Drawing.Point(8, 132);
-            this.listBoxInsight.Name = "listBoxInsight";
-            this.listBoxInsight.Size = new System.Drawing.Size(316, 49);
-            this.listBoxInsight.TabIndex = 16;
-            this.listBoxInsight.Visible = false;
+            this.splitContainerCode.Location = new System.Drawing.Point(257, 3);
+            this.splitContainerCode.Name = "splitContainerCode";
+            this.splitContainerCode.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainerCode.Panel1
+            // 
+            this.splitContainerCode.Panel1.Controls.Add(this.tbCode);
+            this.splitContainerCode.Panel1.Controls.Add(this.listBoxInsight);
+            // 
+            // splitContainerCode.Panel2
+            // 
+            this.splitContainerCode.Panel2.Controls.Add(this.webBrowser);
+            this.splitContainerCode.Panel2Collapsed = true;
+            this.splitContainerCode.Size = new System.Drawing.Size(211, 229);
+            this.splitContainerCode.SplitterDistance = 114;
+            this.splitContainerCode.TabIndex = 17;
             // 
             // tbCode
             // 
@@ -1622,6 +1626,7 @@
             this.tbCode.CharWidth = 8;
             this.tbCode.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.tbCode.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.tbCode.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.tbCode.Hotkeys = resources.GetString("tbCode.Hotkeys");
             this.tbCode.IsReplaceMode = false;
             this.tbCode.Language = FastColoredTextBoxNS.Language.CSharp;
@@ -1634,15 +1639,34 @@
             this.tbCode.RightBracket2 = '}';
             this.tbCode.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.tbCode.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("tbCode.ServiceColors")));
-            this.tbCode.Size = new System.Drawing.Size(432, 121);
+            this.tbCode.Size = new System.Drawing.Size(106, 173);
             this.tbCode.TabIndex = 15;
             this.tbCode.Zoom = 100;
+            // 
+            // listBoxInsight
+            // 
+            this.listBoxInsight.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBoxInsight.FormattingEnabled = true;
+            this.listBoxInsight.ItemHeight = 15;
+            this.listBoxInsight.Location = new System.Drawing.Point(115, 23);
+            this.listBoxInsight.Name = "listBoxInsight";
+            this.listBoxInsight.Size = new System.Drawing.Size(69, 34);
+            this.listBoxInsight.TabIndex = 16;
+            this.listBoxInsight.Visible = false;
+            // 
+            // webBrowser
+            // 
+            this.webBrowser.Location = new System.Drawing.Point(19, 14);
+            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser.Name = "webBrowser";
+            this.webBrowser.Size = new System.Drawing.Size(134, 84);
+            this.webBrowser.TabIndex = 0;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(797, 8);
+            this.pictureBox1.Location = new System.Drawing.Point(798, 8);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(16, 16);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -2148,6 +2172,13 @@
             this.container1.TabIndex = 19;
             this.container1.Text = "container2";
             // 
+            // hTMLPreviewToolStripMenuItem
+            // 
+            this.hTMLPreviewToolStripMenuItem.Name = "hTMLPreviewToolStripMenuItem";
+            this.hTMLPreviewToolStripMenuItem.Size = new System.Drawing.Size(196, 38);
+            this.hTMLPreviewToolStripMenuItem.Text = "HTML Preview";
+            this.hTMLPreviewToolStripMenuItem.Click += new System.EventHandler(this.hTMLPreviewToolStripMenuItem_Click);
+            // 
             // FormCodeLibrary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2174,11 +2205,14 @@
             this.containerLeft.ResumeLayout(false);
             this.containerTreeview.ResumeLayout(false);
             this.containerTreeview.PerformLayout();
-            this.containerHtmlEditor.ResumeLayout(false);
             this.containerInfoBar.ResumeLayout(false);
             this.containerInfoBar.PerformLayout();
             this.containerImage.ResumeLayout(false);
             this.containerCode.ResumeLayout(false);
+            this.splitContainerCode.Panel1.ResumeLayout(false);
+            this.splitContainerCode.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerCode)).EndInit();
+            this.splitContainerCode.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.tbCode)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.contextMenuStripTrashcan.ResumeLayout(false);
@@ -2395,6 +2429,8 @@
         public Controls.Container containerHtmlEditor;
         public Controls.Container container1;
         public System.Windows.Forms.WebBrowser webBrowser;
+        public System.Windows.Forms.SplitContainer splitContainerCode;
+        public System.Windows.Forms.ToolStripMenuItem hTMLPreviewToolStripMenuItem;
     }
 }
 

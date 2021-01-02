@@ -90,6 +90,10 @@ namespace CodeLibrary
         public bool Wordwrap { get; set; }
 
 
+        [DataMember(Name = "HtmlPreview")]
+        public bool HtmlPreview { get; set; } = true;
+
+
         [Browsable(false)]
         [DataMember(Name = "Blob")]
         public byte[] Blob { get; set; }
