@@ -21,6 +21,8 @@ Version 1.9:
 
 -   Adding notes beneath images.
 
+-   Images default orginal size.
+
 Version 1.8:
 -   Paste in Treeviewer (Ctrl-V) 
     -   FileList: inserts all files below current note.

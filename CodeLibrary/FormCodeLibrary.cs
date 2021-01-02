@@ -55,8 +55,9 @@ namespace CodeLibrary
             containerHtmlEditor.Location = new Point(0, 28);
             containerHtmlEditor.Size = new Size(splitContainer1.Panel2.Width, splitContainer1.Panel2.Height - 52);
             containerHtmlEditor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-
-            
+            webBrowser.Dock = DockStyle.Fill;
+            webBrowser.AllowWebBrowserDrop = false;
+            webBrowser.DocumentText = "";
 
             containerImage.Location = new Point(0, 28);
             containerImage.Size = new Size(splitContainer1.Panel2.Width, splitContainer1.Panel2.Height - 52);
