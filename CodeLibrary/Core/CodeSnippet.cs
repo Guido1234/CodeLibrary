@@ -91,7 +91,7 @@ namespace CodeLibrary
 
 
         [DataMember(Name = "HtmlPreview")]
-        public bool HtmlPreview { get; set; } = true;
+        public bool HtmlPreview { get; set; } = false;
 
 
         [Browsable(false)]
