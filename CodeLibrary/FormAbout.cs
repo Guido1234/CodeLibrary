@@ -1,4 +1,5 @@
 ﻿using CodeLibrary.Controls;
+using CodeLibrary.Core;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -8,6 +9,56 @@ namespace CodeLibrary
     public partial class FormAbout : Form
     {
         private readonly string _Content = @"
+Version 2.0:
+
+NEW:
+-   Rtf document type + Rtf Editor
+
+-   Add New Dialog box
+    -   Add New always shows dialog.
+    -   Assign defaults in note properties to supress this behaviour.
+
+-   Backup Manager
+
+CHANGES:
+-   Clipboard monitor now has an own Note, clipboard monitor can be activated and deactivated in it's context menu.
+    the clipboard monitor will only paste changes within this note.
+
+-   Removed Default Note Settings
+
+-   Removed Bookmark functionality
+
+-   Re-designed Note properties window.
+
+-   Reorganized Library Menu
+
+-   Reorganized Edit Menu
+
+-   Reorganized File Menu
+
+-   Removed themes from dialog windows (only main screen uses themes).
+
+-   Note links #[Note Path]# will be merged in Html Preview. (links created by [Copy Path] )
+
+BUG FIXES:
+-   Syntax Highlight not working on first note.
+
+-   HtmlPreview window not properly initialized.
+
+-   Wordwrap not applied.
+
+-   Syntax Highlight not applied directly on Change Type
+
+-   Template insight dropdown unusable small.
+
+-   Tree icon does not change when changing type.
+
+-   Errors / Situations in Empty project while.
+
+-   Error while switching to deleted favorite.
+
+
+----------------------------------------------------------------------
 Version 1.9:
 -   Added Clipboard menu to Note context menu item.
     -   Menu items depending on clipboard content.
@@ -25,6 +76,7 @@ Version 1.9:
 
 -   Html Preview window for Html / Xml
 
+----------------------------------------------------------------------
 Version 1.8:
 -   Paste in Treeviewer (Ctrl-V) 
     -   FileList: inserts all files below current note.
@@ -35,7 +87,7 @@ Version 1.8:
 
 -   Drag / Drop into treeviewer supports images (jpg / png / bmp)
 
-
+----------------------------------------------------------------------
 Version 1.7:
 -   Fixed Version number bug.
 
@@ -56,6 +108,7 @@ Version 1.7:
 
 -   Added a Template function KeepQouted.
 
+----------------------------------------------------------------------
 Version 1.6:
 
 -   Clipboard monitor
@@ -81,6 +134,7 @@ Version 1.6:
 
 -   New Plugin: Encoding\Import as base64
 
+----------------------------------------------------------------------
 Version 1.5:
 
 -   Favorite Libraries Menu
@@ -159,6 +213,7 @@ Version 1.5:
 
         private void TbCode_Load(object sender, EventArgs e)
         {
+            lbTitle.Text = $"Code Library V{Config.CurrentVersion().ToString() }";
             tbCode.Language = FastColoredTextBoxNS.Language.Custom;
             tbCode.SelectedText = _Content;
             tbCode.IndentBackColor = Color.FromArgb(255, 35, 35, 35);

@@ -82,6 +82,9 @@
     <Compile Include="Controls\DialogButton.Designer.cs">
       <DependentUpon>DialogButton.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FontComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ImageViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -90,6 +93,31 @@
     </Compile>
     <Compile Include="Controls\MyListView.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\RtfControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\RtfControl.Designer.cs">
+      <DependentUpon>RtfControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FindForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FindForm.Designer.cs">
+      <DependentUpon>FindForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormInput.Designer.cs">
+      <DependentUpon>FormInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Range.cs" />
+    <Compile Include="Forms\ReplaceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ReplaceForm.Designer.cs">
+      <DependentUpon>ReplaceForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources1.Designer.cs">
@@ -119,6 +147,19 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ImageViewer.resx">
       <DependentUpon>ImageViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\RtfControl.resx">
+      <DependentUpon>RtfControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FindForm.resx">
+      <DependentUpon>FindForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormInput.resx">
+      <DependentUpon>FormInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ReplaceForm.resx">
+      <DependentUpon>ReplaceForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -398,6 +439,59 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Fon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CodeLibrary.Core\CodeLibrary.Core.csproj">
+      <Project>{49f5b576-5e64-4861-b799-0944ee363a4d}</Project>
+      <Name>CodeLibrary.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EditorPlugins.core\EditorPlugins.Core.csproj">
+      <Project>{0917226a-9093-496b-b947-f9df3cd82e94}</Project>
+      <Name>EditorPlugins.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FastColoredTextBox\FastColoredTextBox\FastColoredTextBox.csproj">
+      <Project>{6dd14a85-ccfc-4774-bd26-0f5772512319}</Project>
+      <Name>FastColoredTextBox</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\color_swatch_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\color_swatch_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\font_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\font_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\text_italic_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\text_italic_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\text_underline_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\text_underline_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ttfbmp.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Fon1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\update_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bullets.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

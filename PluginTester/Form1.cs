@@ -17,6 +17,8 @@ namespace PluginTester
             Load += Form1_Load;
         }
 
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
             txt.IndentBackColor = Color.FromArgb(255, 75, 75, 75);

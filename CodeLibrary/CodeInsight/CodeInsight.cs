@@ -24,6 +24,7 @@ namespace CodeLibrary
                 return;
 
             _ListBoxInsight = listBoxInsight;
+            _ListBoxInsight.Height = 200;
             _TbCode = tbCode;
             _ListBoxInsight.Click += ListBoxInsight_Click;
             _ListBoxInsight.KeyUp += ListBoxInsight_KeyUp;

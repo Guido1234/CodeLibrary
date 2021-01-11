@@ -46,7 +46,7 @@
             this.toolStripTextBoxSearch = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.listViewSelected = new System.Windows.Forms.ListView();
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.column = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -150,7 +150,7 @@
             // buttonCopy
             // 
             this.buttonCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.buttonCopy.Image = CodeLibrary.Controls.Properties.Resources.Copy;
+            this.buttonCopy.Image = global::CodeLibrary.Controls.Properties.Resources.Copy;
             this.buttonCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.buttonCopy.Name = "buttonCopy";
             this.buttonCopy.Size = new System.Drawing.Size(23, 27);
@@ -160,7 +160,7 @@
             // buttonCut
             // 
             this.buttonCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.buttonCut.Image = CodeLibrary.Controls.Properties.Resources.Cut;
+            this.buttonCut.Image = global::CodeLibrary.Controls.Properties.Resources.Cut;
             this.buttonCut.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.buttonCut.Name = "buttonCut";
             this.buttonCut.Size = new System.Drawing.Size(23, 27);
@@ -170,7 +170,7 @@
             // buttonPaste
             // 
             this.buttonPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.buttonPaste.Image = CodeLibrary.Controls.Properties.Resources.Paste;
+            this.buttonPaste.Image = global::CodeLibrary.Controls.Properties.Resources.Paste;
             this.buttonPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.buttonPaste.Name = "buttonPaste";
             this.buttonPaste.Size = new System.Drawing.Size(23, 27);
@@ -208,7 +208,7 @@
             // 
             this.listViewSelected.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listViewSelected.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2});
+            this.column});
             this.listViewSelected.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewSelected.FullRowSelect = true;
             this.listViewSelected.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
@@ -227,10 +227,10 @@
             this.listViewSelected.Click += new System.EventHandler(this.ListViewSelected_Click);
             this.listViewSelected.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ListViewSelected_KeyUp);
             // 
-            // columnHeader2
+            // column
             // 
-            this.columnHeader2.Text = "Command";
-            this.columnHeader2.Width = 175;
+            this.column.Text = "Command";
+            this.column.Width = 300;
             // 
             // imageList
             // 
@@ -261,7 +261,7 @@
 
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.ListView listViewSelected;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader column;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton btnDelete;
         private System.Windows.Forms.ToolStripButton btnAdd;

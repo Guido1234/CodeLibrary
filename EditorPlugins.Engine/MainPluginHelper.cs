@@ -1,6 +1,5 @@
 ﻿using DevToys;
 using EditorPlugins.Core;
-using FastColoredTextBoxNS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,15 +14,13 @@ namespace EditorPlugins.Engine
         private readonly Dictionary<string, ToolStripMenuItem> _CategoryMenus = new Dictionary<string, ToolStripMenuItem>();
         private readonly ToolStripMenuItem _contextMenuPluginMenuItem;
         private readonly ToolStripMenuItem _editMenuPluginMenuItem;
-        private FastColoredTextBox _fastColoredTextBox;
         private readonly Dictionary<string, ToolStripItem> _MenuItems = new Dictionary<string, ToolStripItem>();
         private readonly DictionaryList<PluginContainer, string> _Plugins = new DictionaryList<PluginContainer, string>(p => p.Id);
-        private readonly TextSelectionHelper _selectionHelper;
+        private TextEditorContainer editor;
 
-        public MainPluginHelper(FastColoredTextBox fastColoredTextBox, ToolStripMenuItem editMenuPluginMenuItem, ToolStripMenuItem contextMenuPluginMenuItem)
+        public MainPluginHelper(TextEditorContainer textEditor, ToolStripMenuItem editMenuPluginMenuItem, ToolStripMenuItem contextMenuPluginMenuItem)
         {
-            _fastColoredTextBox = fastColoredTextBox;
-            _selectionHelper = new TextSelectionHelper(_fastColoredTextBox);
+            editor = textEditor;
             _editMenuPluginMenuItem = editMenuPluginMenuItem;
             _contextMenuPluginMenuItem = contextMenuPluginMenuItem;
             LoadAssemblies();
@@ -36,11 +33,6 @@ namespace EditorPlugins.Engine
             {
                 return _Plugins.Select(p => p).ToList();
             }
-        }
-
-        public void ChangeEditor(FastColoredTextBox fastColoredTextBox)
-        {
-            _fastColoredTextBox = fastColoredTextBox;
         }
 
         public void CreateMenus()
@@ -111,13 +103,11 @@ namespace EditorPlugins.Engine
 
             _pluginSettingsHelper.LoadSettings();
 
-            Range _line = _fastColoredTextBox.GetLine(_fastColoredTextBox.Selection.Start.iLine);
-
             SelInfo _selInfo = new SelInfo()
             {
-                Text = _fastColoredTextBox.Text,
-                SelectedText = _fastColoredTextBox.SelectedText,
-                CurrentLine = _line.Text
+                Text = editor.Editor.Text,
+                SelectedText = editor.Editor.SelectedText,
+                CurrentLine = editor.Editor.CurrentLine()
             };
 
             try
@@ -125,7 +115,7 @@ namespace EditorPlugins.Engine
                 if (!_plugin.OmitResult)
                 {
                     _plugin.Apply(_selInfo);
-                    _fastColoredTextBox.SelectedText = _selInfo.SelectedText;
+                    editor.Editor.SelectedText = _selInfo.SelectedText;
                 }
                 else
                 {
@@ -182,7 +172,7 @@ namespace EditorPlugins.Engine
         {
             if (menu == null)
                 return;
-             
+
             menu.DropDownItems.Clear();
 
             CreateCategoryMenuItems(menu);

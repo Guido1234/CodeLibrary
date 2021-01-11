@@ -212,6 +212,33 @@ namespace CodeLibrary.Controls
         [Category("CollectionListBox")]
         public string ImageProperty { get; set; }
 
+        public SortOrder Sorting
+        {
+            get
+            {
+                return listViewSelected.Sorting;
+            }
+            set
+            {
+                listViewSelected.Sorting = value;
+            }
+               
+        }
+
+        public int ColumnWidth
+        { 
+            get
+            {
+                return column.Width;
+            }
+            set
+            {
+                column.Width = value;
+            }
+        
+        }
+
+
         public bool MultiSelect
         {
             get
@@ -761,7 +788,7 @@ namespace CodeLibrary.Controls
         private void resize()
         {
             splitContainer2.Left = 0;
-            listViewSelected.Columns[0].Width = Width - 25;
+            //listViewSelected.Columns[0].Width = Width - 25;
         }
 
         private void SetSelected()

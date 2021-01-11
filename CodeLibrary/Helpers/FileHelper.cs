@@ -28,9 +28,40 @@ namespace CodeLibrary
             _mainform = mainform;
             _lastAutoSavedDate = DateTime.Now;
             _autoSaveTimer.Interval = 1000;
-            _autoSaveTimer.Tick += AutoSaveTimer_Tick; ;
+            _autoSaveTimer.Tick += AutoSaveTimer_Tick; 
             _autoSaveTimer.Start();
         }
+
+        public void RestoreBackup()
+        {
+            if (string.IsNullOrEmpty(CurrentFile))
+            {
+                return;
+            }    
+
+            FormBackupRestore _f = new FormBackupRestore(CurrentFile);
+            var _result = _f.ShowDialog();
+            if (_result == DialogResult.OK)
+            {
+                LoadBackup(_f.Selected.Path);
+            }
+        }
+        private void LoadBackup(string file)
+        {
+            string _lastOpened = Config.LastOpenedFile;
+
+            BeginUpdate();
+
+            if (file != null)
+                if (Utils.IsFileOrDirectory(file) == Utils.FileOrDirectory.File)
+                    OpenFile(file, null);
+
+            Config.LastOpenedFile = _lastOpened;
+            CurrentFile = _lastOpened;
+            SetTitle();
+            EndUpdate();
+        }
+
 
         public string CurrentFile { get; set; }
         public bool IsUpdating => _updating > 0;
@@ -39,15 +70,23 @@ namespace CodeLibrary
 
         public string SelectedId { get; set; }
 
-        public TreeNode TempNode { get; set; }
-
         public TreeNode TrashcanNode { get; set; }
+
+        public TreeNode ClipBoardMonitorNode { get; set; }
 
         public TreeviewHelper TreeHelper { get; set; }
 
+        private Cursor _PrevCursor;
+
         public void BeginUpdate()
         {
-            _updating++;
+            if (_updating == 0)
+            {
+                _PrevCursor = _mainform.Cursor;
+            }
+            _updating++;            
+            _mainform.UseWaitCursor = true;
+            _mainform.Cursor = Cursors.WaitCursor;
         }
 
         public Dictionary<string, TreeNode> CodeCollectionToForm(string find)
@@ -147,6 +186,11 @@ namespace CodeLibrary
         public void EndUpdate()
         {
             _updating--;
+            if (_updating <= 0)
+            {
+                _mainform.Cursor = _PrevCursor;
+                _mainform.UseWaitCursor = false;
+            }
         }
 
         public List<CodeSnippet> FindNodes(string find)
@@ -178,6 +222,7 @@ namespace CodeLibrary
             if (_treeview.SelectedNode != null)
                 collection.LastSelected = _treeview.SelectedNode.FullPath;
 
+            _mainform.SaveEditor();
             CodeLib.Instance.Save(collection);
         }
 
@@ -188,6 +233,9 @@ namespace CodeLibrary
 
             if (snippet.CodeType == CodeType.System && snippet.Id == Constants.TRASHCAN)
                 return 3;
+
+            if (snippet.CodeType == CodeType.System && snippet.Id == Constants.CLIPBOARDMONITOR)
+                return 11;
 
             if (snippet.AlarmActive)
                 return 5;
@@ -203,26 +251,19 @@ namespace CodeLibrary
                     return 1;
 
                 case CodeType.CSharp:
-                    return 6;
-
                 case CodeType.HTML:
-                    return 7;
-
                 case CodeType.VB:
-                    return 9;
-
                 case CodeType.JS:
                 case CodeType.PHP:
                 case CodeType.XML:
                 case CodeType.Lua:
                 case CodeType.None:
+                case CodeType.RTF:
+                case CodeType.SQL:
                     return 1;
 
                 case CodeType.Folder:
                     return 0;
-
-                case CodeType.SQL:
-                    return 8;
 
                 case CodeType.Image:
                     return 10;
@@ -294,6 +335,9 @@ namespace CodeLibrary
                     case "lua":
                         codetype = CodeType.Lua;
                         break;
+                    case "rtf":
+                        codetype = CodeType.RTF;
+                        break;
                 }
                 TreeHelper.CreateNewRootNode(codetype, fi.Name, text);
             }
@@ -363,6 +407,12 @@ namespace CodeLibrary
 
             if (rootnode == null && !CodeLib.Instance.Library.ContainsKey(Constants.TRASHCAN))
                 CodeLib.Instance.Library.Add(CodeSnippet.TrashcanSnippet());
+
+            if (rootnode == null && !CodeLib.Instance.Library.ContainsKey(Constants.CLIPBOARDMONITOR))
+                CodeLib.Instance.Library.Add(CodeSnippet.ClipboardMonitorSnippet());
+
+            //var snippet = CodeLib.Instance.Library.Where(p => p.Name == "TEMP").FirstOrDefault();
+            //snippet.CodeType = CodeType.None;
 
             CodeCollectionToForm(string.Empty);
 
@@ -446,6 +496,7 @@ namespace CodeLibrary
                 if (_treeview.SelectedNode != null)
                     _collection.LastSelected = _treeview.SelectedNode.FullPath;
 
+                _mainform.SaveEditor();
                 CodeLib.Instance.Save(_collection);
             }
             else
@@ -485,6 +536,8 @@ namespace CodeLibrary
 
         private void AutoSaveFile()
         {
+            
+
             string _fileName = GetAutoSaveFileName();
 
             CodeSnippetCollection _collection = new CodeSnippetCollection { LastSaved = _lastOpenedDate };
@@ -493,6 +546,7 @@ namespace CodeLibrary
             if (_treeview.SelectedNode != null)
                 _collection.LastSelected = _treeview.SelectedNode.FullPath;
 
+            _mainform.SaveEditor();
             CodeLib.Instance.Save(_collection);
 
             Save(_collection, _fileName);
@@ -526,6 +580,9 @@ namespace CodeLibrary
                 if (_snippet.CodeType == CodeType.System && _snippet.Id == Constants.TRASHCAN)
                     _snippet.Order = -2;
 
+                if (_snippet.CodeType == CodeType.System && _snippet.Id == Constants.CLIPBOARDMONITOR)
+                    _snippet.Order = -1;
+
                 FormToCodeCollection(node.Nodes);
             }
         }
@@ -550,6 +607,9 @@ namespace CodeLibrary
 
                 if (_snippet.CodeType == CodeType.System && _snippet.Id == Constants.TRASHCAN)
                     _snippet.Order = -2;
+
+                if (_snippet.CodeType == CodeType.System && _snippet.Id == Constants.CLIPBOARDMONITOR)
+                    _snippet.Order = -1;
 
                 FormToCodeCollection(node.Nodes, root);
             }
@@ -607,6 +667,8 @@ namespace CodeLibrary
 
         private void Save(CodeSnippetCollection collection, string fileName)
         {
+            
+
             collection.ToBase64();
             string _json = Utils.ToJson(collection);
 

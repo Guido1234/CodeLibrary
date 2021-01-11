@@ -35,7 +35,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -82,6 +84,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CodeLibrary.Controls\CodeLibrary.Controls.csproj">
+      <Project>{4DD58E8F-4D0A-495B-9DC2-C391D540A8AD}</Project>
+      <Name>CodeLibrary.Controls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CodeLibrary.PluginPack\CodeLibrary.PluginPack.csproj">
       <Project>{78fa58f9-aa66-43ac-a59d-2dd17a428982}</Project>
       <Name>CodeLibrary.PluginPack</Name>

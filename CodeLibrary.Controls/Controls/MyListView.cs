@@ -37,8 +37,8 @@ namespace CodeLibrary.Controls
             ColumnReordered += MyListView_ColumnReordered;
             DrawItem += MyListView_DrawItem;
             DrawColumnHeader += MyListView_DrawColumnHeader;
-            BackColor = Color.FromArgb(45, 45, 45);
-            ForeColor = Color.FromArgb(255, 224, 192);
+            //BackColor = Color.FromArgb(45, 45, 45);
+            //ForeColor = Color.FromArgb(255, 224, 192);
             DoubleBuffered = true;
             Font = new Font("Microsoft Sans Serif", (float)9.857143);
             MouseUp += MyListView_MouseUp;

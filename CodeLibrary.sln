@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GK.Template", "GK.Template\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastColoredTextBox", "FastColoredTextBox\FastColoredTextBox\FastColoredTextBox.csproj", "{6DD14A85-CCFC-4774-BD26-0F5772512319}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeLibrary.Core", "CodeLibrary.Core\CodeLibrary.Core.csproj", "{49F5B576-5E64-4861-B799-0944EE363A4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,18 @@ Global
 		{6DD14A85-CCFC-4774-BD26-0F5772512319}.Trial|Any CPU.Build.0 = Release|Any CPU
 		{6DD14A85-CCFC-4774-BD26-0F5772512319}.Trial|x86.ActiveCfg = Release|Any CPU
 		{6DD14A85-CCFC-4774-BD26-0F5772512319}.Trial|x86.Build.0 = Release|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Debug|x86.Build.0 = Debug|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Release|x86.ActiveCfg = Release|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Release|x86.Build.0 = Release|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Trial|Any CPU.ActiveCfg = Debug|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Trial|Any CPU.Build.0 = Debug|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Trial|x86.ActiveCfg = Debug|Any CPU
+		{49F5B576-5E64-4861-B799-0944EE363A4D}.Trial|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

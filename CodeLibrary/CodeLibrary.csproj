@@ -67,13 +67,18 @@
   <ItemGroup>
     <Compile Include="CodeInsight\BaseInsightHandler.cs" />
     <Compile Include="CodeInsight\CodeInsight.cs" />
-    <Compile Include="Core\CodeBookmark.cs" />
-    <Compile Include="Core\CodeLib.cs" />
-    <Compile Include="Core\CodeSnippet.cs" />
-    <Compile Include="Core\CodeSnippetSearch.cs" />
-    <Compile Include="Core\Constants.cs" />
-    <Compile Include="Core\ConvertUtil.cs" />
-    <Compile Include="Core\Utils.cs" />
+    <Compile Include="FormAddNote.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAddNote.Designer.cs">
+      <DependentUpon>FormAddNote.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormBackupRestore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBackupRestore.Designer.cs">
+      <DependentUpon>FormBackupRestore.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSearch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,35 +91,11 @@
     <Compile Include="FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormAlarm.cs">
+    <Compile Include="FormProperties2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAlarm.Designer.cs">
-      <DependentUpon>FormAlarm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormProperties.Designer.cs">
-      <DependentUpon>FormProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormDefaults.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormDefaults.Designer.cs">
-      <DependentUpon>FormDefaults.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormInput.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormInput.Designer.cs">
-      <DependentUpon>FormInput.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormSplitter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSplitter.Designer.cs">
-      <DependentUpon>FormSplitter.cs</DependentUpon>
+    <Compile Include="FormProperties2.Designer.cs">
+      <DependentUpon>FormProperties2.cs</DependentUpon>
     </Compile>
     <Compile Include="FormOverwrite.cs">
       <SubType>Form</SubType>
@@ -122,13 +103,10 @@
     <Compile Include="FormOverwrite.Designer.cs">
       <DependentUpon>FormOverwrite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Core\CodeSnippetCollection.cs" />
-    <Compile Include="Core\Config.cs" />
-    <Compile Include="Core\Enum.cs" />
-    <Compile Include="Helpers\BookmarkHelper.cs" />
-    <Compile Include="Core\CycleList.cs" />
-    <Compile Include="Helpers\EnumComboBoxHelper.cs" />
-    <Compile Include="Helpers\FastTextBoxHelper.cs" />
+    <Compile Include="Helpers\ClipboardMonitorHelper.cs" />
+    <Compile Include="Helpers\Editor\FastColoredTextBoxHelper.cs" />
+    <Compile Include="Helpers\Editor\RtfEditorHelper.cs" />
+    <Compile Include="Helpers\Editor\TextBoxHelper.cs" />
     <Compile Include="FormCodeLibrary.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -145,7 +123,6 @@
     <Compile Include="Helpers\FavoriteHelper.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="CodeInsight\TemplateCodeInsightHelper.cs" />
-    <Compile Include="Core\TimedBool.cs" />
     <Compile Include="Helpers\TextSelectionHelper.cs" />
     <Compile Include="Helpers\TreeViewExtensions.cs" />
     <Compile Include="Program.cs" />
@@ -155,31 +132,24 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Core\StringCypher.cs" />
     <Compile Include="Helpers\TreeviewHelper.cs" />
+    <EmbeddedResource Include="FormAddNote.resx">
+      <DependentUpon>FormAddNote.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormBackupRestore.resx">
+      <DependentUpon>FormBackupRestore.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormSearch.resx">
       <DependentUpon>FormSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormAlarm.resx">
-      <DependentUpon>FormAlarm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormCodeLibrary.resx">
       <DependentUpon>FormCodeLibrary.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormProperties.resx">
-      <DependentUpon>FormProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormDefaults.resx">
-      <DependentUpon>FormDefaults.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormInput.resx">
-      <DependentUpon>FormInput.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormSplitter.resx">
-      <DependentUpon>FormSplitter.cs</DependentUpon>
+    <EmbeddedResource Include="FormProperties2.resx">
+      <DependentUpon>FormProperties2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormOverwrite.resx">
       <DependentUpon>FormOverwrite.cs</DependentUpon>
@@ -209,6 +179,14 @@
     <ProjectReference Include="..\CodeLibrary.Controls\CodeLibrary.Controls.csproj">
       <Project>{4dd58e8f-4d0a-495b-9dc2-c391d540a8ad}</Project>
       <Name>CodeLibrary.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodeLibrary.Core\CodeLibrary.Core.csproj">
+      <Project>{49f5b576-5e64-4861-b799-0944ee363a4d}</Project>
+      <Name>CodeLibrary.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EditorPlugins.core\EditorPlugins.Core.csproj">
+      <Project>{0917226a-9093-496b-b947-f9df3cd82e94}</Project>
+      <Name>EditorPlugins.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\EditorPlugins.Engine\EditorPlugins.Engine.csproj">
       <Project>{288ff70f-4877-4eb0-b2cc-f0b79612a3f7}</Project>
@@ -282,6 +260,29 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Note.ico" />
+    <None Include="Resources\key_32x32.png" />
+    <None Include="Resources\box_search_32x321.png" />
+    <None Include="Resources\folder_search_32x32.png" />
+    <None Include="Resources\control_pause_record_32x32.png" />
+    <None Include="Resources\Note.png" />
+    <None Include="Resources\cog_32x32.png" />
+    <None Include="Resources\cog_16x16.png" />
+    <None Include="Resources\backup_manager_32x32.png" />
+    <None Include="Resources\backup_manager_16x16.png" />
+    <None Include="Resources\plugin_edit_32x32.png" />
+    <None Include="Resources\plugin_edit_16x16.png" />
+    <None Include="Resources\plugin_32x32.png" />
+    <None Include="Resources\plugin_16x16.png" />
+    <None Include="Resources\Html Black.png" />
+    <None Include="Resources\XML Black.png" />
+    <None Include="Resources\VB Black.png" />
+    <None Include="Resources\Txt Black.png" />
+    <None Include="Resources\SQL Black.png" />
+    <None Include="Resources\RTF black.png" />
+    <None Include="Resources\PHP Black.png" />
+    <None Include="Resources\Lua Black.png" />
+    <None Include="Resources\JS Black.png" />
+    <None Include="Resources\C# Black.png" />
     <None Include="Resources\html 32 Black.png" />
     <None Include="Resources\VB 32 Black.png" />
     <None Include="Resources\Sql 32 Black.png" />

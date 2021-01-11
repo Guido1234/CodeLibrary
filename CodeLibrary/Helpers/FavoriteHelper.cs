@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeLibrary.Core;
+using System;
 using System.IO;
 using System.Windows.Forms;
 
@@ -136,6 +137,13 @@ namespace CodeLibrary.Helpers
             string _filename = (string)_item.Tag;
 
             _fileHelper.SaveFile(false);
+
+            if (!File.Exists(_filename))
+            {
+                MessageBox.Show($"File '{_filename}' does not long exists!.");
+                return;
+            }
+
             _fileHelper.OpenFile(_filename, null);
         }
     }

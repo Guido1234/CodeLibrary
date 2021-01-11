@@ -8,9 +8,9 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace CodeLibrary
-{
+{ 
     public partial class FormSearch : Form
-    {
+    { 
         public FormSearch()
         {
             InitializeComponent();
@@ -59,8 +59,11 @@ namespace CodeLibrary
                     tbCode.Language = FastColoredTextBoxNS.Language.Lua;
                     break;
 
-
                 case CodeType.None:
+                    tbCode.Language = FastColoredTextBoxNS.Language.Custom;
+                    break;
+
+                case CodeType.RTF:
                     tbCode.Language = FastColoredTextBoxNS.Language.Custom;
                     break;
 
@@ -239,6 +242,7 @@ namespace CodeLibrary
             SelectedPath = _item.Path;
             SetEditorCodeType(_item.CodeType);
             tbCode.WordWrap = _item.Wordwrap;
+            
         }
 
         private void TbCode_Load(object sender, EventArgs e)
@@ -256,12 +260,14 @@ namespace CodeLibrary
             tbCode.GotoLine(0);
             tbSearch.Focus();
 
-            if (Config.HighContrastMode)
-                HighContrastTheme();
-            else if (Config.DarkMode)
-                DarkTheme();
-            else
-                LightTheme();
+            LightTheme();
+
+            //if (Config.HighContrastMode)
+            //    HighContrastTheme();
+            //else if (Config.DarkMode)
+            //    DarkTheme();
+            //else
+            //    LightTheme();
         }
 
         private void TbSearch_KeyUp(object sender, KeyEventArgs e)

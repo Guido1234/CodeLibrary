@@ -38,6 +38,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.rtfControl1 = new CodeLibrary.Controls.Controls.RtfControl();
             ((System.ComponentModel.ISupportInitialize)(this.txt)).BeginInit();
             this.SuspendLayout();
             // 
@@ -63,7 +64,7 @@
             this.txt.CharWidth = 8;
             this.txt.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txt.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.txt.Font = new System.Drawing.Font("Courier New", 9.75F);
+            this.txt.Hotkeys = resources.GetString("txt.Hotkeys");
             this.txt.IsReplaceMode = false;
             this.txt.Location = new System.Drawing.Point(259, 10);
             this.txt.Margin = new System.Windows.Forms.Padding(2);
@@ -71,7 +72,7 @@
             this.txt.Paddings = new System.Windows.Forms.Padding(0);
             this.txt.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(173)))), ((int)(((byte)(216)))), ((int)(((byte)(230)))));
             this.txt.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("txt.ServiceColors")));
-            this.txt.Size = new System.Drawing.Size(332, 337);
+            this.txt.Size = new System.Drawing.Size(668, 157);
             this.txt.TabIndex = 0;
             this.txt.Text = "\\\\knlk\\\\\r\n\\jpio\\\r\n klkjlk\\  \r\nijoijo\r\niojio\r\n";
             this.txt.Zoom = 100;
@@ -153,11 +154,19 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
+            // rtfControl1
+            // 
+            this.rtfControl1.Location = new System.Drawing.Point(259, 203);
+            this.rtfControl1.Name = "rtfControl1";
+            this.rtfControl1.Size = new System.Drawing.Size(625, 181);
+            this.rtfControl1.TabIndex = 8;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 366);
+            this.ClientSize = new System.Drawing.Size(936, 462);
+            this.Controls.Add(this.rtfControl1);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
@@ -184,6 +193,7 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
+        private CodeLibrary.Controls.Controls.RtfControl rtfControl1;
     }
 }
 

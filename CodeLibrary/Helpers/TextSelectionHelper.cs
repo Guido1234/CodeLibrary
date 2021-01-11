@@ -29,12 +29,5 @@ namespace CodeLibrary
             }
         }
 
-        public void SelectLine()
-        {
-            Range _line = _fastColoredTextBox.GetLine(_fastColoredTextBox.Selection.Start.iLine);
-            Place _start = new Place(0, _fastColoredTextBox.Selection.Start.iLine);
-            Place _end = new Place(_line.End.iChar, _fastColoredTextBox.Selection.Start.iLine);
-            _fastColoredTextBox.Selection = new Range(_fastColoredTextBox, _start, _end);
-        }
     }
 }

@@ -165,6 +165,10 @@
     <None Include="Resources\export_xml_16x16.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CodeLibrary.Core\CodeLibrary.Core.csproj">
+      <Project>{49f5b576-5e64-4861-b799-0944ee363a4d}</Project>
+      <Name>CodeLibrary.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EditorPlugins.core\EditorPlugins.Core.csproj">
       <Project>{0917226a-9093-496b-b947-f9df3cd82e94}</Project>
       <Name>EditorPlugins.Core</Name>

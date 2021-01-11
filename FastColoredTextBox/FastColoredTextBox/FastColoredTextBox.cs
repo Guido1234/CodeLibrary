@@ -42,7 +42,7 @@ namespace FastColoredTextBoxNS
     /// <summary>
     /// Fast colored textbox
     /// </summary>
-    public partial class FastColoredTextBox : UserControl, ISupportInitialize
+    public partial class FastColoredTextBox : UserControl, ISupportInitialize, ITextEditor
     {
         internal const int minLeftIndent = 8;
         private const int maxBracketSearchIterations = 1000;
@@ -214,6 +214,12 @@ namespace FastColoredTextBoxNS
             timer2.Tick += timer2_Tick;
             timer3.Tick += timer3_Tick;
             middleClickScrollingTimer.Tick += middleClickScrollingTimer_Tick;
+        }
+
+        public string CurrentLine()
+        {
+            Range _line = GetLine(Selection.Start.iLine);
+            return _line.Text;
         }
 
         private char[] autoCompleteBracketsList = { '(', ')', '{', '}', '[', ']', '"', '"', '\'', '\'' };
@@ -4061,6 +4067,19 @@ namespace FastColoredTextBoxNS
             return GotoPrevBookmark(Selection.Start.iLine);
         }
 
+        public void GotoLine()
+        {
+            GoToForm _gotoForm = new GoToForm();
+            _gotoForm.SelectedLineNumber = CurrentLineNumber();
+            _gotoForm.TotalLineCount = LinesCount;
+
+            DialogResult _result = _gotoForm.ShowDialog();
+            if (_result == DialogResult.OK)
+            {
+                GotoLine(_gotoForm.SelectedLineNumber);
+            }
+        }
+
         public void GotoLine(int ILine)
         {
             Selection.Start = new Place(0, ILine);
@@ -5997,7 +6016,7 @@ namespace FastColoredTextBoxNS
             if (x > lines[iLine].Count)
                 x = lines[iLine].Count;
 
-#if debug
+#if debug 
             Console.WriteLine("PointToPlace: " + sw.ElapsedMilliseconds);
 #endif
 
@@ -8271,6 +8290,21 @@ window.status = ""#print"";
             const int size = 5;
             var points = new Point[] { new Point(size, 2 * size), new Point(0, 3 * size), new Point(-size, 2 * size) };
             g.FillPolygon(brush, points);
+        }
+
+        public void Find()
+        {
+            ShowFindDialog();
+        }
+
+        public void Replace()
+        {
+            ShowReplaceDialog();
+        }
+
+        public void SelectLine()
+        {
+
         }
 
         #endregion

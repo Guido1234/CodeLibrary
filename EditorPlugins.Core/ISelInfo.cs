@@ -1,5 +1,5 @@
 ﻿namespace EditorPlugins.Core
-{
+{ 
     public interface ISelInfo
     {
         string CurrentLine { get; }
