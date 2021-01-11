@@ -24,6 +24,7 @@ namespace CodeLibrary
 
         private readonly Timer _timer = new Timer();
         private readonly TreeView _treeViewLibrary;
+        private bool _BlockDrop = false;
         private string _SelectedId;
         private bool _timerTick = false;
 
@@ -1117,6 +1118,22 @@ namespace CodeLibrary
         private void TreeViewLibrary_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = e.AllowedEffect;
+
+            if (_treeViewLibrary.SelectedNode != null)
+            {
+                var _snippet = FromNode(_treeViewLibrary.SelectedNode);
+                Console.WriteLine(_snippet.Path);
+                if (_snippet.CodeType == CodeType.System)
+                {
+                    e.Effect = DragDropEffects.None;
+                    _BlockDrop = true;
+                }
+                else
+                {
+                    _BlockDrop = false;
+                }
+            }
+
             SetLibraryMenuState();
         }
 
@@ -1129,6 +1146,20 @@ namespace CodeLibrary
 
             // Select the node at the mouse position.
             _treeViewLibrary.SelectedNode = _treeViewLibrary.GetNodeAt(targetPoint);
+
+            if (_treeViewLibrary.SelectedNode != null)
+            {
+                var _snippet = FromNode(_treeViewLibrary.SelectedNode);
+                Console.WriteLine(_snippet.Path);
+                if (_snippet.CodeType == CodeType.System && _snippet.Name != Constants.TRASHCAN || _BlockDrop)
+                {
+                    e.Effect = DragDropEffects.None;
+                }
+                else
+                {
+                    e.Effect = DragDropEffects.Move;
+                }
+            }
 
             SetLibraryMenuState();
         }

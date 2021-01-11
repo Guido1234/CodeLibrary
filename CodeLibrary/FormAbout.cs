@@ -57,6 +57,8 @@ BUG FIXES:
 
 -   Error while switching to deleted favorite.
 
+-   Drag drop system notes should not be allowed.
+
 ----------------------------------------------------------------------
 Version 1.9:
 -   Added Clipboard menu to Note context menu item.
