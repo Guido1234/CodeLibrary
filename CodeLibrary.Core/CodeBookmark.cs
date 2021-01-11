@@ -1,7 +1,7 @@
 ﻿namespace CodeLibrary.Core
 {
     public class CodeBookmark
-    { 
+    {
         public string Description { get; set; }
         public int LineNumber { get; set; }
 

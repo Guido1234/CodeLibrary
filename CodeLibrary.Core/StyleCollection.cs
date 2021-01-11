@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
- 
+
 namespace CodeLibrary.Core
 {
     public class StyleCollection
@@ -11,8 +11,6 @@ namespace CodeLibrary.Core
 
         private static StyleCollection _Instance;
 
-        public static StyleCollection Instance => _Instance ?? (_Instance = new StyleCollection());
-
         private StyleCollection()
         {
             Styles.Add(new RtfControlStyle() { StyleName = "Header 1", FontFamily = "Arial", FontStyle = FontStyle.Bold, FontSize = 18, HorizontalAlignment = HorizontalAlignment.Left });
@@ -20,6 +18,8 @@ namespace CodeLibrary.Core
             Styles.Add(new RtfControlStyle() { StyleName = "Header 3", FontFamily = "Arial", FontStyle = FontStyle.Bold, FontSize = 12, HorizontalAlignment = HorizontalAlignment.Left });
             Styles.Add(new RtfControlStyle() { StyleName = "Regular Text 1", FontFamily = "Arial", FontStyle = FontStyle.Regular, FontSize = 10, HorizontalAlignment = HorizontalAlignment.Left });
         }
+
+        public static StyleCollection Instance => _Instance ?? (_Instance = new StyleCollection());
 
         public void Deserialize(string json)
         {

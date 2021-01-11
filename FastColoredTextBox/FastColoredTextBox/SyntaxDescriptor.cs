@@ -4,30 +4,19 @@ using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS
 {
-    public class SyntaxDescriptor : IDisposable
+    public class FoldingDesc
     {
-        public char leftBracket = '(';
-        public char rightBracket = ')';
-        public char leftBracket2 = '{';
-        public char rightBracket2 = '}';
-        public BracketsHighlightStrategy bracketsHighlightStrategy = BracketsHighlightStrategy.Strategy2;
-        public readonly List<Style> styles = new List<Style>();
-        public readonly List<RuleDesc> rules = new List<RuleDesc>();
-        public readonly List<FoldingDesc> foldings = new List<FoldingDesc>();
-
-        public void Dispose()
-        {
-            foreach (var style in styles)
-                style.Dispose();
-        }
+        public string finishMarkerRegex;
+        public RegexOptions options = RegexOptions.None;
+        public string startMarkerRegex;
     }
 
     public class RuleDesc
     {
-        Regex regex;
-        public string pattern;
         public RegexOptions options = RegexOptions.None;
+        public string pattern;
         public Style style;
+        private Regex regex;
 
         public Regex Regex
         {
@@ -42,10 +31,21 @@ namespace FastColoredTextBoxNS
         }
     }
 
-    public class FoldingDesc
+    public class SyntaxDescriptor : IDisposable
     {
-        public string startMarkerRegex;
-        public string finishMarkerRegex;
-        public RegexOptions options = RegexOptions.None;
+        public readonly List<FoldingDesc> foldings = new List<FoldingDesc>();
+        public readonly List<RuleDesc> rules = new List<RuleDesc>();
+        public readonly List<Style> styles = new List<Style>();
+        public BracketsHighlightStrategy bracketsHighlightStrategy = BracketsHighlightStrategy.Strategy2;
+        public char leftBracket = '(';
+        public char leftBracket2 = '{';
+        public char rightBracket = ')';
+        public char rightBracket2 = '}';
+
+        public void Dispose()
+        {
+            foreach (var style in styles)
+                style.Dispose();
+        }
     }
 }

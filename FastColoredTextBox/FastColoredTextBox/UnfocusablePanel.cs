@@ -7,16 +7,16 @@ namespace FastColoredTextBoxNS
     [System.ComponentModel.ToolboxItem(false)]
     public class UnfocusablePanel : UserControl
     {
-        public Color BackColor2 { get; set; }
-        public Color BorderColor { get; set; }
-        public new string Text { get; set; }
-        public StringAlignment TextAlignment { get; set; }
-
         public UnfocusablePanel()
         {
             SetStyle(ControlStyles.Selectable, false);
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
         }
+
+        public Color BackColor2 { get; set; }
+        public Color BorderColor { get; set; }
+        public new string Text { get; set; }
+        public StringAlignment TextAlignment { get; set; }
 
         protected override void OnPaint(PaintEventArgs e)
         {

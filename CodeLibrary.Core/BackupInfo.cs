@@ -4,7 +4,7 @@ using System.Text;
 namespace CodeLibrary.Core
 {
     public class BackupInfo
-    { 
+    {
         public DateTime DateTime { get; set; }
 
         public string Day

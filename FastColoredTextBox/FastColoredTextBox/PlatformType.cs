@@ -3,34 +3,19 @@ using System.Runtime.InteropServices;
 
 namespace FastColoredTextBoxNS
 {
+    public enum Platform
+    {
+        X86,
+        X64,
+        Unknown
+    }
+
     public static class PlatformType
     {
-        const ushort PROCESSOR_ARCHITECTURE_INTEL = 0;
-        const ushort PROCESSOR_ARCHITECTURE_IA64 = 6;
-        const ushort PROCESSOR_ARCHITECTURE_AMD64 = 9;
-        const ushort PROCESSOR_ARCHITECTURE_UNKNOWN = 0xFFFF;
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct SYSTEM_INFO
-        {
-            public ushort wProcessorArchitecture;
-            public ushort wReserved;
-            public uint dwPageSize;
-            public IntPtr lpMinimumApplicationAddress;
-            public IntPtr lpMaximumApplicationAddress;
-            public UIntPtr dwActiveProcessorMask;
-            public uint dwNumberOfProcessors;
-            public uint dwProcessorType;
-            public uint dwAllocationGranularity;
-            public ushort wProcessorLevel;
-            public ushort wProcessorRevision;
-        };
-
-        [DllImport("kernel32.dll")]
-        static extern void GetNativeSystemInfo(ref SYSTEM_INFO lpSystemInfo);
-
-        [DllImport("kernel32.dll")]
-        static extern void GetSystemInfo(ref SYSTEM_INFO lpSystemInfo);
+        private const ushort PROCESSOR_ARCHITECTURE_AMD64 = 9;
+        private const ushort PROCESSOR_ARCHITECTURE_IA64 = 6;
+        private const ushort PROCESSOR_ARCHITECTURE_INTEL = 0;
+        private const ushort PROCESSOR_ARCHITECTURE_UNKNOWN = 0xFFFF;
 
         public static Platform GetOperationSystemPlatform()
         {
@@ -61,13 +46,27 @@ namespace FastColoredTextBoxNS
                     return Platform.Unknown;
             }
         }
-    }
 
-    public enum Platform
-    {
-        X86,
-        X64,
-        Unknown
-    }
+        [DllImport("kernel32.dll")]
+        private static extern void GetNativeSystemInfo(ref SYSTEM_INFO lpSystemInfo);
 
+        [DllImport("kernel32.dll")]
+        private static extern void GetSystemInfo(ref SYSTEM_INFO lpSystemInfo);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct SYSTEM_INFO
+        {
+            public ushort wProcessorArchitecture;
+            public ushort wReserved;
+            public uint dwPageSize;
+            public IntPtr lpMinimumApplicationAddress;
+            public IntPtr lpMaximumApplicationAddress;
+            public UIntPtr dwActiveProcessorMask;
+            public uint dwNumberOfProcessors;
+            public uint dwProcessorType;
+            public uint dwAllocationGranularity;
+            public ushort wProcessorLevel;
+            public ushort wProcessorRevision;
+        };
+    }
 }

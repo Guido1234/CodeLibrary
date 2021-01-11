@@ -6,13 +6,15 @@
 
         string Text { get; set; }
 
+        void ApplySnippetSettings();
+
         void BringToFront();
 
         void CodeToScreen(CodeSnippet snippet);
 
-        void Save();
-
         void Copy();
+
+        string CurrentLine();
 
         void Cut();
 
@@ -22,9 +24,9 @@
 
         void GotoLine(int line);
 
-        string CurrentLine();
-
         void Paste();
+
+        void Save();
 
         void ScreenToCode(CodeSnippet snippet);
 
@@ -37,8 +39,5 @@
         void ShowReplaceDialog();
 
         bool SwitchWordWrap();
- 
-        void ApplySnippetSettings();
-
     }
 }

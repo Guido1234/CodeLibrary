@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
- 
+
 namespace CodeLibrary.Core
 {
     public static class StringCipher

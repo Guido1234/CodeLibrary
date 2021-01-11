@@ -57,14 +57,13 @@ BUG FIXES:
 
 -   Error while switching to deleted favorite.
 
-
 ----------------------------------------------------------------------
 Version 1.9:
 -   Added Clipboard menu to Note context menu item.
     -   Menu items depending on clipboard content.
     -   Added paste image without compression.
 
--   Image context menu (rightclick on image itself) 
+-   Image context menu (rightclick on image itself)
     -   Added 'copy as Base64 String'
     -   Added 'copy as Html IMG'
 
@@ -78,7 +77,7 @@ Version 1.9:
 
 ----------------------------------------------------------------------
 Version 1.8:
--   Paste in Treeviewer (Ctrl-V) 
+-   Paste in Treeviewer (Ctrl-V)
     -   FileList: inserts all files below current note.
     -   Text: Note contents contains clipboard contents.
     -   Image: Paste image into Treeviewer, Image is displayed instead of code editor.

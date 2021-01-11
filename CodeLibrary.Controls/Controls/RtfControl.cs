@@ -84,20 +84,6 @@ namespace CodeLibrary.Controls.Controls
             this.Resize += RtfControl_Resize;
         }
 
-        private void RtfControl_Resize(object sender, EventArgs e)
-        {
-            rtf.Left = 0;
-            rtf.Top = toolStrip1.Height;
-            rtf.Height = this.Height - toolStrip1.Height;
-            rtf.Width = this.Width;
-        }
-
-        private void ToolStrip1_Resize(object sender, EventArgs e)
-        {
-            rtf.Top = toolStrip1.Height;
-            rtf.Height = this.Height - toolStrip1.Height;
-        }
-
         public event EventHandler TextChanged;
 
         public Color EditorBackColor
@@ -324,7 +310,6 @@ namespace CodeLibrary.Controls.Controls
                 rtf.SelectionColor = _item.Color.Value;
 
             rtf.SelectionAlignment = _item.HorizontalAlignment;
-            
         }
 
         private void AddStyle_Click(object sender, EventArgs e)
@@ -421,12 +406,12 @@ namespace CodeLibrary.Controls.Controls
 
         private void BtIndentMin_Click(object sender, EventArgs e)
         {
-            rtf.SelectionIndent-=20;
+            rtf.SelectionIndent -= 20;
         }
 
         private void BtIndentPlus_Click(object sender, EventArgs e)
         {
-            rtf.SelectionIndent+=20;
+            rtf.SelectionIndent += 20;
         }
 
         private void BtItalic_Click(object sender, EventArgs e)
@@ -583,6 +568,14 @@ namespace CodeLibrary.Controls.Controls
             }
         }
 
+        private void RtfControl_Resize(object sender, EventArgs e)
+        {
+            rtf.Left = 0;
+            rtf.Top = toolStrip1.Height;
+            rtf.Height = this.Height - toolStrip1.Height;
+            rtf.Width = this.Width;
+        }
+
         private void SetButtons()
         {
             if (rtf.SelectionFont == null)
@@ -618,6 +611,12 @@ namespace CodeLibrary.Controls.Controls
                 _style = _style | FontStyle.Underline;
             }
             return _style;
+        }
+
+        private void ToolStrip1_Resize(object sender, EventArgs e)
+        {
+            rtf.Top = toolStrip1.Height;
+            rtf.Height = this.Height - toolStrip1.Height;
         }
 
         private void UpdateStyle_Click(object sender, EventArgs e)

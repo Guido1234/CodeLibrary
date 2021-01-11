@@ -10,21 +10,30 @@ namespace FastColoredTextBoxNS
     /// <remarks>At this time only TextStyle renderer is supported. Other styles are not exported.</remarks>
     public class ExportToRTF
     {
+        private Dictionary<Color, int> colorTable = new Dictionary<Color, int>();
+
+        private FastColoredTextBox tb;
+
+        public ExportToRTF()
+        {
+            UseOriginalFont = true;
+        }
+
         /// <summary>
         /// Includes line numbers
         /// </summary>
         public bool IncludeLineNumbers { get; set; }
+
         /// <summary>
         /// Use original font
         /// </summary>
         public bool UseOriginalFont { get; set; }
 
-        FastColoredTextBox tb;
-        Dictionary<Color, int> colorTable = new Dictionary<Color, int>();
-
-        public ExportToRTF()
+        public static string GetColorAsString(Color color)
         {
-            UseOriginalFont = true;
+            if (color == Color.Transparent)
+                return "";
+            return string.Format(@"\red{0}\green{1}\blue{2}", color.R, color.G, color.B);
         }
 
         public string GetRtf(FastColoredTextBox tb)
@@ -77,12 +86,15 @@ namespace FastColoredTextBoxNS
                     case '\\':
                         tempSB.Append(@"\\");
                         break;
+
                     case '{':
                         tempSB.Append(@"\{");
                         break;
+
                     case '}':
                         tempSB.Append(@"\}");
                         break;
+
                     default:
                         var ch = c.c;
                         var code = (int)ch;
@@ -121,6 +133,41 @@ namespace FastColoredTextBoxNS
             sb.AppendLine(@"}");
 
             return sb.ToString();
+        }
+
+        private void Flush(StringBuilder sb, StringBuilder tempSB, StyleIndex currentStyle)
+        {
+            //find textRenderer
+            if (tempSB.Length == 0)
+                return;
+
+            var desc = GetRtfDescriptor(currentStyle);
+            var cf = GetColorTableNumber(desc.ForeColor);
+            var cb = GetColorTableNumber(desc.BackColor);
+            var tags = new StringBuilder();
+            if (cf >= 0)
+                tags.AppendFormat(@"\cf{0}", cf);
+            if (cb >= 0)
+                tags.AppendFormat(@"\highlight{0}", cb);
+            if (!string.IsNullOrEmpty(desc.AdditionalTags))
+                tags.Append(desc.AdditionalTags.Trim());
+
+            if (tags.Length > 0)
+                sb.AppendFormat(@"{{{0} {1}}}", tags, tempSB.ToString());
+            else
+                sb.Append(tempSB.ToString());
+            tempSB.Length = 0;
+        }
+
+        private int GetColorTableNumber(Color color)
+        {
+            if (color.A == 0)
+                return -1;
+
+            if (!colorTable.ContainsKey(color))
+                colorTable[color] = colorTable.Count + 1;
+
+            return colorTable[color];
         }
 
         private RTFStyleDescriptor GetRtfDescriptor(StyleIndex styleIndex)
@@ -163,54 +210,12 @@ namespace FastColoredTextBoxNS
 
             return result;
         }
-
-        public static string GetColorAsString(Color color)
-        {
-            if (color == Color.Transparent)
-                return "";
-            return string.Format(@"\red{0}\green{1}\blue{2}", color.R, color.G, color.B);
-        }
-
-        private void Flush(StringBuilder sb, StringBuilder tempSB, StyleIndex currentStyle)
-        {
-            //find textRenderer
-            if (tempSB.Length == 0)
-                return;
-
-            var desc = GetRtfDescriptor(currentStyle);
-            var cf = GetColorTableNumber(desc.ForeColor);
-            var cb = GetColorTableNumber(desc.BackColor);
-            var tags = new StringBuilder();
-            if (cf >= 0)
-                tags.AppendFormat(@"\cf{0}", cf);
-            if (cb >= 0)
-                tags.AppendFormat(@"\highlight{0}", cb);
-            if (!string.IsNullOrEmpty(desc.AdditionalTags))
-                tags.Append(desc.AdditionalTags.Trim());
-
-            if (tags.Length > 0)
-                sb.AppendFormat(@"{{{0} {1}}}", tags, tempSB.ToString());
-            else
-                sb.Append(tempSB.ToString());
-            tempSB.Length = 0;
-        }
-
-        private int GetColorTableNumber(Color color)
-        {
-            if (color.A == 0)
-                return -1;
-
-            if (!colorTable.ContainsKey(color))
-                colorTable[color] = colorTable.Count + 1;
-
-            return colorTable[color];
-        }
     }
 
     public class RTFStyleDescriptor
     {
-        public Color ForeColor { get; set; }
-        public Color BackColor { get; set; }
         public string AdditionalTags { get; set; }
+        public Color BackColor { get; set; }
+        public Color ForeColor { get; set; }
     }
 }

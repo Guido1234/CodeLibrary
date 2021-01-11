@@ -8,32 +8,13 @@ namespace FastColoredTextBoxNS
 {
     public partial class HotkeysEditorForm : Form
     {
-        BindingList<HotkeyWrapper> wrappers = new BindingList<HotkeyWrapper>();
+        private BindingList<HotkeyWrapper> wrappers = new BindingList<HotkeyWrapper>();
 
         public HotkeysEditorForm(HotkeysMapping hotkeys)
         {
             InitializeComponent();
             BuildWrappers(hotkeys);
             dgv.DataSource = wrappers;
-        }
-
-        int CompereKeys(Keys key1, Keys key2)
-        {
-            var res = ((int)key1 & 0xff).CompareTo((int)key2 & 0xff);
-            if (res == 0)
-                res = key1.CompareTo(key2);
-
-            return res;
-        }
-
-        private void BuildWrappers(HotkeysMapping hotkeys)
-        {
-            var keys = new List<Keys>(hotkeys.Keys);
-            keys.Sort(CompereKeys);
-
-            wrappers.Clear();
-            foreach (var k in keys)
-                wrappers.Add(new HotkeyWrapper(k, hotkeys[k]));
         }
 
         /// <summary>
@@ -54,6 +35,38 @@ namespace FastColoredTextBoxNS
             wrappers.Add(new HotkeyWrapper(Keys.None, FCTBAction.None));
         }
 
+        private void btRemove_Click(object sender, EventArgs e)
+        {
+            for (int i = dgv.RowCount - 1; i >= 0; i--)
+                if (dgv.Rows[i].Selected) dgv.Rows.RemoveAt(i);
+        }
+
+        private void btResore_Click(object sender, EventArgs e)
+        {
+            HotkeysMapping h = new HotkeysMapping();
+            h.InitDefault();
+            BuildWrappers(h);
+        }
+
+        private void BuildWrappers(HotkeysMapping hotkeys)
+        {
+            var keys = new List<Keys>(hotkeys.Keys);
+            keys.Sort(CompereKeys);
+
+            wrappers.Clear();
+            foreach (var k in keys)
+                wrappers.Add(new HotkeyWrapper(k, hotkeys[k]));
+        }
+
+        private int CompereKeys(Keys key1, Keys key2)
+        {
+            var res = ((int)key1 & 0xff).CompareTo((int)key2 & 0xff);
+            if (res == 0)
+                res = key1.CompareTo(key2);
+
+            return res;
+        }
+
         private void dgv_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             var cell = (dgv[0, e.RowIndex] as DataGridViewComboBoxCell);
@@ -70,32 +83,6 @@ namespace FastColoredTextBoxNS
             if (cell.Items.Count == 0)
                 foreach (var item in Enum.GetValues(typeof(FCTBAction)))
                     cell.Items.Add(item);
-        }
-
-        private void btResore_Click(object sender, EventArgs e)
-        {
-            HotkeysMapping h = new HotkeysMapping();
-            h.InitDefault();
-            BuildWrappers(h);
-        }
-
-        private void btRemove_Click(object sender, EventArgs e)
-        {
-            for (int i = dgv.RowCount - 1; i >= 0; i--)
-                if (dgv.Rows[i].Selected) dgv.Rows.RemoveAt(i);
-        }
-
-        private void HotkeysEditorForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (DialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                var actions = GetUnAssignedActions();
-                if (!string.IsNullOrEmpty(actions))
-                {
-                    if (MessageBox.Show("Some actions are not assigned!\r\nActions: " + actions + "\r\nPress Yes to save and exit, press No to continue editing", "Some actions is not assigned", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
-                        e.Cancel = true;
-                }
-            }
         }
 
         private string GetUnAssignedActions()
@@ -116,10 +103,29 @@ namespace FastColoredTextBoxNS
 
             return sb.ToString().TrimEnd(' ', ',');
         }
+
+        private void HotkeysEditorForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (DialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                var actions = GetUnAssignedActions();
+                if (!string.IsNullOrEmpty(actions))
+                {
+                    if (MessageBox.Show("Some actions are not assigned!\r\nActions: " + actions + "\r\nPress Yes to save and exit, press No to continue editing", "Some actions is not assigned", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
+                        e.Cancel = true;
+                }
+            }
+        }
     }
 
     internal class HotkeyWrapper
     {
+        private bool Alt;
+
+        private bool Ctrl;
+
+        private bool Shift;
+
         public HotkeyWrapper(Keys keyData, FCTBAction action)
         {
             KeyEventArgs a = new KeyEventArgs(keyData);
@@ -131,19 +137,9 @@ namespace FastColoredTextBoxNS
             Action = action;
         }
 
-        public Keys ToKeyData()
-        {
-            var res = Key;
-            if (Ctrl) res |= Keys.Control;
-            if (Alt) res |= Keys.Alt;
-            if (Shift) res |= Keys.Shift;
+        public FCTBAction Action { get; set; }
 
-            return res;
-        }
-
-        bool Ctrl;
-        bool Shift;
-        bool Alt;
+        public Keys Key { get; set; }
 
         public string Modifiers
         {
@@ -171,7 +167,14 @@ namespace FastColoredTextBoxNS
             }
         }
 
-        public Keys Key { get; set; }
-        public FCTBAction Action { get; set; }
+        public Keys ToKeyData()
+        {
+            var res = Key;
+            if (Ctrl) res |= Keys.Control;
+            if (Alt) res |= Keys.Alt;
+            if (Shift) res |= Keys.Shift;
+
+            return res;
+        }
     }
 }

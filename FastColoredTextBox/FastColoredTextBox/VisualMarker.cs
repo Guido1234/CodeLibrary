@@ -3,25 +3,6 @@ using System.Windows.Forms;
 
 namespace FastColoredTextBoxNS
 {
-    public class VisualMarker
-    {
-        public readonly Rectangle rectangle;
-
-        public VisualMarker(Rectangle rectangle)
-        {
-            this.rectangle = rectangle;
-        }
-
-        public virtual void Draw(Graphics gr, Pen pen)
-        {
-        }
-
-        public virtual Cursor Cursor
-        {
-            get { return Cursors.Hand; }
-        }
-    }
-
     public class CollapseFoldingMarker : VisualMarker
     {
         public readonly int iLine;
@@ -79,25 +60,44 @@ namespace FastColoredTextBoxNS
 
     public class StyleVisualMarker : VisualMarker
     {
-        public Style Style { get; private set; }
-
         public StyleVisualMarker(Rectangle rectangle, Style style)
             : base(rectangle)
         {
             this.Style = style;
         }
+
+        public Style Style { get; private set; }
+    }
+
+    public class VisualMarker
+    {
+        public readonly Rectangle rectangle;
+
+        public VisualMarker(Rectangle rectangle)
+        {
+            this.rectangle = rectangle;
+        }
+
+        public virtual Cursor Cursor
+        {
+            get { return Cursors.Hand; }
+        }
+
+        public virtual void Draw(Graphics gr, Pen pen)
+        {
+        }
     }
 
     public class VisualMarkerEventArgs : MouseEventArgs
     {
-        public Style Style { get; private set; }
-        public StyleVisualMarker Marker { get; private set; }
-
         public VisualMarkerEventArgs(Style style, StyleVisualMarker marker, MouseEventArgs args)
             : base(args.Button, args.Clicks, args.X, args.Y, args.Delta)
         {
             this.Style = style;
             this.Marker = marker;
         }
+
+        public StyleVisualMarker Marker { get; private set; }
+        public Style Style { get; private set; }
     }
 }

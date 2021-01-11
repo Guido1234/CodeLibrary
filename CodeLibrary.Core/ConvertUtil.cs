@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
- 
+
 namespace CodeLibrary.Core
 {
     public static class ConvertUtility

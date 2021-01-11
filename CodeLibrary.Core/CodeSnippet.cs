@@ -1,11 +1,10 @@
-﻿using CodeLibrary.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
- 
+
 namespace CodeLibrary.Core
 {
     [DataContract()]
@@ -24,21 +23,16 @@ namespace CodeLibrary.Core
         public DateTime? AlarmDate { get; set; }
 
         [Browsable(false)]
+        [DataMember(Name = "Blob")]
+        public byte[] Blob { get; set; }
+
+        [Browsable(false)]
         [DataMember(Name = "CodeBookmarks")]
         public List<CodeBookmark> Bookmarks { get; set; }
 
         [Browsable(false)]
         [DataMember(Name = "Code")]
         public string Code { get; set; } = string.Empty;
-
-        [Browsable(false)]
-        [DataMember(Name = "RTF")]
-        public string RTF { get; set; } = string.Empty;
-
-        [Browsable(false)]
-        [DataMember(Name = "RTFAlwaysWhite")]
-        public bool RTFAlwaysWhite { get; set; } = false;
-
 
         [DataMember(Name = "CodeType")]
         public CodeType CodeType { get; set; }
@@ -60,10 +54,6 @@ namespace CodeLibrary.Core
         public string DefaultChildCode { get; set; } = string.Empty;
 
         [Browsable(false)]
-        [DataMember(Name = "DefaultChildRtf")]
-        public string DefaultChildRtf { get; set; } = string.Empty;
-
-        [Browsable(false)]
         [DataMember(Name = "DefaultChildCodeType")]
         public CodeType DefaultChildCodeType { get; set; }
 
@@ -74,6 +64,13 @@ namespace CodeLibrary.Core
         [Browsable(false)]
         [DataMember(Name = "DefaultChildName")]
         public string DefaultChildName { get; set; } = string.Empty;
+
+        [Browsable(false)]
+        [DataMember(Name = "DefaultChildRtf")]
+        public string DefaultChildRtf { get; set; } = string.Empty;
+
+        [DataMember(Name = "HtmlPreview")]
+        public bool HtmlPreview { get; set; } = false;
 
         [Browsable(false)]
         [DataMember(Name = "Id")]
@@ -97,27 +94,25 @@ namespace CodeLibrary.Core
         [DataMember(Name = "Path")]
         public string Path { get; set; } = string.Empty;
 
+        [Browsable(false)]
+        [DataMember(Name = "RTF")]
+        public string RTF { get; set; } = string.Empty;
+
+        [Browsable(false)]
+        [DataMember(Name = "RTFAlwaysWhite")]
+        public bool RTFAlwaysWhite { get; set; } = false;
+
         [DataMember(Name = "ShortCutKeys")]
         public Keys ShortCutKeys { get; set; }
 
         [DataMember(Name = "Wordwrap")]
         public bool Wordwrap { get; set; }
 
-
-        [DataMember(Name = "HtmlPreview")]
-        public bool HtmlPreview { get; set; } = false;
-
-
-        [Browsable(false)]
-        [DataMember(Name = "Blob")]
-        public byte[] Blob { get; set; }
+        public static CodeSnippet ClipboardMonitorSnippet() => new CodeSnippet() { Code = string.Empty, CodeType = CodeType.System, Name = Constants.CLIPBOARDMONITOR_TITLE, Path = Constants.CLIPBOARDMONITOR_TITLE, Id = Constants.CLIPBOARDMONITOR };
 
         public static CodeSnippet NewRoot(string text, CodeType codetype, string name) => new CodeSnippet() { Code = text, CodeType = codetype, Locked = false, Name = name, Path = name };
 
         public static CodeSnippet TrashcanSnippet() => new CodeSnippet() { Code = string.Empty, CodeType = CodeType.System, Name = Constants.TRASHCAN_TITLE, Path = Constants.TRASHCAN_TITLE, Id = Constants.TRASHCAN };
-
-        public static CodeSnippet ClipboardMonitorSnippet() => new CodeSnippet() { Code = string.Empty, CodeType = CodeType.System, Name = Constants.CLIPBOARDMONITOR_TITLE, Path = Constants.CLIPBOARDMONITOR_TITLE, Id = Constants.CLIPBOARDMONITOR };
-
 
         public override int GetHashCode() => Code.GetHashCode() + Path.GetHashCode() + Name.GetHashCode() + Order;
 

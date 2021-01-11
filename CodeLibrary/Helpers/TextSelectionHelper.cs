@@ -28,6 +28,5 @@ namespace CodeLibrary
                     _fastColoredTextBox.Text = value;
             }
         }
-
     }
 }

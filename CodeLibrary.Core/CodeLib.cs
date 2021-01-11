@@ -1,12 +1,11 @@
-﻿using CodeLibrary.Core;
-using DevToys;
+﻿using DevToys;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace CodeLibrary.Core
-{ 
+{
     public class CodeLib
     {
         private static CodeLib _Instance;
@@ -27,6 +26,14 @@ namespace CodeLibrary.Core
         }
 
         public static CodeLib Instance => _Instance ?? (_Instance = new CodeLib());
+
+        public CodeSnippet ClipboardMonitor
+        {
+            get
+            {
+                return Library.Get(Constants.CLIPBOARDMONITOR);
+            }
+        }
 
         public DictionaryList<CodeSnippet, string> Library { get; } = new DictionaryList<CodeSnippet, string>(p => p.Id);
 
@@ -62,19 +69,11 @@ namespace CodeLibrary.Core
             Instance.Library.Add(CodeSnippet.NewRoot("", CodeType.Folder, Constants.SNIPPETS));
         }
 
-        public CodeSnippet ClipboardMonitor
-        {
-            get
-            {
-                return Library.Get(Constants.CLIPBOARDMONITOR);
-            }
-        }
-
-        public CodeSnippet GetByPath(string name) => Library.Lookup(Constants.LOOKUP_PATH, name).FirstOrDefault();
-
         public IEnumerable<CodeSnippet> GetByAlarmActive() => Library.Lookup(Constants.LOOKUP_TIMERACTIVE, true);
 
         public IEnumerable<CodeSnippet> GetByName(string name) => Library.Lookup(Constants.LOOKUP_NAME, name);
+
+        public CodeSnippet GetByPath(string name) => Library.Lookup(Constants.LOOKUP_PATH, name).FirstOrDefault();
 
         public IEnumerable<CodeSnippet> GetByShortCut(Keys shortcut) => Library.Lookup(Constants.LOOKUP_SHORTCUT, shortcut);
 

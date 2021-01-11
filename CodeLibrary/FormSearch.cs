@@ -8,9 +8,9 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace CodeLibrary
-{ 
+{
     public partial class FormSearch : Form
-    { 
+    {
         public FormSearch()
         {
             InitializeComponent();
@@ -242,7 +242,6 @@ namespace CodeLibrary
             SelectedPath = _item.Path;
             SetEditorCodeType(_item.CodeType);
             tbCode.WordWrap = _item.Wordwrap;
-            
         }
 
         private void TbCode_Load(object sender, EventArgs e)

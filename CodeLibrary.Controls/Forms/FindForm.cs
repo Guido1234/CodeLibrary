@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -7,8 +6,8 @@ namespace CodeLibrary.Controls
 {
     public partial class FindForm : Form
     {
-        int startPlace;
-        RichTextBox tb;
+        private int startPlace;
+        private RichTextBox tb;
 
         public FindForm(RichTextBox tb)
         {
@@ -17,16 +16,6 @@ namespace CodeLibrary.Controls
 
             InitializeComponent();
             this.tb = tb;
-        }
-
-        private void btClose_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void btFindNext_Click(object sender, EventArgs e)
-        {
-            FindNext(tbFind.Text);
         }
 
         public virtual void FindNext(string pattern)
@@ -41,8 +30,7 @@ namespace CodeLibrary.Controls
 
                 Regex _regex = new Regex(pattern);
 
-
-                Range range = new Range() { Start = tb.SelectionStart, Length = tb.SelectionLength } ;
+                Range range = new Range() { Start = tb.SelectionStart, Length = tb.SelectionLength };
                 //
 
                 var _matches = _regex.Matches(tb.Text);
@@ -75,6 +63,51 @@ namespace CodeLibrary.Controls
             }
         }
 
+        protected override void OnActivated(EventArgs e)
+        {
+            tbFind.Focus();
+            ResetSerach();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void btClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void btFindNext_Click(object sender, EventArgs e)
+        {
+            FindNext(tbFind.Text);
+        }
+
+        private void cbMatchCase_CheckedChanged(object sender, EventArgs e)
+        {
+            ResetSerach();
+        }
+
+        private void FindForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                Hide();
+            }
+            this.tb.Focus();
+        }
+
+        private void ResetSerach()
+        {
+        }
+
         private void tbFind_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r')
@@ -89,41 +122,6 @@ namespace CodeLibrary.Controls
                 e.Handled = true;
                 return;
             }
-        }
-
-        private void FindForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                e.Cancel = true;
-                Hide();
-            }
-            this.tb.Focus();
-        }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Escape)
-            {
-                this.Close();
-                return true;
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        protected override void OnActivated(EventArgs e)
-        {
-            tbFind.Focus();
-            ResetSerach();
-        }
-
-        void ResetSerach()
-        {
-        }
-
-        private void cbMatchCase_CheckedChanged(object sender, EventArgs e)
-        {
-            ResetSerach();
         }
     }
 }

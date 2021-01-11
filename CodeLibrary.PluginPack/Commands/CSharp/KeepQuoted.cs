@@ -1,5 +1,4 @@
-﻿using CodeLibrary.PluginPack.Common;
-using EditorPlugins.Core;
+﻿using EditorPlugins.Core;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -42,7 +41,6 @@ namespace CodeLibrary.PluginPack
 
             foreach (char c in _chars)
             {
-
                 if (_withinQuotes == false && c == '"' && _prevChar != '\\')
                 {
                     _withinQuotes = true;

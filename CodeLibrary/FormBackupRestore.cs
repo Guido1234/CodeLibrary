@@ -10,9 +10,8 @@ namespace CodeLibrary
     public partial class FormBackupRestore : Form
     {
         private BackupHelper _backupHelper;
-        private BackupInfo _Selected;
         private string _currentFile;
-
+        private BackupInfo _Selected;
 
         public FormBackupRestore(string currentFile)
         {
@@ -30,11 +29,23 @@ namespace CodeLibrary
             }
         }
 
+        private void btCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void btRestore_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
         private void FormBackupRestore_Load(object sender, EventArgs e)
         {
-            FileInfo file = new FileInfo(_currentFile); 
+            FileInfo file = new FileInfo(_currentFile);
             lbName.Text = file.Name;
-              
+
             lbBackups.Sorting = SortOrder.None;
             lbBackups.NameProperty = "FileName";
             lbBackups.CategoryProperty = "Day";
@@ -48,18 +59,6 @@ namespace CodeLibrary
         {
             _Selected = e.Item as BackupInfo;
             btRestore.Enabled = true;
-        }
-
-        private void btCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
-
-        private void btRestore_Click(object sender, EventArgs e)
-        {            
-            DialogResult = DialogResult.OK;
-            Close();
         }
     }
 }

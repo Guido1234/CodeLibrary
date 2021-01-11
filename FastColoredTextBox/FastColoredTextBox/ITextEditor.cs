@@ -1,38 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FastColoredTextBoxNS
+﻿namespace FastColoredTextBoxNS
 {
-    public  interface ITextEditor
+    public interface ITextEditor
     {
-        void Cut();
+        string SelectedText { get; set; }
+
+        string Text { get; set; }
+
+        int Zoom { get; set; }
 
         void Copy();
 
+        string CurrentLine();
+
+        void Cut();
+
+        void GotoLine(int line);
+
         void Paste();
+
+        void SelectAll();
+
+        void SelectLine();
 
         void ShowFindDialog();
 
         void ShowReplaceDialog();
 
         void Undo();
-
-        void GotoLine(int line);
-
-        void SelectAll();
-
-        void SelectLine();
-
-        int Zoom { get; set; }
-
-        string SelectedText { get; set; }
-
-        string Text { get; set; }
-
-        string CurrentLine();
-
     }
 }

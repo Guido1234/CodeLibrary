@@ -13,28 +13,17 @@ namespace FastColoredTextBoxNS
     {
         public EventHandler TargetChanged;
 
-        FastColoredTextBox target;
-        private float scale = 0.3f;
         private bool needRepaint = true;
-        private Place startPlace = Place.Empty;
+        private float scale = 0.3f;
         private bool scrollbarVisible = true;
+        private Place startPlace = Place.Empty;
+        private FastColoredTextBox target;
 
-        [Description("Target FastColoredTextBox")]
-        public FastColoredTextBox Target
+        public DocumentMap()
         {
-            get { return target; }
-            set
-            {
-                if (target != null)
-                    UnSubscribe(target);
-
-                target = value;
-                if (value != null)
-                {
-                    Subscribe(target);
-                }
-                OnTargetChanged();
-            }
+            ForeColor = Color.Maroon;
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
+            Application.Idle += Application_Idle;
         }
 
         /// <summary>
@@ -67,65 +56,52 @@ namespace FastColoredTextBoxNS
             }
         }
 
-        public DocumentMap()
+        [Description("Target FastColoredTextBox")]
+        public FastColoredTextBox Target
         {
-            ForeColor = Color.Maroon;
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
-            Application.Idle += Application_Idle;
-        }
+            get { return target; }
+            set
+            {
+                if (target != null)
+                    UnSubscribe(target);
 
-        void Application_Idle(object sender, EventArgs e)
-        {
-            if (needRepaint)
-                Invalidate();
-        }
-
-        protected virtual void OnTargetChanged()
-        {
-            NeedRepaint();
-
-            if (TargetChanged != null)
-                TargetChanged(this, EventArgs.Empty);
-        }
-
-        protected virtual void UnSubscribe(FastColoredTextBox target)
-        {
-            target.Scroll -= new ScrollEventHandler(Target_Scroll);
-            target.SelectionChangedDelayed -= new EventHandler(Target_SelectionChanged);
-            target.VisibleRangeChanged -= new EventHandler(Target_VisibleRangeChanged);
-        }
-
-        protected virtual void Subscribe(FastColoredTextBox target)
-        {
-            target.Scroll += new ScrollEventHandler(Target_Scroll);
-            target.SelectionChangedDelayed += new EventHandler(Target_SelectionChanged);
-            target.VisibleRangeChanged += new EventHandler(Target_VisibleRangeChanged);
-        }
-
-        protected virtual void Target_VisibleRangeChanged(object sender, EventArgs e)
-        {
-            NeedRepaint();
-        }
-
-        protected virtual void Target_SelectionChanged(object sender, EventArgs e)
-        {
-            NeedRepaint();
-        }
-
-        protected virtual void Target_Scroll(object sender, ScrollEventArgs e)
-        {
-            NeedRepaint();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            NeedRepaint();
+                target = value;
+                if (value != null)
+                {
+                    Subscribe(target);
+                }
+                OnTargetChanged();
+            }
         }
 
         public void NeedRepaint()
         {
             needRepaint = true;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Application.Idle -= Application_Idle;
+                if (target != null)
+                    UnSubscribe(target);
+            }
+            base.Dispose(disposing);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                Scroll(e.Location);
+            base.OnMouseDown(e);
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                Scroll(e.Location);
+            base.OnMouseMove(e);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -196,18 +172,59 @@ namespace FastColoredTextBoxNS
             needRepaint = false;
         }
 
-        protected override void OnMouseDown(MouseEventArgs e)
+        protected override void OnResize(EventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-                Scroll(e.Location);
-            base.OnMouseDown(e);
+            base.OnResize(e);
+            NeedRepaint();
         }
 
-        protected override void OnMouseMove(MouseEventArgs e)
+        protected virtual void OnTargetChanged()
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-                Scroll(e.Location);
-            base.OnMouseMove(e);
+            NeedRepaint();
+
+            if (TargetChanged != null)
+                TargetChanged(this, EventArgs.Empty);
+        }
+
+        protected virtual void Subscribe(FastColoredTextBox target)
+        {
+            target.Scroll += new ScrollEventHandler(Target_Scroll);
+            target.SelectionChangedDelayed += new EventHandler(Target_SelectionChanged);
+            target.VisibleRangeChanged += new EventHandler(Target_VisibleRangeChanged);
+        }
+
+        protected virtual void Target_Scroll(object sender, ScrollEventArgs e)
+        {
+            NeedRepaint();
+        }
+
+        protected virtual void Target_SelectionChanged(object sender, EventArgs e)
+        {
+            NeedRepaint();
+        }
+
+        protected virtual void Target_VisibleRangeChanged(object sender, EventArgs e)
+        {
+            NeedRepaint();
+        }
+
+        protected virtual void UnSubscribe(FastColoredTextBox target)
+        {
+            target.Scroll -= new ScrollEventHandler(Target_Scroll);
+            target.SelectionChangedDelayed -= new EventHandler(Target_SelectionChanged);
+            target.VisibleRangeChanged -= new EventHandler(Target_VisibleRangeChanged);
+        }
+
+        private void Application_Idle(object sender, EventArgs e)
+        {
+            if (needRepaint)
+                Invalidate();
+        }
+
+        private void OnScroll()
+        {
+            Refresh();
+            target.Refresh();
         }
 
         private void Scroll(Point point)
@@ -225,23 +242,6 @@ namespace FastColoredTextBoxNS
             var pp = target.PointToPlace(p0);
             target.DoRangeVisible(new Range(target, pp, pp), true);
             BeginInvoke((MethodInvoker)OnScroll);
-        }
-
-        private void OnScroll()
-        {
-            Refresh();
-            target.Refresh();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Application.Idle -= Application_Idle;
-                if (target != null)
-                    UnSubscribe(target);
-            }
-            base.Dispose(disposing);
         }
     }
 }

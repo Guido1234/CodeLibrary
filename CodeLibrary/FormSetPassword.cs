@@ -4,7 +4,7 @@ using System.Security;
 using System.Windows.Forms;
 
 namespace CodeLibrary
-{ 
+{
     public partial class FormSetPassword : Form
     {
         public FormSetPassword()
@@ -12,7 +12,7 @@ namespace CodeLibrary
             InitializeComponent();
             DialogResult = DialogResult.Cancel;
             textBoxPassword.PasswordChar = '*';
-        } 
+        }
 
         public SecureString Password
         {

@@ -14,6 +14,8 @@ namespace FastColoredTextBoxNS
     {
         private readonly List<object> macro = new List<object>();
 
+        private bool isRecording;
+
         internal MacrosManager(FastColoredTextBox ctrl)
         {
             UnderlayingControl = ctrl;
@@ -25,8 +27,6 @@ namespace FastColoredTextBoxNS
         /// </summary>
         public bool AllowMacroRecordingByUser { get; set; }
 
-        private bool isRecording;
-
         /// <summary>
         /// Returns current recording state. Set to True/False to start/stop recording programmatically.
         /// </summary>
@@ -34,76 +34,6 @@ namespace FastColoredTextBoxNS
         {
             get { return isRecording; }
             set { isRecording = value; UnderlayingControl.Invalidate(); }
-        }
-
-        /// <summary>
-        /// FCTB
-        /// </summary>
-        public FastColoredTextBox UnderlayingControl { get; private set; }
-
-        /// <summary>
-        /// Executes recorded macro
-        /// </summary>
-        /// <returns></returns>
-        public void ExecuteMacros()
-        {
-            IsRecording = false;
-            UnderlayingControl.BeginUpdate();
-            UnderlayingControl.Selection.BeginUpdate();
-            UnderlayingControl.BeginAutoUndo();
-            foreach (var item in macro)
-            {
-                if (item is Keys)
-                {
-                    UnderlayingControl.ProcessKey((Keys)item);
-                }
-                if (item is KeyValuePair<char, Keys>)
-                {
-                    var p = (KeyValuePair<char, Keys>)item;
-                    UnderlayingControl.ProcessKey(p.Key, p.Value);
-                }
-
-            }
-            UnderlayingControl.EndAutoUndo();
-            UnderlayingControl.Selection.EndUpdate();
-            UnderlayingControl.EndUpdate();
-        }
-
-        /// <summary>
-        /// Adds the char to current macro
-        /// </summary>
-        public void AddCharToMacros(char c, Keys modifiers)
-        {
-            macro.Add(new KeyValuePair<char, Keys>(c, modifiers));
-        }
-
-        /// <summary>
-        /// Adds keyboard key to current macro
-        /// </summary>
-        public void AddKeyToMacros(Keys keyData)
-        {
-            macro.Add(keyData);
-        }
-
-        /// <summary>
-        /// Clears last recorded macro
-        /// </summary>
-        public void ClearMacros()
-        {
-            macro.Clear();
-        }
-
-
-        internal void ProcessKey(Keys keyData)
-        {
-            if (IsRecording)
-                AddKeyToMacros(keyData);
-        }
-
-        internal void ProcessKey(char c, Keys modifiers)
-        {
-            if (IsRecording)
-                AddCharToMacros(c, modifiers);
         }
 
         /// <summary>
@@ -178,6 +108,74 @@ namespace FastColoredTextBoxNS
 
                 Thread.CurrentThread.CurrentUICulture = cult;
             }
+        }
+
+        /// <summary>
+        /// FCTB
+        /// </summary>
+        public FastColoredTextBox UnderlayingControl { get; private set; }
+
+        /// <summary>
+        /// Adds the char to current macro
+        /// </summary>
+        public void AddCharToMacros(char c, Keys modifiers)
+        {
+            macro.Add(new KeyValuePair<char, Keys>(c, modifiers));
+        }
+
+        /// <summary>
+        /// Adds keyboard key to current macro
+        /// </summary>
+        public void AddKeyToMacros(Keys keyData)
+        {
+            macro.Add(keyData);
+        }
+
+        /// <summary>
+        /// Clears last recorded macro
+        /// </summary>
+        public void ClearMacros()
+        {
+            macro.Clear();
+        }
+
+        /// <summary>
+        /// Executes recorded macro
+        /// </summary>
+        /// <returns></returns>
+        public void ExecuteMacros()
+        {
+            IsRecording = false;
+            UnderlayingControl.BeginUpdate();
+            UnderlayingControl.Selection.BeginUpdate();
+            UnderlayingControl.BeginAutoUndo();
+            foreach (var item in macro)
+            {
+                if (item is Keys)
+                {
+                    UnderlayingControl.ProcessKey((Keys)item);
+                }
+                if (item is KeyValuePair<char, Keys>)
+                {
+                    var p = (KeyValuePair<char, Keys>)item;
+                    UnderlayingControl.ProcessKey(p.Key, p.Value);
+                }
+            }
+            UnderlayingControl.EndAutoUndo();
+            UnderlayingControl.Selection.EndUpdate();
+            UnderlayingControl.EndUpdate();
+        }
+
+        internal void ProcessKey(Keys keyData)
+        {
+            if (IsRecording)
+                AddKeyToMacros(keyData);
+        }
+
+        internal void ProcessKey(char c, Keys modifiers)
+        {
+            if (IsRecording)
+                AddCharToMacros(c, modifiers);
         }
     }
 }

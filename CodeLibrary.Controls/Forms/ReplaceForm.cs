@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -7,31 +6,13 @@ namespace CodeLibrary.Controls.Forms
 {
     public partial class ReplaceForm : Form
     {
-        RichTextBox tb;
+        private RichTextBox tb;
 
         public ReplaceForm(RichTextBox tb)
         {
             InitializeComponent();
             this.tb = tb;
         }
-
-        private void btClose_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void btFindNext_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                FindNext(tbFind.Text);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
 
         public virtual void FindNext(string pattern)
         {
@@ -44,7 +25,6 @@ namespace CodeLibrary.Controls.Forms
                     pattern = "\\b" + pattern + "\\b";
 
                 Regex _regex = new Regex(pattern);
-
 
                 Range range = new Range() { Start = tb.SelectionStart, Length = tb.SelectionLength };
                 //
@@ -67,6 +47,48 @@ namespace CodeLibrary.Controls.Forms
                     tb.SelectionStart = 0;
                     tb.SelectionLength = 0;
                     MessageBox.Show("No more results.");
+                }
+                else
+                {
+                    MessageBox.Show("Not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public virtual void ReplaceAll(string pattern, string replace)
+        {
+            try
+            {
+                RegexOptions opt = cbMatchCase.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
+                if (!cbRegex.Checked)
+                    pattern = Regex.Escape(pattern);
+                if (cbWholeWord.Checked)
+                    pattern = "\\b" + pattern + "\\b";
+
+                Regex _regex = new Regex(pattern);
+
+                Range range = new Range() { Start = tb.SelectionStart, Length = tb.SelectionLength };
+                //
+
+                var _matches = _regex.Matches(tb.Text);
+                if (_matches.Count > 0)
+                {
+                    for (int ii = _matches.Count - 1; ii > -1; ii--)
+                    {
+                        Match match = _matches[ii];
+                        if (match.Success)
+                        {
+                            tb.SelectionStart = match.Index;
+                            tb.SelectionLength = match.Length;
+                            tb.SelectedText = replace;
+                        }
+                    }
+                    tb.SelectionStart = 0;
+                    tb.SelectionLength = 0;
                 }
                 else
                 {
@@ -117,57 +139,10 @@ namespace CodeLibrary.Controls.Forms
             }
         }
 
-        public virtual void ReplaceAll(string pattern, string replace)
+        protected override void OnActivated(EventArgs e)
         {
-            try
-            {
-                RegexOptions opt = cbMatchCase.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
-                if (!cbRegex.Checked)
-                    pattern = Regex.Escape(pattern);
-                if (cbWholeWord.Checked)
-                    pattern = "\\b" + pattern + "\\b";
-
-                Regex _regex = new Regex(pattern);
-
-
-                Range range = new Range() { Start = tb.SelectionStart, Length = tb.SelectionLength };
-                //
-
-                var _matches = _regex.Matches(tb.Text);
-                if (_matches.Count > 0)
-                {
-                    for (int ii = _matches.Count-1; ii > -1; ii--)
-                    {
-                        Match match = _matches[ii];
-                        if (match.Success)
-                        {
-                            tb.SelectionStart = match.Index;
-                            tb.SelectionLength = match.Length;
-                            tb.SelectedText = replace;
-                        }         
-                    }
-                    tb.SelectionStart = 0;
-                    tb.SelectionLength = 0;
-                }
-                else
-                {
-                    MessageBox.Show("Not found");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-
-
-        private void tbFind_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == '\r')
-                btFindNext_Click(sender, null);
-            if (e.KeyChar == '\x1b')
-                Hide();
+            tbFind.Focus();
+            ResetSerach();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) // David
@@ -180,14 +155,21 @@ namespace CodeLibrary.Controls.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void ReplaceForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void btClose_Click(object sender, EventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing)
+            Close();
+        }
+
+        private void btFindNext_Click(object sender, EventArgs e)
+        {
+            try
             {
-                e.Cancel = true;
-                Hide();
+                FindNext(tbFind.Text);
             }
-            this.tb.Focus();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void btReplace_Click(object sender, EventArgs e)
@@ -214,19 +196,31 @@ namespace CodeLibrary.Controls.Forms
             }
         }
 
-        protected override void OnActivated(EventArgs e)
-        {
-            tbFind.Focus();
-            ResetSerach();
-        }
-
-        void ResetSerach()
-        {
-        }
-
         private void cbMatchCase_CheckedChanged(object sender, EventArgs e)
         {
             ResetSerach();
+        }
+
+        private void ReplaceForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                Hide();
+            }
+            this.tb.Focus();
+        }
+
+        private void ResetSerach()
+        {
+        }
+
+        private void tbFind_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\r')
+                btFindNext_Click(sender, null);
+            if (e.KeyChar == '\x1b')
+                Hide();
         }
     }
 }

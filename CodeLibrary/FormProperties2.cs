@@ -10,11 +10,11 @@ namespace CodeLibrary
         private readonly EnumComboBoxModeHelper<CodeType> _defaultTypeComboBoxHelper;
         private readonly EnumComboBoxModeHelper<Keys> _shortCutKeysComboHelper;
         private readonly EnumComboBoxModeHelper<CodeType> _typeComboBoxHelper;
- 
+
         public FormProperties2()
         {
             InitializeComponent();
-            _typeComboBoxHelper = new EnumComboBoxModeHelper<CodeType>(cbType, CodeType.None);            
+            _typeComboBoxHelper = new EnumComboBoxModeHelper<CodeType>(cbType, CodeType.None);
             _typeComboBoxHelper.Fill();
 
             _defaultTypeComboBoxHelper = new EnumComboBoxModeHelper<CodeType>(cbDefaultType, CodeType.None);
@@ -25,6 +25,31 @@ namespace CodeLibrary
         }
 
         public CodeSnippet Snippet { get; set; }
+
+        private void CbDefaultType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int _value = _defaultTypeComboBoxHelper.GetValue();
+            if (_value == (int)CodeType.RTF)
+            {
+                rtf.Left = tbCode.Left;
+                rtf.Top = tbCode.Top;
+                rtf.Width = tbCode.Width;
+                rtf.Height = tbCode.Height;
+                rtf.Visible = true;
+                tbCode.Visible = false;
+            }
+            else
+            {
+                tbCode.Visible = true;
+                rtf.Visible = false;
+            }
+        }
+
+        private void cbType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string _name = _typeComboBoxHelper.GetName().ToLower();
+            picture.Image = Icons.Images[_name];
+        }
 
         private void Defaults_Load(object sender, EventArgs e)
         {
@@ -108,31 +133,6 @@ namespace CodeLibrary
                 Snippet.ShortCutKeys = _keys;
             }
             Close();
-        }
-
-        private void cbType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string _name = _typeComboBoxHelper.GetName().ToLower();
-            picture.Image = Icons.Images[_name];
-        }
-
-        private void CbDefaultType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int _value = _defaultTypeComboBoxHelper.GetValue();
-            if (_value == (int)CodeType.RTF)
-            {
-                rtf.Left = tbCode.Left;
-                rtf.Top = tbCode.Top;
-                rtf.Width = tbCode.Width;
-                rtf.Height = tbCode.Height;
-                rtf.Visible = true;
-                tbCode.Visible = false;
-            }
-            else
-            {
-                tbCode.Visible = true;
-                rtf.Visible = false;
-            }
         }
     }
 }

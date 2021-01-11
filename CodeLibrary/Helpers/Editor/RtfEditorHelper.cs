@@ -3,8 +3,8 @@ using CodeLibrary.Core;
 using FastColoredTextBoxNS;
 using GK.Template;
 using System;
-using System.Windows.Forms;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace CodeLibrary
 {
@@ -26,12 +26,116 @@ namespace CodeLibrary
             _rtf.KeyDown += _rtf_KeyDown;
         }
 
+        public ITextEditor Editor
+        {
+            get
+            {
+                return _rtf;
+            }
+        }
+
+        public string SelectedText
+        {
+            get
+            {
+                return _rtf.SelectedText;
+            }
+            set
+            {
+                _rtf.SelectedText = value;
+            }
+        }
+
+        public string Text
+        {
+            get
+            {
+                return _rtf.Text;
+            }
+            set
+            {
+                _rtf.Text = value;
+            }
+        }
+
+        public void ApplySnippetSettings()
+        {
+        }
+
+        public void BringToFront() => _rtf.BringToFront();
+
+        public void CodeToScreen(CodeSnippet snippet)
+        {
+            _supressTextChanged = true;
+
+            _TextBoxHelper.CurrentSnippet = snippet;
+            _mainform.rtfEditor.ClearUndo();
+            _mainform.rtfEditor.ResetText();
+            _mainform.rtfEditor.Rtf = snippet.RTF;
+
+            _mainform.rtfEditor.Zoom = Config.Zoom;
+
+            _supressTextChanged = false;
+        }
+
+        public void Copy() => _rtf.Copy();
+
+        public string CurrentLine()
+        {
+            return _rtf.CurrentLine();
+        }
+
+        public void Cut() => _rtf.Cut();
+
+        public void Focus() => _rtf.Focus();
+
+        public void GotoLine() => _rtf.GotoLine();
+
+        public void GotoLine(int line) => _rtf.GotoLine(line);
+
+        public bool GotoNextBookMark()
+        {
+            return false;
+        }
+
+        public bool GotoPrevBookMark()
+        {
+            return false;
+        }
+
+        public void Paste() => _rtf.Paste();
+
+        public void Save()
+        {
+            ScreenToCode(_TextBoxHelper.CurrentSnippet);
+        }
+
+        public void ScreenToCode(CodeSnippet snippet)
+        {
+            if (snippet == null)
+            {
+                return;
+            }
+
+            snippet.RTF = _rtf.Rtf;
+            snippet.Code = _rtf.Text;
+        }
+
+        public void SelectAll() => _rtf.SelectAll();
+
         public void SelectLine()
         {
             _rtf.SelectLine();
         }
 
+        public void ShowFindDialog() => _rtf.ShowFindDialog();
 
+        public void ShowReplaceDialog() => _rtf.ShowReplaceDialog();
+
+        public bool SwitchWordWrap()
+        {
+            return false;
+        }
 
         private void _rtf_KeyDown(object sender, KeyEventArgs e)
         {
@@ -49,7 +153,6 @@ namespace CodeLibrary
 
             if (string.IsNullOrEmpty(tb.SelectedText))
                 return;
-
 
             if (e.KeyValue == 222 && e.Shift)
             {
@@ -89,36 +192,11 @@ namespace CodeLibrary
             }
         }
 
-        public ITextEditor Editor
-        {
-            get
-            {
-                return _rtf;
-            }
-        }
-
         private void _rtf_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
                 _mainform.contextMenuStripPopup.Show(Cursor.Position.X, Cursor.Position.Y);
-            }
-        }
-
-        public string CurrentLine()
-        {
-            return _rtf.CurrentLine();      
-        }
-
-        public string SelectedText
-        {
-            get
-            {
-                return _rtf.SelectedText;
-            }
-            set
-            {
-                _rtf.SelectedText = value;
             }
         }
 
@@ -131,94 +209,11 @@ namespace CodeLibrary
                 StringTemplate stringtemplate = new StringTemplate();
                 string result = stringtemplate.Format(_snippet.Code, _rtf.SelectedText);
                 _rtf.SelectedText = result;
-                return true;                
+                return true;
             }
 
             return false;
         }
-
-        public string Text
-        {
-            get
-            {
-                return _rtf.Text;
-            }
-            set
-            {
-                _rtf.Text = value;
-            }
-        }
-
-        public void BringToFront() => _rtf.BringToFront();
-
-        public void CodeToScreen(CodeSnippet snippet)
-        {
-            _supressTextChanged = true;
-
-            _TextBoxHelper.CurrentSnippet = snippet;
-            _mainform.rtfEditor.ClearUndo();
-            _mainform.rtfEditor.ResetText();
-            _mainform.rtfEditor.Rtf = snippet.RTF;
-            
-            _mainform.rtfEditor.Zoom = Config.Zoom;
-
-            _supressTextChanged = false;
-        }
-
-        public void Save()
-        {
-            ScreenToCode(_TextBoxHelper.CurrentSnippet);
-        }
-
-        public bool SwitchWordWrap()
-        {
-            return false;
-        }
-
-        public void ApplySnippetSettings()
-        {
-
-        }
-
-
-        public void Copy() => _rtf.Copy();
-
-        public void Cut() => _rtf.Cut();
-
-        public void Focus() => _rtf.Focus();
-
-        public void GotoLine() => _rtf.GotoLine();
-
-        public void GotoLine(int line) => _rtf.GotoLine(line);
-
-        public bool GotoNextBookMark()
-        {
-            return false;
-        }
-
-        public bool GotoPrevBookMark()
-        {
-            return false;
-        }
-
-        public void Paste() => _rtf.Paste();
-
-        public void ScreenToCode(CodeSnippet snippet)
-        {
-            if (snippet== null)
-            {
-                return;
-            }
-
-            snippet.RTF = _rtf.Rtf;
-            snippet.Code = _rtf.Text;
-        }
-
-        public void SelectAll() => _rtf.SelectAll();
-
-        public void ShowFindDialog() => _rtf.ShowFindDialog();
-
-        public void ShowReplaceDialog() => _rtf.ShowReplaceDialog();
 
         private void RtfEditor_TextChanged(object sender, EventArgs e)
         {

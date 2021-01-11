@@ -3,19 +3,35 @@ using System.Drawing;
 
 namespace FastColoredTextBoxNS
 {
+    public enum CompareResult
+    {
+        /// <summary>
+        /// Item do not appears
+        /// </summary>
+        Hidden,
+
+        /// <summary>
+        /// Item appears
+        /// </summary>
+        Visible,
+
+        /// <summary>
+        /// Item appears and will selected
+        /// </summary>
+        VisibleAndSelected
+    }
+
     /// <summary>
     /// Item of autocomplete menu
     /// </summary>
     public class AutocompleteItem
     {
-        public string Text;
         public int ImageIndex = -1;
         public object Tag;
-        string toolTipTitle;
-        string toolTipText;
-        string menuText;
-        public AutocompleteMenu Parent { get; internal set; }
-
+        public string Text;
+        private string menuText;
+        private string toolTipText;
+        private string toolTipTitle;
 
         public AutocompleteItem()
         {
@@ -46,11 +62,52 @@ namespace FastColoredTextBoxNS
         }
 
         /// <summary>
-        /// Returns text for inserting into Textbox
+        /// Back color of item
         /// </summary>
-        public virtual string GetTextForReplace()
+        public virtual Color BackColor
         {
-            return Text;
+            get { return Color.Transparent; }
+            set { throw new NotImplementedException("Override this property to change color"); }
+        }
+
+        /// <summary>
+        /// Fore color of text of item
+        /// </summary>
+        public virtual Color ForeColor
+        {
+            get { return Color.Transparent; }
+            set { throw new NotImplementedException("Override this property to change color"); }
+        }
+
+        /// <summary>
+        /// Menu text. This text is displayed in the drop-down menu.
+        /// </summary>
+        public virtual string MenuText
+        {
+            get { return menuText; }
+            set { menuText = value; }
+        }
+
+        public AutocompleteMenu Parent { get; internal set; }
+
+        /// <summary>
+        /// Tooltip text.
+        /// </summary>
+        /// <remarks>For display tooltip text, ToolTipTitle must be not null</remarks>
+        public virtual string ToolTipText
+        {
+            get { return toolTipText; }
+            set { toolTipText = value; }
+        }
+
+        /// <summary>
+        /// Title for tooltip.
+        /// </summary>
+        /// <remarks>Return null for disable tooltip for this item</remarks>
+        public virtual string ToolTipTitle
+        {
+            get { return toolTipTitle; }
+            set { toolTipTitle = value; }
         }
 
         /// <summary>
@@ -66,11 +123,11 @@ namespace FastColoredTextBoxNS
         }
 
         /// <summary>
-        /// Returns text for display into popup menu
+        /// Returns text for inserting into Textbox
         /// </summary>
-        public override string ToString()
+        public virtual string GetTextForReplace()
         {
-            return menuText ?? Text;
+            return Text;
         }
 
         /// <summary>
@@ -82,67 +139,49 @@ namespace FastColoredTextBoxNS
         }
 
         /// <summary>
-        /// Title for tooltip.
+        /// Returns text for display into popup menu
         /// </summary>
-        /// <remarks>Return null for disable tooltip for this item</remarks>
-        public virtual string ToolTipTitle
+        public override string ToString()
         {
-            get { return toolTipTitle; }
-            set { toolTipTitle = value; }
-        }
-
-        /// <summary>
-        /// Tooltip text.
-        /// </summary>
-        /// <remarks>For display tooltip text, ToolTipTitle must be not null</remarks>
-        public virtual string ToolTipText
-        {
-            get { return toolTipText; }
-            set { toolTipText = value; }
-        }
-
-        /// <summary>
-        /// Menu text. This text is displayed in the drop-down menu.
-        /// </summary>
-        public virtual string MenuText
-        {
-            get { return menuText; }
-            set { menuText = value; }
-        }
-
-        /// <summary>
-        /// Fore color of text of item
-        /// </summary>
-        public virtual Color ForeColor
-        {
-            get { return Color.Transparent; }
-            set { throw new NotImplementedException("Override this property to change color"); }
-        }
-
-        /// <summary>
-        /// Back color of item
-        /// </summary>
-        public virtual Color BackColor
-        {
-            get { return Color.Transparent; }
-            set { throw new NotImplementedException("Override this property to change color"); }
+            return menuText ?? Text;
         }
     }
 
-    public enum CompareResult
+    /// <summary>
+    /// This autocomplete item appears after dot
+    /// </summary>
+    public class MethodAutocompleteItem : AutocompleteItem
     {
-        /// <summary>
-        /// Item do not appears
-        /// </summary>
-        Hidden,
-        /// <summary>
-        /// Item appears
-        /// </summary>
-        Visible,
-        /// <summary>
-        /// Item appears and will selected
-        /// </summary>
-        VisibleAndSelected
+        private string firstPart;
+        private string lowercaseText;
+
+        public MethodAutocompleteItem(string text)
+            : base(text)
+        {
+            lowercaseText = Text.ToLower();
+        }
+
+        public override CompareResult Compare(string fragmentText)
+        {
+            int i = fragmentText.LastIndexOf('.');
+            if (i < 0)
+                return CompareResult.Hidden;
+            string lastPart = fragmentText.Substring(i + 1);
+            firstPart = fragmentText.Substring(0, i);
+
+            if (lastPart == "") return CompareResult.Visible;
+            if (Text.StartsWith(lastPart, StringComparison.InvariantCultureIgnoreCase))
+                return CompareResult.VisibleAndSelected;
+            if (lowercaseText.Contains(lastPart.ToLower()))
+                return CompareResult.Visible;
+
+            return CompareResult.Hidden;
+        }
+
+        public override string GetTextForReplace()
+        {
+            return firstPart + "." + Text;
+        }
     }
 
     /// <summary>
@@ -158,9 +197,16 @@ namespace FastColoredTextBoxNS
             ToolTipText = Text;
         }
 
-        public override string ToString()
+        /// <summary>
+        /// Compares fragment text with this item
+        /// </summary>
+        public override CompareResult Compare(string fragmentText)
         {
-            return MenuText ?? Text.Replace("\n", " ").Replace("^", "");
+            if (Text.StartsWith(fragmentText, StringComparison.InvariantCultureIgnoreCase) &&
+                   Text != fragmentText)
+                return CompareResult.Visible;
+
+            return CompareResult.Hidden;
         }
 
         public override string GetTextForReplace()
@@ -197,53 +243,9 @@ namespace FastColoredTextBoxNS
             e.Tb.EndUpdate();
         }
 
-        /// <summary>
-        /// Compares fragment text with this item
-        /// </summary>
-        public override CompareResult Compare(string fragmentText)
+        public override string ToString()
         {
-            if (Text.StartsWith(fragmentText, StringComparison.InvariantCultureIgnoreCase) &&
-                   Text != fragmentText)
-                return CompareResult.Visible;
-
-            return CompareResult.Hidden;
-        }
-    }
-
-    /// <summary>
-    /// This autocomplete item appears after dot
-    /// </summary>
-    public class MethodAutocompleteItem : AutocompleteItem
-    {
-        string firstPart;
-        string lowercaseText;
-
-        public MethodAutocompleteItem(string text)
-            : base(text)
-        {
-            lowercaseText = Text.ToLower();
-        }
-
-        public override CompareResult Compare(string fragmentText)
-        {
-            int i = fragmentText.LastIndexOf('.');
-            if (i < 0)
-                return CompareResult.Hidden;
-            string lastPart = fragmentText.Substring(i + 1);
-            firstPart = fragmentText.Substring(0, i);
-
-            if (lastPart == "") return CompareResult.Visible;
-            if (Text.StartsWith(lastPart, StringComparison.InvariantCultureIgnoreCase))
-                return CompareResult.VisibleAndSelected;
-            if (lowercaseText.Contains(lastPart.ToLower()))
-                return CompareResult.Visible;
-
-            return CompareResult.Hidden;
-        }
-
-        public override string GetTextForReplace()
-        {
-            return firstPart + "." + Text;
+            return MenuText ?? Text.Replace("\n", " ").Replace("^", "");
         }
     }
 

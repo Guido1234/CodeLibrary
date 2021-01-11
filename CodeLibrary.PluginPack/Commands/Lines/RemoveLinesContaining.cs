@@ -13,12 +13,12 @@ namespace CodeLibrary.PluginPack
     public class RemoveLinesContaining : IEditorPlugin
     {
         public string Category => "Lines";
+        public string Containing { get; set; }
         public string DisplayName => "Remove Lines Containing";
         public Guid Id => Guid.Parse("bfcb4446-67a6-4023-878b-29da1d47f8bc");
         public Image Image => null;
         public bool OmitResult { get; set; } = false;
         public Keys ShortcutKeys => Keys.None;
-        public string Containing { get; set; }
 
         public void Apply(ISelInfo sel)
         {
@@ -26,7 +26,6 @@ namespace CodeLibrary.PluginPack
 
             if (!Configure())
                 OmitResult = true;
-
 
             string text = sel.SelectedText;
             string[] _lines = Utils.Lines(text);
@@ -49,18 +48,6 @@ namespace CodeLibrary.PluginPack
         //Place _end = new Place(_line.End.iChar, _fastColoredTextBox.Selection.Start.iLine);
         //_fastColoredTextBox.Selection = new Range(_fastColoredTextBox, _start, _end);
 
-
-
-        private bool Contains(string line, string[] contains)
-        {
-            foreach (string item in contains)
-            {
-                if (line.Contains(item))
-                    return true;
-            }
-            return false;
-        }
-
         public bool Configure()
         {
             FormRemoveLinesContaining f = new FormRemoveLinesContaining();
@@ -73,6 +60,16 @@ namespace CodeLibrary.PluginPack
             {
                 Containing = f.Containing;
                 return true;
+            }
+            return false;
+        }
+
+        private bool Contains(string line, string[] contains)
+        {
+            foreach (string item in contains)
+            {
+                if (line.Contains(item))
+                    return true;
             }
             return false;
         }

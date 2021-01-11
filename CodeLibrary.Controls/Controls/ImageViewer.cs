@@ -40,7 +40,7 @@ namespace CodeLibrary.Controls.Controls
             picture.Width = _image.Width;
             picture.Height = _image.Height;
             picture.SizeMode = PictureBoxSizeMode.Zoom;
-            
+
             Center();
         }
 

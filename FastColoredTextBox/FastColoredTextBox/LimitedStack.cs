@@ -7,16 +7,19 @@ namespace FastColoredTextBoxNS
     /// </summary>
     public class LimitedStack<T>
     {
-        T[] items;
-        int count;
-        int start;
+        private int count;
+        private T[] items;
+        private int start;
 
         /// <summary>
-        /// Max stack length
+        /// Constructor
         /// </summary>
-        public int MaxItemCount
+        /// <param name="maxItemCount">Maximum length of stack</param>
+        public LimitedStack(int maxItemCount)
         {
-            get { return items.Length; }
+            items = new T[maxItemCount];
+            count = 0;
+            start = 0;
         }
 
         /// <summary>
@@ -28,14 +31,37 @@ namespace FastColoredTextBoxNS
         }
 
         /// <summary>
-        /// Constructor
+        /// Max stack length
         /// </summary>
-        /// <param name="maxItemCount">Maximum length of stack</param>
-        public LimitedStack(int maxItemCount)
+        public int MaxItemCount
         {
-            items = new T[maxItemCount];
+            get { return items.Length; }
+        }
+
+        private int LastIndex
+        {
+            get { return (start + count - 1) % items.Length; }
+        }
+
+        /// <summary>
+        /// Clear stack
+        /// </summary>
+        public void Clear()
+        {
+            items = new T[items.Length];
             count = 0;
             start = 0;
+        }
+
+        /// <summary>
+        /// Peek item
+        /// </summary>
+        public T Peek()
+        {
+            if (count == 0)
+                return default(T);
+
+            return items[LastIndex];
         }
 
         /// <summary>
@@ -55,22 +81,6 @@ namespace FastColoredTextBoxNS
             return item;
         }
 
-        int LastIndex
-        {
-            get { return (start + count - 1) % items.Length; }
-        }
-
-        /// <summary>
-        /// Peek item
-        /// </summary>
-        public T Peek()
-        {
-            if (count == 0)
-                return default(T);
-
-            return items[LastIndex];
-        }
-
         /// <summary>
         /// Push item
         /// </summary>
@@ -82,16 +92,6 @@ namespace FastColoredTextBoxNS
                 count++;
 
             items[LastIndex] = item;
-        }
-
-        /// <summary>
-        /// Clear stack
-        /// </summary>
-        public void Clear()
-        {
-            items = new T[items.Length];
-            count = 0;
-            start = 0;
         }
 
         public T[] ToArray()

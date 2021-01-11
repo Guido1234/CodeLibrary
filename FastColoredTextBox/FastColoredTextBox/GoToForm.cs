@@ -5,13 +5,13 @@ namespace FastColoredTextBoxNS
 {
     public partial class GoToForm : Form
     {
-        public int SelectedLineNumber { get; set; }
-        public int TotalLineCount { get; set; }
-
         public GoToForm()
         {
             InitializeComponent();
         }
+
+        public int SelectedLineNumber { get; set; }
+        public int TotalLineCount { get; set; }
 
         protected override void OnLoad(EventArgs e)
         {
@@ -29,6 +29,12 @@ namespace FastColoredTextBoxNS
             this.tbLineNumber.Focus();
         }
 
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+
         private void btnOk_Click(object sender, EventArgs e)
         {
             int enteredLine;
@@ -41,12 +47,6 @@ namespace FastColoredTextBoxNS
             }
 
             this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
     }

@@ -12,32 +12,7 @@ namespace FastColoredTextBoxNS
     {
         public string LineNumbersCSS = "<style type=\"text/css\"> .lineNumber{font-family : monospace; font-size : small; font-style : normal; font-weight : normal; color : Teal; background-color : ThreedFace;} </style>";
 
-        /// <summary>
-        /// Use nbsp; instead space
-        /// </summary>
-        public bool UseNbsp { get; set; }
-        /// <summary>
-        /// Use nbsp; instead space in beginning of line
-        /// </summary>
-        public bool UseForwardNbsp { get; set; }
-        /// <summary>
-        /// Use original font
-        /// </summary>
-        public bool UseOriginalFont { get; set; }
-        /// <summary>
-        /// Use style tag instead style attribute
-        /// </summary>
-        public bool UseStyleTag { get; set; }
-        /// <summary>
-        /// Use 'br' tag instead of '\n'
-        /// </summary>
-        public bool UseBr { get; set; }
-        /// <summary>
-        /// Includes line numbers
-        /// </summary>
-        public bool IncludeLineNumbers { get; set; }
-
-        FastColoredTextBox tb;
+        private FastColoredTextBox tb;
 
         public ExportToHTML()
         {
@@ -45,6 +20,43 @@ namespace FastColoredTextBoxNS
             UseOriginalFont = true;
             UseStyleTag = true;
             UseBr = true;
+        }
+
+        /// <summary>
+        /// Includes line numbers
+        /// </summary>
+        public bool IncludeLineNumbers { get; set; }
+
+        /// <summary>
+        /// Use 'br' tag instead of '\n'
+        /// </summary>
+        public bool UseBr { get; set; }
+
+        /// <summary>
+        /// Use nbsp; instead space in beginning of line
+        /// </summary>
+        public bool UseForwardNbsp { get; set; }
+
+        /// <summary>
+        /// Use nbsp; instead space
+        /// </summary>
+        public bool UseNbsp { get; set; }
+
+        /// <summary>
+        /// Use original font
+        /// </summary>
+        public bool UseOriginalFont { get; set; }
+
+        /// <summary>
+        /// Use style tag instead style attribute
+        /// </summary>
+        public bool UseStyleTag { get; set; }
+
+        public static string GetColorAsString(Color color)
+        {
+            if (color == Color.Transparent)
+                return "";
+            return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
         }
 
         public string GetHtml(FastColoredTextBox tb)
@@ -104,15 +116,19 @@ namespace FastColoredTextBoxNS
 
                         tempSB.Append("&nbsp;");
                         break;
+
                     case '<':
                         tempSB.Append("&lt;");
                         break;
+
                     case '>':
                         tempSB.Append("&gt;");
                         break;
+
                     case '&':
                         tempSB.Append("&amp;");
                         break;
+
                     default:
                         hasNonSpace = true;
                         tempSB.Append(c.c);
@@ -140,6 +156,25 @@ namespace FastColoredTextBoxNS
                 sb.Insert(0, LineNumbersCSS);
 
             return sb.ToString();
+        }
+
+        private void Flush(StringBuilder sb, StringBuilder tempSB, StyleIndex currentStyle)
+        {
+            //find textRenderer
+            if (tempSB.Length == 0)
+                return;
+            if (UseStyleTag)
+                sb.AppendFormat("<font class=fctb{0}>{1}</font>", GetStyleName(currentStyle), tempSB.ToString());
+            else
+            {
+                string css = GetCss(currentStyle);
+                if (css != "")
+                    sb.AppendFormat("<font style=\"{0}\">", css);
+                sb.Append(tempSB.ToString());
+                if (css != "")
+                    sb.Append("</font>");
+            }
+            tempSB.Length = 0;
         }
 
         private string GetCss(StyleIndex styleIndex)
@@ -188,35 +223,9 @@ namespace FastColoredTextBoxNS
             return result;
         }
 
-        public static string GetColorAsString(Color color)
-        {
-            if (color == Color.Transparent)
-                return "";
-            return string.Format("#{0:x2}{1:x2}{2:x2}", color.R, color.G, color.B);
-        }
-
-        string GetStyleName(StyleIndex styleIndex)
+        private string GetStyleName(StyleIndex styleIndex)
         {
             return styleIndex.ToString().Replace(" ", "").Replace(",", "");
-        }
-
-        private void Flush(StringBuilder sb, StringBuilder tempSB, StyleIndex currentStyle)
-        {
-            //find textRenderer
-            if (tempSB.Length == 0)
-                return;
-            if (UseStyleTag)
-                sb.AppendFormat("<font class=fctb{0}>{1}</font>", GetStyleName(currentStyle), tempSB.ToString());
-            else
-            {
-                string css = GetCss(currentStyle);
-                if (css != "")
-                    sb.AppendFormat("<font style=\"{0}\">", css);
-                sb.Append(tempSB.ToString());
-                if (css != "")
-                    sb.Append("</font>");
-            }
-            tempSB.Length = 0;
         }
     }
 }

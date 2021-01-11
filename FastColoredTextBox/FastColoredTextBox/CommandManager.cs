@@ -3,21 +3,61 @@ using System.Collections.Generic;
 
 namespace FastColoredTextBoxNS
 {
+    public abstract class Command
+    {
+        public TextSource ts;
+
+        public abstract void Execute();
+    }
+
     public class CommandManager
     {
-        readonly int maxHistoryLength = 200;
-        LimitedStack<UndoableCommand> history;
-        Stack<UndoableCommand> redoStack = new Stack<UndoableCommand>();
-        public TextSource TextSource { get; private set; }
-        public bool UndoRedoStackIsEnabled { get; set; }
-
-        public event EventHandler RedoCompleted = delegate { };
+        protected int disabledCommands = 0;
+        private readonly int maxHistoryLength = 200;
+        private int autoUndoCommands = 0;
+        private LimitedStack<UndoableCommand> history;
+        private Stack<UndoableCommand> redoStack = new Stack<UndoableCommand>();
 
         public CommandManager(TextSource ts)
         {
             history = new LimitedStack<UndoableCommand>(maxHistoryLength);
             TextSource = ts;
             UndoRedoStackIsEnabled = true;
+        }
+
+        public event EventHandler RedoCompleted = delegate { };
+
+        public bool RedoEnabled
+        {
+            get
+            {
+                return redoStack.Count > 0;
+            }
+        }
+
+        public TextSource TextSource { get; private set; }
+
+        public bool UndoEnabled
+        {
+            get
+            {
+                return history.Count > 0;
+            }
+        }
+
+        public bool UndoRedoStackIsEnabled { get; set; }
+
+        public void BeginAutoUndoCommands()
+        {
+            autoUndoCommands++;
+        }
+
+        public void EndAutoUndoCommands()
+        {
+            autoUndoCommands--;
+            if (autoUndoCommands == 0)
+                if (history.Count > 0)
+                    history.Peek().autoUndo = false;
         }
 
         public virtual void ExecuteCommand(Command cmd)
@@ -30,7 +70,6 @@ namespace FastColoredTextBoxNS
                 if (cmd is UndoableCommand)
                     //make wrapper
                     cmd = new MultiRangeCommand((UndoableCommand)cmd);
-
 
             if (cmd is UndoableCommand)
             {
@@ -87,33 +126,6 @@ namespace FastColoredTextBoxNS
             TextSource.CurrentTB.OnUndoRedoStateChanged();
         }
 
-        protected int disabledCommands = 0;
-
-        private void EndDisableCommands()
-        {
-            disabledCommands--;
-        }
-
-        private void BeginDisableCommands()
-        {
-            disabledCommands++;
-        }
-
-        int autoUndoCommands = 0;
-
-        public void EndAutoUndoCommands()
-        {
-            autoUndoCommands--;
-            if (autoUndoCommands == 0)
-                if (history.Count > 0)
-                    history.Peek().autoUndo = false;
-        }
-
-        public void BeginAutoUndoCommands()
-        {
-            autoUndoCommands++;
-        }
-
         internal void ClearHistory()
         {
             history.Clear();
@@ -152,56 +164,22 @@ namespace FastColoredTextBoxNS
             TextSource.CurrentTB.OnUndoRedoStateChanged();
         }
 
-        public bool UndoEnabled
+        private void BeginDisableCommands()
         {
-            get
-            {
-                return history.Count > 0;
-            }
+            disabledCommands++;
         }
 
-        public bool RedoEnabled
+        private void EndDisableCommands()
         {
-            get
-            {
-                return redoStack.Count > 0;
-            }
-        }
-    }
-
-    public abstract class Command
-    {
-        public TextSource ts;
-        public abstract void Execute();
-    }
-
-    internal class RangeInfo
-    {
-        public Place Start { get; set; }
-        public Place End { get; set; }
-
-        public RangeInfo(Range r)
-        {
-            Start = r.Start;
-            End = r.End;
-        }
-
-        internal int FromX
-        {
-            get
-            {
-                if (End.iLine < Start.iLine) return End.iChar;
-                if (End.iLine > Start.iLine) return Start.iChar;
-                return Math.Min(End.iChar, Start.iChar);
-            }
+            disabledCommands--;
         }
     }
 
     public abstract class UndoableCommand : Command
     {
-        internal RangeInfo sel;
-        internal RangeInfo lastSel;
         internal bool autoUndo;
+        internal RangeInfo lastSel;
+        internal RangeInfo sel;
 
         public UndoableCommand(TextSource ts)
         {
@@ -209,15 +187,17 @@ namespace FastColoredTextBoxNS
             sel = new RangeInfo(ts.CurrentTB.Selection);
         }
 
-        public virtual void Undo()
-        {
-            OnTextChanged(true);
-        }
+        public abstract UndoableCommand Clone();
 
         public override void Execute()
         {
             lastSel = new RangeInfo(ts.CurrentTB.Selection);
             OnTextChanged(false);
+        }
+
+        public virtual void Undo()
+        {
+            OnTextChanged(true);
         }
 
         protected virtual void OnTextChanged(bool invert)
@@ -238,7 +218,27 @@ namespace FastColoredTextBoxNS
                     ts.OnTextChanged(lastSel.Start.iLine, lastSel.Start.iLine);
             }
         }
+    }
 
-        public abstract UndoableCommand Clone();
+    internal class RangeInfo
+    {
+        public RangeInfo(Range r)
+        {
+            Start = r.Start;
+            End = r.End;
+        }
+
+        public Place End { get; set; }
+        public Place Start { get; set; }
+
+        internal int FromX
+        {
+            get
+            {
+                if (End.iLine < Start.iLine) return End.iChar;
+                if (End.iLine > Start.iLine) return Start.iChar;
+                return Math.Min(End.iChar, Start.iChar);
+            }
+        }
     }
 }

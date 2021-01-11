@@ -14,12 +14,12 @@ namespace CodeLibrary
 {
     public partial class FormCodeLibrary : Form
     {
+        private readonly ClipboardMonitorHelper _clipboardMonitorHelper;
         private readonly FavoriteHelper _FavoriteHelper;
         private readonly FileHelper _fileHelper;
         private readonly TextSelectionHelper _selectionHelper;
         private readonly TextBoxHelper _textboxHelper;
         private readonly TreeviewHelper _treeHelper;
-        private readonly ClipboardMonitorHelper _clipboardMonitorHelper;
         private TextEditorContainer _CurrentEditor = new TextEditorContainer();
         private bool _exitWithoutSaving = false;
         private MainPluginHelper _PluginHelper;
@@ -110,8 +110,6 @@ namespace CodeLibrary
             tbCode.Focus();
         }
 
-        
-
         private void addNoteDialogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_treeHelper.IsSystem(treeViewLibrary.SelectedNode))
@@ -122,7 +120,7 @@ namespace CodeLibrary
 
             treeViewLibrary.SelectedNode = _newNode;
             tbCode.Focus();
-        }  
+        }
 
         private void AddToolStripMenuItem_Click(object sender, EventArgs e) => AddNote();
 
@@ -153,7 +151,6 @@ namespace CodeLibrary
         }
 
         private void ClearPasswordToolStripMenuItem_Click(object sender, EventArgs e) => ClearPassWord();
-
 
         private void ConfigurePluginsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -722,6 +719,5 @@ namespace CodeLibrary
         private void xMLToolStripMenuItem_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.XML);
 
         private void xMLToolStripMenuItem1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.XML);
-
     }
 }

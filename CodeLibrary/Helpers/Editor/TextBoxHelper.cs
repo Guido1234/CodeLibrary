@@ -1,7 +1,5 @@
 ﻿using CodeLibrary.Core;
 using FastColoredTextBoxNS;
-using System;
-using System.Windows.Forms;
 
 namespace CodeLibrary
 {
@@ -18,9 +16,7 @@ namespace CodeLibrary
             _mainform = mainform;
             _RtfEditorHelper = new RtfEditorHelper(mainform, this);
             _FastColoredTextBoxHelper = new FastColoredTextBoxHelper(mainform, this);
-
         }
-
 
         public CodeSnippet CurrentSnippet
         {
@@ -32,11 +28,6 @@ namespace CodeLibrary
             {
                 _currentSnippet = value;
             }
-        }
-
-        public void Save()
-        {
-            _ActiveTextBoxHelper.Save();
         }
 
         public FastColoredTextBox FastColoredTextBox
@@ -69,6 +60,11 @@ namespace CodeLibrary
             {
                 _ActiveTextBoxHelper.Text = value;
             }
+        }
+
+        public void ApplySettings()
+        {
+            _ActiveTextBoxHelper.ApplySnippetSettings();
         }
 
         public void BringToFront() => _ActiveTextBoxHelper.BringToFront();
@@ -105,9 +101,7 @@ namespace CodeLibrary
                 _mainform.CurrentEditor.Editor = _FastColoredTextBoxHelper.Editor;
             }
 
-
-
-            _ActiveTextBoxHelper.CodeToScreen(snippet);       
+            _ActiveTextBoxHelper.CodeToScreen(snippet);
         }
 
         public void Copy() => _ActiveTextBoxHelper.Copy();
@@ -134,8 +128,12 @@ namespace CodeLibrary
 
         public void GotoLine(int line) => _ActiveTextBoxHelper.GotoLine(line);
 
-
         public void Paste() => _ActiveTextBoxHelper.Paste();
+
+        public void Save()
+        {
+            _ActiveTextBoxHelper.Save();
+        }
 
         public void ScreenToCode(CodeSnippet snippet)
         {
@@ -149,15 +147,9 @@ namespace CodeLibrary
 
         public void SelectLine() => _ActiveTextBoxHelper.SelectLine();
 
-        public bool SwitchWordWrap()
-        {
-            return _ActiveTextBoxHelper.SwitchWordWrap();
-        }
+        public void ShowFindDialog() => _ActiveTextBoxHelper.ShowFindDialog();
 
-        public void ApplySettings()
-        {
-            _ActiveTextBoxHelper.ApplySnippetSettings();
-        }
+        public void ShowReplaceDialog() => _ActiveTextBoxHelper.ShowReplaceDialog();
 
         public void SwitchHtmlPreview()
         {
@@ -169,14 +161,10 @@ namespace CodeLibrary
             _mainform.splitContainerCode.Panel2Collapsed = !_currentSnippet.HtmlPreview;
         }
 
-
-
-
-
-        public void ShowFindDialog() => _ActiveTextBoxHelper.ShowFindDialog();
-
-        public void ShowReplaceDialog() => _ActiveTextBoxHelper.ShowReplaceDialog();
-
+        public bool SwitchWordWrap()
+        {
+            return _ActiveTextBoxHelper.SwitchWordWrap();
+        }
 
         private void SetEditorCodeType(CodeType type)
         {

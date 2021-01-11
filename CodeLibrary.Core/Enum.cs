@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
- 
+
 namespace CodeLibrary.Core
 {
     public enum CodeType
@@ -25,6 +25,5 @@ namespace CodeLibrary.Core
 
         [Browsable(false)]
         UnSuported = 9999
-
     }
 }

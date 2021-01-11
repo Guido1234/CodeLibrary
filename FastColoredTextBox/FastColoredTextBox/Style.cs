@@ -6,20 +6,178 @@ using System.Drawing.Drawing2D;
 namespace FastColoredTextBoxNS
 {
     /// <summary>
+    /// Renderer for folded block
+    /// </summary>
+    public class FoldedBlockStyle : TextStyle
+    {
+        public FoldedBlockStyle(Brush foreBrush, Brush backgroundBrush, FontStyle fontStyle) :
+            base(foreBrush, backgroundBrush, fontStyle)
+        {
+        }
+
+        public override void Draw(Graphics gr, Point position, Range range)
+        {
+            if (range.End.iChar > range.Start.iChar)
+            {
+                base.Draw(gr, position, range);
+
+                int firstNonSpaceSymbolX = position.X;
+
+                //find first non space symbol
+                for (int i = range.Start.iChar; i < range.End.iChar; i++)
+                    if (range.tb[range.Start.iLine][i].c != ' ')
+                        break;
+                    else
+                        firstNonSpaceSymbolX += range.tb.CharWidth;
+
+                //create marker
+                range.tb.AddVisualMarker(new FoldedAreaMarker(range.Start.iLine, new Rectangle(firstNonSpaceSymbolX, position.Y, position.X + (range.End.iChar - range.Start.iChar) * range.tb.CharWidth - firstNonSpaceSymbolX, range.tb.CharHeight)));
+            }
+            else
+            {
+                //draw '...'
+                using (Font f = new Font(range.tb.Font, FontStyle))
+                    gr.DrawString("...", f, ForeBrush, range.tb.LeftIndent, position.Y - 2);
+                //create marker
+                range.tb.AddVisualMarker(new FoldedAreaMarker(range.Start.iLine, new Rectangle(range.tb.LeftIndent + 2, position.Y, 2 * range.tb.CharHeight, range.tb.CharHeight)));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Marker style
+    /// Draws background color for text
+    /// </summary>
+    public class MarkerStyle : Style
+    {
+        public MarkerStyle(Brush backgroundBrush)
+        {
+            this.BackgroundBrush = backgroundBrush;
+            IsExportable = true;
+        }
+
+        public Brush BackgroundBrush { get; set; }
+
+        public override void Draw(Graphics gr, Point position, Range range)
+        {
+            //draw background
+            if (BackgroundBrush != null)
+            {
+                Rectangle rect = new Rectangle(position.X, position.Y, (range.End.iChar - range.Start.iChar) * range.tb.CharWidth, range.tb.CharHeight);
+                if (rect.Width == 0)
+                    return;
+                gr.FillRectangle(BackgroundBrush, rect);
+            }
+        }
+
+        public override string GetCSS()
+        {
+            string result = "";
+
+            if (BackgroundBrush is SolidBrush)
+            {
+                var s = ExportToHTML.GetColorAsString((BackgroundBrush as SolidBrush).Color);
+                if (s != "")
+                    result += "background-color:" + s + ";";
+            }
+
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// This style is used to mark range of text as ReadOnly block
+    /// </summary>
+    /// <remarks>You can inherite this style to add visual effects of readonly text</remarks>
+    public class ReadOnlyStyle : Style
+    {
+        public ReadOnlyStyle()
+        {
+            IsExportable = false;
+        }
+
+        public override void Draw(Graphics gr, Point position, Range range)
+        {
+            //
+        }
+    }
+
+    /// <summary>
+    /// Renderer for selected area
+    /// </summary>
+    public class SelectionStyle : Style
+    {
+        public SelectionStyle(Brush backgroundBrush, Brush foregroundBrush = null)
+        {
+            this.BackgroundBrush = backgroundBrush;
+            this.ForegroundBrush = foregroundBrush;
+        }
+
+        public Brush BackgroundBrush { get; set; }
+        public Brush ForegroundBrush { get; private set; }
+
+        public override bool IsExportable
+        {
+            get { return false; }
+            set { }
+        }
+
+        public override void Draw(Graphics gr, Point position, Range range)
+        {
+            //draw background
+            if (BackgroundBrush != null)
+            {
+                gr.SmoothingMode = SmoothingMode.None;
+                var rect = new Rectangle(position.X, position.Y, (range.End.iChar - range.Start.iChar) * range.tb.CharWidth, range.tb.CharHeight);
+                if (rect.Width == 0)
+                    return;
+                gr.FillRectangle(BackgroundBrush, rect);
+                //
+                if (ForegroundBrush != null)
+                {
+                    //draw text
+                    gr.SmoothingMode = SmoothingMode.AntiAlias;
+
+                    var r = new Range(range.tb, range.Start.iChar, range.Start.iLine,
+                                      Math.Min(range.tb[range.End.iLine].Count, range.End.iChar), range.End.iLine);
+                    using (var style = new TextStyle(ForegroundBrush, null, FontStyle.Regular))
+                        style.Draw(gr, new Point(position.X, position.Y - 1), r);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Draws small rectangle for popup menu
+    /// </summary>
+    public class ShortcutStyle : Style
+    {
+        public Pen borderPen;
+
+        public ShortcutStyle(Pen borderPen)
+        {
+            this.borderPen = borderPen;
+        }
+
+        public override void Draw(Graphics gr, Point position, Range range)
+        {
+            //get last char coordinates
+            Point p = range.tb.PlaceToPoint(range.End);
+            //draw small square under char
+            Rectangle rect = new Rectangle(p.X - 5, p.Y + range.tb.CharHeight - 2, 4, 3);
+            gr.FillPath(Brushes.White, GetRoundedRectangle(rect, 1));
+            gr.DrawPath(borderPen, GetRoundedRectangle(rect, 1));
+            //add visual marker for handle mouse events
+            AddVisualMarker(range.tb, new StyleVisualMarker(new Rectangle(p.X - range.tb.CharWidth, p.Y, range.tb.CharWidth, range.tb.CharHeight), this));
+        }
+    }
+
+    /// <summary>
     /// Style of chars
     /// </summary>
     /// <remarks>This is base class for all text and design renderers</remarks>
     public abstract class Style : IDisposable
     {
-        /// <summary>
-        /// This style is exported to outer formats (HTML for example)
-        /// </summary>
-        public virtual bool IsExportable { get; set; }
-        /// <summary>
-        /// Occurs when user click on StyleVisualMarker joined to this style 
-        /// </summary>
-        public event EventHandler<VisualMarkerEventArgs> VisualMarkerClick;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -29,35 +187,14 @@ namespace FastColoredTextBoxNS
         }
 
         /// <summary>
-        /// Renders given range of text
+        /// Occurs when user click on StyleVisualMarker joined to this style
         /// </summary>
-        /// <param name="gr">Graphics object</param>
-        /// <param name="position">Position of the range in absolute control coordinates</param>
-        /// <param name="range">Rendering range of text</param>
-        public abstract void Draw(Graphics gr, Point position, Range range);
+        public event EventHandler<VisualMarkerEventArgs> VisualMarkerClick;
 
         /// <summary>
-        /// Occurs when user click on StyleVisualMarker joined to this style 
+        /// This style is exported to outer formats (HTML for example)
         /// </summary>
-        public virtual void OnVisualMarkerClick(FastColoredTextBox tb, VisualMarkerEventArgs args)
-        {
-            if (VisualMarkerClick != null)
-                VisualMarkerClick(tb, args);
-        }
-
-        /// <summary>
-        /// Shows VisualMarker
-        /// Call this method in Draw method, when you need to show VisualMarker for your style
-        /// </summary>
-        protected virtual void AddVisualMarker(FastColoredTextBox tb, StyleVisualMarker marker)
-        {
-            tb.AddVisualMarker(marker);
-        }
-
-        public static Size GetSizeOfRange(Range range)
-        {
-            return new Size((range.End.iChar - range.Start.iChar) * range.tb.CharWidth, range.tb.CharHeight);
-        }
+        public virtual bool IsExportable { get; set; }
 
         public static GraphicsPath GetRoundedRectangle(Rectangle rect, int d)
         {
@@ -72,10 +209,23 @@ namespace FastColoredTextBoxNS
             return gp;
         }
 
+        public static Size GetSizeOfRange(Range range)
+        {
+            return new Size((range.End.iChar - range.Start.iChar) * range.tb.CharWidth, range.tb.CharHeight);
+        }
+
         public virtual void Dispose()
         {
             ;
         }
+
+        /// <summary>
+        /// Renders given range of text
+        /// </summary>
+        /// <param name="gr">Graphics object</param>
+        /// <param name="position">Position of the range in absolute control coordinates</param>
+        /// <param name="range">Rendering range of text</param>
+        public abstract void Draw(Graphics gr, Point position, Range range);
 
         /// <summary>
         /// Returns CSS for export to HTML
@@ -94,6 +244,24 @@ namespace FastColoredTextBoxNS
         {
             return new RTFStyleDescriptor();
         }
+
+        /// <summary>
+        /// Occurs when user click on StyleVisualMarker joined to this style
+        /// </summary>
+        public virtual void OnVisualMarkerClick(FastColoredTextBox tb, VisualMarkerEventArgs args)
+        {
+            if (VisualMarkerClick != null)
+                VisualMarkerClick(tb, args);
+        }
+
+        /// <summary>
+        /// Shows VisualMarker
+        /// Call this method in Draw method, when you need to show VisualMarker for your style
+        /// </summary>
+        protected virtual void AddVisualMarker(FastColoredTextBox tb, StyleVisualMarker marker)
+        {
+            tb.AddVisualMarker(marker);
+        }
     }
 
     /// <summary>
@@ -102,9 +270,6 @@ namespace FastColoredTextBoxNS
     /// </summary>
     public class TextStyle : Style
     {
-        public Brush ForeBrush { get; set; }
-        public Brush BackgroundBrush { get; set; }
-        public FontStyle FontStyle { get; set; }
         //public readonly Font Font;
         public StringFormat stringFormat;
 
@@ -115,6 +280,10 @@ namespace FastColoredTextBoxNS
             this.FontStyle = fontStyle;
             stringFormat = new StringFormat(StringFormatFlags.MeasureTrailingSpaces);
         }
+
+        public Brush BackgroundBrush { get; set; }
+        public FontStyle FontStyle { get; set; }
+        public Brush ForeBrush { get; set; }
 
         public override void Draw(Graphics gr, Point position, Range range)
         {
@@ -150,7 +319,7 @@ namespace FastColoredTextBoxNS
                 }
                 else
                 {
-                    //classic mode 
+                    //classic mode
                     for (int i = range.Start.iChar; i < range.End.iChar; i++)
                     {
                         //draw char
@@ -213,166 +382,24 @@ namespace FastColoredTextBoxNS
     }
 
     /// <summary>
-    /// Renderer for folded block
-    /// </summary>
-    public class FoldedBlockStyle : TextStyle
-    {
-        public FoldedBlockStyle(Brush foreBrush, Brush backgroundBrush, FontStyle fontStyle) :
-            base(foreBrush, backgroundBrush, fontStyle)
-        {
-        }
-
-        public override void Draw(Graphics gr, Point position, Range range)
-        {
-            if (range.End.iChar > range.Start.iChar)
-            {
-                base.Draw(gr, position, range);
-
-                int firstNonSpaceSymbolX = position.X;
-
-                //find first non space symbol
-                for (int i = range.Start.iChar; i < range.End.iChar; i++)
-                    if (range.tb[range.Start.iLine][i].c != ' ')
-                        break;
-                    else
-                        firstNonSpaceSymbolX += range.tb.CharWidth;
-
-                //create marker
-                range.tb.AddVisualMarker(new FoldedAreaMarker(range.Start.iLine, new Rectangle(firstNonSpaceSymbolX, position.Y, position.X + (range.End.iChar - range.Start.iChar) * range.tb.CharWidth - firstNonSpaceSymbolX, range.tb.CharHeight)));
-            }
-            else
-            {
-                //draw '...'
-                using (Font f = new Font(range.tb.Font, FontStyle))
-                    gr.DrawString("...", f, ForeBrush, range.tb.LeftIndent, position.Y - 2);
-                //create marker
-                range.tb.AddVisualMarker(new FoldedAreaMarker(range.Start.iLine, new Rectangle(range.tb.LeftIndent + 2, position.Y, 2 * range.tb.CharHeight, range.tb.CharHeight)));
-            }
-        }
-    }
-
-    /// <summary>
-    /// Renderer for selected area
-    /// </summary>
-    public class SelectionStyle : Style
-    {
-        public Brush BackgroundBrush { get; set; }
-        public Brush ForegroundBrush { get; private set; }
-
-        public override bool IsExportable
-        {
-            get { return false; }
-            set { }
-        }
-
-        public SelectionStyle(Brush backgroundBrush, Brush foregroundBrush = null)
-        {
-            this.BackgroundBrush = backgroundBrush;
-            this.ForegroundBrush = foregroundBrush;
-        }
-
-        public override void Draw(Graphics gr, Point position, Range range)
-        {
-            //draw background
-            if (BackgroundBrush != null)
-            {
-                gr.SmoothingMode = SmoothingMode.None;
-                var rect = new Rectangle(position.X, position.Y, (range.End.iChar - range.Start.iChar) * range.tb.CharWidth, range.tb.CharHeight);
-                if (rect.Width == 0)
-                    return;
-                gr.FillRectangle(BackgroundBrush, rect);
-                //
-                if (ForegroundBrush != null)
-                {
-                    //draw text
-                    gr.SmoothingMode = SmoothingMode.AntiAlias;
-
-                    var r = new Range(range.tb, range.Start.iChar, range.Start.iLine,
-                                      Math.Min(range.tb[range.End.iLine].Count, range.End.iChar), range.End.iLine);
-                    using (var style = new TextStyle(ForegroundBrush, null, FontStyle.Regular))
-                        style.Draw(gr, new Point(position.X, position.Y - 1), r);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Marker style
-    /// Draws background color for text
-    /// </summary>
-    public class MarkerStyle : Style
-    {
-        public Brush BackgroundBrush { get; set; }
-
-        public MarkerStyle(Brush backgroundBrush)
-        {
-            this.BackgroundBrush = backgroundBrush;
-            IsExportable = true;
-        }
-
-        public override void Draw(Graphics gr, Point position, Range range)
-        {
-            //draw background
-            if (BackgroundBrush != null)
-            {
-                Rectangle rect = new Rectangle(position.X, position.Y, (range.End.iChar - range.Start.iChar) * range.tb.CharWidth, range.tb.CharHeight);
-                if (rect.Width == 0)
-                    return;
-                gr.FillRectangle(BackgroundBrush, rect);
-            }
-        }
-
-        public override string GetCSS()
-        {
-            string result = "";
-
-            if (BackgroundBrush is SolidBrush)
-            {
-                var s = ExportToHTML.GetColorAsString((BackgroundBrush as SolidBrush).Color);
-                if (s != "")
-                    result += "background-color:" + s + ";";
-            }
-
-            return result;
-        }
-    }
-
-    /// <summary>
-    /// Draws small rectangle for popup menu
-    /// </summary>
-    public class ShortcutStyle : Style
-    {
-        public Pen borderPen;
-
-        public ShortcutStyle(Pen borderPen)
-        {
-            this.borderPen = borderPen;
-        }
-
-        public override void Draw(Graphics gr, Point position, Range range)
-        {
-            //get last char coordinates
-            Point p = range.tb.PlaceToPoint(range.End);
-            //draw small square under char
-            Rectangle rect = new Rectangle(p.X - 5, p.Y + range.tb.CharHeight - 2, 4, 3);
-            gr.FillPath(Brushes.White, GetRoundedRectangle(rect, 1));
-            gr.DrawPath(borderPen, GetRoundedRectangle(rect, 1));
-            //add visual marker for handle mouse events
-            AddVisualMarker(range.tb, new StyleVisualMarker(new Rectangle(p.X - range.tb.CharWidth, p.Y, range.tb.CharWidth, range.tb.CharHeight), this));
-        }
-    }
-
-    /// <summary>
     /// This style draws a wavy line below a given text range.
     /// </summary>
     /// <remarks>Thanks for Yallie</remarks>
     public class WavyLineStyle : Style
     {
-        private Pen Pen { get; set; }
-
         public WavyLineStyle(int alpha, Color color)
         {
             Pen = new Pen(Color.FromArgb(alpha, color));
+        }
+
+        private Pen Pen { get; set; }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            if (Pen != null)
+                Pen.Dispose();
         }
 
         public override void Draw(Graphics gr, Point pos, Range range)
@@ -401,31 +428,6 @@ namespace FastColoredTextBoxNS
             }
 
             graphics.DrawLines(Pen, points.ToArray());
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            if (Pen != null)
-                Pen.Dispose();
-        }
-    }
-
-    /// <summary>
-    /// This style is used to mark range of text as ReadOnly block
-    /// </summary>
-    /// <remarks>You can inherite this style to add visual effects of readonly text</remarks>
-    public class ReadOnlyStyle : Style
-    {
-        public ReadOnlyStyle()
-        {
-            IsExportable = false;
-        }
-
-        public override void Draw(Graphics gr, Point position, Range range)
-        {
-            //
         }
     }
 }

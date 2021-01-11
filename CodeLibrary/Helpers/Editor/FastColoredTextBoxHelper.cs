@@ -18,7 +18,6 @@ namespace CodeLibrary
         private Regex _regexWildCards = new Regex("(?<=#\\[)(.*?)(?=\\]#)");
         private bool _supressTextChanged = false;
 
-
         public FastColoredTextBoxHelper(FormCodeLibrary mainform, TextBoxHelper textboxHelper)
         {
             _tb = mainform.tbCode;
@@ -33,7 +32,6 @@ namespace CodeLibrary
             _tb.KeyDown += new KeyEventHandler(TbCode_KeyDown);
             _tb.MouseUp += new MouseEventHandler(TbCode_MouseUp);
         }
-
 
         public ITextEditor Editor
         {
@@ -75,6 +73,19 @@ namespace CodeLibrary
             }
         }
 
+        public void ApplySnippetSettings()
+        {
+            if (_TextBoxHelper.CurrentSnippet == null)
+                return;
+
+            _tb.WordWrap = _TextBoxHelper.CurrentSnippet.Wordwrap;
+
+            _mainform.hTMLPreviewToolStripMenuItem.Checked = _TextBoxHelper.CurrentSnippet.HtmlPreview;
+            _mainform.splitContainerCode.Panel2Collapsed = !_TextBoxHelper.CurrentSnippet.HtmlPreview;
+
+            UpdateHtmlPreview();
+        }
+
         public void BringToFront() => _tb.BringToFront();
 
         public void CodeToScreen(CodeSnippet snippet)
@@ -92,7 +103,6 @@ namespace CodeLibrary
             _tb.SelectionLength = 0;
             _tb.ScrollControlIntoView(_tb);
 
-
             int _lines = _tb.LinesCount;
             try
             {
@@ -109,11 +119,6 @@ namespace CodeLibrary
             _TextBoxHelper.CurrentSnippet = snippet;
 
             _supressTextChanged = false;
-        }
-
-        public void Save()
-        {
-            ScreenToCode(_TextBoxHelper.CurrentSnippet);
         }
 
         public void Copy()
@@ -151,7 +156,6 @@ namespace CodeLibrary
 
         public void GotoLine(int line) => _tb.GotoLine(line);
 
-
         public string Merge(string text)
         {
             string _newText = text;
@@ -175,6 +179,19 @@ namespace CodeLibrary
 
         public void Paste() => _tb.Paste();
 
+        public void RefreshEditor()
+        {
+            string _text = _tb.Text;
+            _tb.Clear();
+            _tb.ClearUndo();
+            _tb.Text = _text;
+        }
+
+        public void Save()
+        {
+            ScreenToCode(_TextBoxHelper.CurrentSnippet);
+        }
+
         public void ScreenToCode(CodeSnippet snippet)
         {
             if (snippet == null)
@@ -195,17 +212,8 @@ namespace CodeLibrary
             _tb.Selection = new Range(_tb, _start, _end);
         }
 
-        public void RefreshEditor()
-        {
-            string _text = _tb.Text;
-            _tb.Clear();
-            _tb.ClearUndo();
-            _tb.Text = _text;
-        }
-
         public void SetEditorCodeType(CodeType type)
         {
-
             bool _htmlpreview = false;
             if (_TextBoxHelper.CurrentSnippet != null)
             {
@@ -312,8 +320,11 @@ namespace CodeLibrary
                     _mainform.containerRtfEditor.Visible = false;
                     break;
             }
-          
         }
+
+        public void ShowFindDialog() => _tb.ShowFindDialog();
+
+        public void ShowReplaceDialog() => _tb.ShowReplaceDialog();
 
         public bool SwitchWordWrap()
         {
@@ -326,24 +337,6 @@ namespace CodeLibrary
 
             return _TextBoxHelper.CurrentSnippet.Wordwrap;
         }
-
-        public void ApplySnippetSettings()
-        {
-            if (_TextBoxHelper.CurrentSnippet == null)
-                return;
-
-            _tb.WordWrap = _TextBoxHelper.CurrentSnippet.Wordwrap;
-
-            _mainform.hTMLPreviewToolStripMenuItem.Checked = _TextBoxHelper.CurrentSnippet.HtmlPreview;
-            _mainform.splitContainerCode.Panel2Collapsed = !_TextBoxHelper.CurrentSnippet.HtmlPreview;
-
-            UpdateHtmlPreview();
-        }
-
-        public void ShowFindDialog() => _tb.ShowFindDialog();
-
-        public void ShowReplaceDialog() => _tb.ShowReplaceDialog();
-
 
         private bool DocShortCut(KeyEventArgs e)
         {
@@ -428,8 +421,7 @@ namespace CodeLibrary
                 return;
             }
 
-             //ScreenToCode(_TextBoxHelper.CurrentSnippet);
-
+            //ScreenToCode(_TextBoxHelper.CurrentSnippet);
         }
 
         private void TbCode_MouseUp(object sender, MouseEventArgs e)
@@ -440,14 +432,6 @@ namespace CodeLibrary
             }
         }
 
-        private void UpdateHtmlPreview()
-        {
-            if (!_mainform.splitContainerCode.Panel2Collapsed)
-            {
-                _mainform.webBrowser.DocumentText = Merge(_tb.Text);
-            }
-        }
-
         private void TbCode_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdateHtmlPreview();
@@ -455,7 +439,15 @@ namespace CodeLibrary
             if (_supressTextChanged)
                 return;
 
-             //ScreenToCode(_TextBoxHelper.CurrentSnippet); 
+            //ScreenToCode(_TextBoxHelper.CurrentSnippet);
+        }
+
+        private void UpdateHtmlPreview()
+        {
+            if (!_mainform.splitContainerCode.Panel2Collapsed)
+            {
+                _mainform.webBrowser.DocumentText = Merge(_tb.Text);
+            }
         }
     }
 }

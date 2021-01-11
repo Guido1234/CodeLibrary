@@ -16,25 +16,9 @@ namespace FastColoredTextBoxNS
             this.iLine = iLine;
         }
 
-        public void Offset(int dx, int dy)
+        public static Place Empty
         {
-            iChar += dx;
-            iLine += dy;
-        }
-
-        public bool Equals(Place other)
-        {
-            return iChar == other.iChar && iLine == other.iLine;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return (obj is Place) && Equals((Place)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return iChar.GetHashCode() ^ iLine.GetHashCode();
+            get { return new Place(); }
         }
 
         public static bool operator !=(Place p1, Place p2)
@@ -42,9 +26,9 @@ namespace FastColoredTextBoxNS
             return !p1.Equals(p2);
         }
 
-        public static bool operator ==(Place p1, Place p2)
+        public static Place operator +(Place p1, Place p2)
         {
-            return p1.Equals(p2);
+            return new Place(p1.iChar + p2.iChar, p1.iLine + p2.iLine);
         }
 
         public static bool operator <(Place p1, Place p2)
@@ -64,6 +48,11 @@ namespace FastColoredTextBoxNS
             return false;
         }
 
+        public static bool operator ==(Place p1, Place p2)
+        {
+            return p1.Equals(p2);
+        }
+
         public static bool operator >(Place p1, Place p2)
         {
             if (p1.iLine > p2.iLine) return true;
@@ -81,14 +70,25 @@ namespace FastColoredTextBoxNS
             return false;
         }
 
-        public static Place operator +(Place p1, Place p2)
+        public bool Equals(Place other)
         {
-            return new Place(p1.iChar + p2.iChar, p1.iLine + p2.iLine);
+            return iChar == other.iChar && iLine == other.iLine;
         }
 
-        public static Place Empty
+        public override bool Equals(object obj)
         {
-            get { return new Place(); }
+            return (obj is Place) && Equals((Place)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return iChar.GetHashCode() ^ iLine.GetHashCode();
+        }
+
+        public void Offset(int dx, int dy)
+        {
+            iChar += dx;
+            iLine += dy;
         }
 
         public override string ToString()

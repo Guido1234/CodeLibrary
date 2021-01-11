@@ -16,8 +16,8 @@ namespace CodeLibrary.PluginPack.Forms
         public string Title
         {
             get { return Text; }
-            set 
-            { 
+            set
+            {
                 Text = value;
                 labelTitle.Text = value;
             }
@@ -31,7 +31,7 @@ namespace CodeLibrary.PluginPack.Forms
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            Containing = tbContaining.Text; 
+            Containing = tbContaining.Text;
             DialogResult = DialogResult.OK;
             Close();
         }

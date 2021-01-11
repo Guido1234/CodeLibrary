@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
- 
+
 namespace CodeLibrary.Core
 {
     public class CycleList<T> : List<T>

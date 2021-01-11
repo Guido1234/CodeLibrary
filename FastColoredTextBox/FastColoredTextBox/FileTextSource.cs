@@ -13,10 +13,10 @@ namespace FastColoredTextBoxNS
     /// </summary>
     public class FileTextSource : TextSource, IDisposable
     {
-        List<int> sourceFileLinePositions = new List<int>();
-        FileStream fs;
-        Encoding fileEncoding;
-        System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+        private List<int> sourceFileLinePositions = new List<int>();
+        private FileStream fs;
+        private Encoding fileEncoding;
+        private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
 
         /// <summary>
         /// Occurs when need to display line in the textbox
@@ -38,7 +38,7 @@ namespace FastColoredTextBoxNS
             SaveEOL = Environment.NewLine;
         }
 
-        void timer_Tick(object sender, EventArgs e)
+        private void timer_Tick(object sender, EventArgs e)
         {
             timer.Enabled = false;
             try
@@ -156,13 +156,11 @@ namespace FastColoredTextBoxNS
             base.lines.TrimExcess();
             base.lines.RemoveRange(c, temp.Length);
 
-
             int[] temp2 = new int[100];
             c = base.lines.Count;
             sourceFileLinePositions.AddRange(temp2);
             sourceFileLinePositions.TrimExcess();
             sourceFileLinePositions.RemoveRange(c, temp.Length);
-
 
             fileEncoding = enc;
 
@@ -446,6 +444,7 @@ namespace FastColoredTextBoxNS
     {
         public string SourceLineText { get; private set; }
         public int DisplayedLineIndex { get; private set; }
+
         /// <summary>
         /// This text will be displayed in textbox
         /// </summary>
@@ -463,11 +462,13 @@ namespace FastColoredTextBoxNS
     {
         public string SourceLineText { get; private set; }
         public int DisplayedLineIndex { get; private set; }
+
         /// <summary>
         /// This property contains only changed text.
         /// If text of line is not changed, this property contains null.
         /// </summary>
         public string DisplayedLineText { get; private set; }
+
         /// <summary>
         /// This text will be saved in the file
         /// </summary>
@@ -482,7 +483,7 @@ namespace FastColoredTextBoxNS
         }
     }
 
-    class CharReader : TextReader
+    internal class CharReader : TextReader
     {
         public override int Read()
         {

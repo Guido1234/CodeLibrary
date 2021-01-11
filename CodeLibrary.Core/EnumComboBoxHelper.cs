@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
- 
+
 namespace CodeLibrary.Core
 {
     public class EnumComboBoxModeHelper<T>
@@ -51,18 +51,18 @@ namespace CodeLibrary.Core
             return _result;
         }
 
-        public int GetValue()
-        {
-            int _index = _ComboBox.SelectedIndex;
-            EnumListBoxObject _item = _ComboBox.Items[_index] as EnumListBoxObject;
-            return _item.Value;
-        }
-
         public string GetName()
         {
             int _index = _ComboBox.SelectedIndex;
             EnumListBoxObject _item = _ComboBox.Items[_index] as EnumListBoxObject;
             return _item.Name;
+        }
+
+        public int GetValue()
+        {
+            int _index = _ComboBox.SelectedIndex;
+            EnumListBoxObject _item = _ComboBox.Items[_index] as EnumListBoxObject;
+            return _item.Value;
         }
 
         public void SetDefaultValue() => SetSelectedIndex(_DefaultValue);

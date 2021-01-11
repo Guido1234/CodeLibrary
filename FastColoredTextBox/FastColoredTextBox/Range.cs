@@ -5,20 +5,39 @@ using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS
 {
+    public struct RangeRect
+    {
+        public int iEndChar;
+
+        public int iEndLine;
+
+        public int iStartChar;
+
+        public int iStartLine;
+
+        public RangeRect(int iStartLine, int iStartChar, int iEndLine, int iEndChar)
+        {
+            this.iStartLine = iStartLine;
+            this.iStartChar = iStartChar;
+            this.iEndLine = iEndLine;
+            this.iEndChar = iEndChar;
+        }
+    }
+
     /// <summary>
     /// Diapason of text chars
     /// </summary>
     public class Range : IEnumerable<Place>
     {
-        Place start;
-        Place end;
         public readonly FastColoredTextBox tb;
-        int preferedPos = -1;
-        int updating = 0;
-
-        string cachedText;
-        List<Place> cachedCharIndexToPlace;
-        int cachedTextVersion = -1;
+        private List<Place> cachedCharIndexToPlace;
+        private string cachedText;
+        private int cachedTextVersion = -1;
+        private bool columnSelectionMode;
+        private Place end;
+        private int preferedPos = -1;
+        private Place start;
+        private int updating = 0;
 
         /// <summary>
         /// Constructor
@@ -26,30 +45,6 @@ namespace FastColoredTextBoxNS
         public Range(FastColoredTextBox tb)
         {
             this.tb = tb;
-        }
-
-        /// <summary>
-        /// Return true if no selected text
-        /// </summary>
-        public virtual bool IsEmpty
-        {
-            get
-            {
-                if (ColumnSelectionMode)
-                    return Start.iChar == End.iChar;
-                return Start == End;
-            }
-        }
-
-        private bool columnSelectionMode;
-
-        /// <summary>
-        /// Column selection mode
-        /// </summary>
-        public bool ColumnSelectionMode
-        {
-            get { return columnSelectionMode; }
-            set { columnSelectionMode = value; }
         }
 
         /// <summary>
@@ -82,236 +77,16 @@ namespace FastColoredTextBoxNS
             end = new Place(tb[iLine].Count, iLine);
         }
 
-        public bool Contains(Place place)
-        {
-            if (place.iLine < Math.Min(start.iLine, end.iLine)) return false;
-            if (place.iLine > Math.Max(start.iLine, end.iLine)) return false;
-
-            Place s = start;
-            Place e = end;
-            //normalize start and end
-            if (s.iLine > e.iLine || (s.iLine == e.iLine && s.iChar > e.iChar))
-            {
-                var temp = s;
-                s = e;
-                e = temp;
-            }
-
-            if (columnSelectionMode)
-            {
-                if (place.iChar < s.iChar || place.iChar > e.iChar) return false;
-            }
-            else
-            {
-                if (place.iLine == s.iLine && place.iChar < s.iChar) return false;
-                if (place.iLine == e.iLine && place.iChar > e.iChar) return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Returns intersection with other range,
-        /// empty range returned otherwise
-        /// </summary>
-        /// <param name="range"></param>
-        /// <returns></returns>
-        public virtual Range GetIntersectionWith(Range range)
-        {
-            if (ColumnSelectionMode)
-                return GetIntersectionWith_ColumnSelectionMode(range);
-
-            Range r1 = this.Clone();
-            Range r2 = range.Clone();
-            r1.Normalize();
-            r2.Normalize();
-            Place newStart = r1.Start > r2.Start ? r1.Start : r2.Start;
-            Place newEnd = r1.End < r2.End ? r1.End : r2.End;
-            if (newEnd < newStart)
-                return new Range(tb, start, start);
-            return tb.GetRange(newStart, newEnd);
-        }
-
-        /// <summary>
-        /// Returns union with other range.
-        /// </summary>
-        /// <param name="range"></param>
-        /// <returns></returns>
-        public Range GetUnionWith(Range range)
-        {
-            Range r1 = this.Clone();
-            Range r2 = range.Clone();
-            r1.Normalize();
-            r2.Normalize();
-            Place newStart = r1.Start < r2.Start ? r1.Start : r2.Start;
-            Place newEnd = r1.End > r2.End ? r1.End : r2.End;
-
-            return tb.GetRange(newStart, newEnd);
-        }
-
-        /// <summary>
-        /// Select all chars of control
-        /// </summary>
-        public void SelectAll()
-        {
-            ColumnSelectionMode = false;
-
-            Start = new Place(0, 0);
-            if (tb.LinesCount == 0)
-                Start = new Place(0, 0);
-            else
-            {
-                end = new Place(0, 0);
-                start = new Place(tb[tb.LinesCount - 1].Count, tb.LinesCount - 1);
-            }
-            if (this == tb.Selection)
-                tb.Invalidate();
-        }
-
-        /// <summary>
-        /// Start line and char position
-        /// </summary>
-        public Place Start
-        {
-            get { return start; }
-            set
-            {
-                end = start = value;
-                preferedPos = -1;
-                OnSelectionChanged();
-            }
-        }
-
-        /// <summary>
-        /// Finish line and char position
-        /// </summary>
-        public Place End
+        public RangeRect Bounds
         {
             get
             {
-                return end;
+                int minX = Math.Min(Start.iChar, End.iChar);
+                int minY = Math.Min(Start.iLine, End.iLine);
+                int maxX = Math.Max(Start.iChar, End.iChar);
+                int maxY = Math.Max(Start.iLine, End.iLine);
+                return new RangeRect(minY, minX, maxY, maxX);
             }
-            set
-            {
-                end = value;
-                OnSelectionChanged();
-            }
-        }
-
-        /// <summary>
-        /// Text of range
-        /// </summary>
-        /// <remarks>This property has not 'set' accessor because undo/redo stack works only with 
-        /// FastColoredTextBox.Selection range. So, if you want to set text, you need to use FastColoredTextBox.Selection
-        /// and FastColoredTextBox.InsertText() mehtod.
-        /// </remarks>
-        public virtual string Text
-        {
-            get
-            {
-                if (ColumnSelectionMode)
-                    return Text_ColumnSelectionMode;
-
-                int fromLine = Math.Min(end.iLine, start.iLine);
-                int toLine = Math.Max(end.iLine, start.iLine);
-                int fromChar = FromX;
-                int toChar = ToX;
-                if (fromLine < 0) return null;
-                //
-                StringBuilder sb = new StringBuilder();
-                for (int y = fromLine; y <= toLine; y++)
-                {
-                    int fromX = y == fromLine ? fromChar : 0;
-                    int toX = y == toLine ? Math.Min(tb[y].Count - 1, toChar - 1) : tb[y].Count - 1;
-                    for (int x = fromX; x <= toX; x++)
-                        sb.Append(tb[y][x].c);
-                    if (y != toLine && fromLine != toLine)
-                        sb.AppendLine();
-                }
-                return sb.ToString();
-            }
-        }
-
-        public int Length
-        {
-            get
-            {
-                if (ColumnSelectionMode)
-                    return Length_ColumnSelectionMode(false);
-
-                int fromLine = Math.Min(end.iLine, start.iLine);
-                int toLine = Math.Max(end.iLine, start.iLine);
-                int cnt = 0;
-                if (fromLine < 0) return 0;
-
-                for (int y = fromLine; y <= toLine; y++)
-                {
-                    int fromX = y == fromLine ? FromX : 0;
-                    int toX = y == toLine ? Math.Min(tb[y].Count - 1, ToX - 1) : tb[y].Count - 1;
-
-                    cnt += toX - fromX + 1;
-
-                    if (y != toLine && fromLine != toLine)
-                        cnt += Environment.NewLine.Length;
-                }
-
-                return cnt;
-            }
-        }
-
-        public int TextLength
-        {
-            get
-            {
-                if (ColumnSelectionMode)
-                    return Length_ColumnSelectionMode(true);
-                else
-                    return Length;
-            }
-        }
-
-        internal void GetText(out string text, out List<Place> charIndexToPlace)
-        {
-            //try get cached text
-            if (tb.TextVersion == cachedTextVersion)
-            {
-                text = cachedText;
-                charIndexToPlace = cachedCharIndexToPlace;
-                return;
-            }
-            //
-            int fromLine = Math.Min(end.iLine, start.iLine);
-            int toLine = Math.Max(end.iLine, start.iLine);
-            int fromChar = FromX;
-            int toChar = ToX;
-
-            StringBuilder sb = new StringBuilder((toLine - fromLine) * 50);
-            charIndexToPlace = new List<Place>(sb.Capacity);
-            if (fromLine >= 0)
-            {
-                for (int y = fromLine; y <= toLine; y++)
-                {
-                    int fromX = y == fromLine ? fromChar : 0;
-                    int toX = y == toLine ? Math.Min(toChar - 1, tb[y].Count - 1) : tb[y].Count - 1;
-                    for (int x = fromX; x <= toX; x++)
-                    {
-                        sb.Append(tb[y][x].c);
-                        charIndexToPlace.Add(new Place(x, y));
-                    }
-                    if (y != toLine && fromLine != toLine)
-                        foreach (char c in Environment.NewLine)
-                        {
-                            sb.Append(c);
-                            charIndexToPlace.Add(new Place(tb[y].Count/*???*/, y));
-                        }
-                }
-            }
-            text = sb.ToString();
-            charIndexToPlace.Add(End > Start ? End : Start);
-            //caching
-            cachedText = text;
-            cachedCharIndexToPlace = charIndexToPlace;
-            cachedTextVersion = tb.TextVersion;
         }
 
         /// <summary>
@@ -343,31 +118,250 @@ namespace FastColoredTextBoxNS
         }
 
         /// <summary>
-        /// Returns required char's number before start of the Range
+        /// Chars of range (exclude \n)
         /// </summary>
-        public string GetCharsBeforeStart(int charsCount)
+        public IEnumerable<Char> Chars
         {
-            var pos = tb.PlaceToPosition(Start) - charsCount;
-            if (pos < 0) pos = 0;
+            get
+            {
+                if (ColumnSelectionMode)
+                {
+                    foreach (var p in GetEnumerator_ColumnSelectionMode())
+                        yield return tb[p];
+                    yield break;
+                }
 
-            return new Range(tb, tb.PositionToPlace(pos), Start).Text;
+                int fromLine = Math.Min(end.iLine, start.iLine);
+                int toLine = Math.Max(end.iLine, start.iLine);
+                int fromChar = FromX;
+                int toChar = ToX;
+                if (fromLine < 0) yield break;
+                //
+                for (int y = fromLine; y <= toLine; y++)
+                {
+                    int fromX = y == fromLine ? fromChar : 0;
+                    int toX = y == toLine ? Math.Min(toChar - 1, tb[y].Count - 1) : tb[y].Count - 1;
+                    var line = tb[y];
+                    for (int x = fromX; x <= toX; x++)
+                        yield return line[x];
+                }
+            }
         }
 
         /// <summary>
-        /// Returns required char's number after start of the Range
+        /// Column selection mode
         /// </summary>
-        public string GetCharsAfterStart(int charsCount)
+        public bool ColumnSelectionMode
         {
-            return GetCharsBeforeStart(-charsCount);
+            get { return columnSelectionMode; }
+            set { columnSelectionMode = value; }
         }
 
         /// <summary>
-        /// Clone range
+        /// Finish line and char position
         /// </summary>
-        /// <returns></returns>
-        public Range Clone()
+        public Place End
         {
-            return (Range)MemberwiseClone();
+            get
+            {
+                return end;
+            }
+            set
+            {
+                end = value;
+                OnSelectionChanged();
+            }
+        }
+
+        public int FromLine
+        {
+            get { return Math.Min(Start.iLine, End.iLine); }
+        }
+
+        /// <summary>
+        /// Return true if no selected text
+        /// </summary>
+        public virtual bool IsEmpty
+        {
+            get
+            {
+                if (ColumnSelectionMode)
+                    return Start.iChar == End.iChar;
+                return Start == End;
+            }
+        }
+
+        public int Length
+        {
+            get
+            {
+                if (ColumnSelectionMode)
+                    return Length_ColumnSelectionMode(false);
+
+                int fromLine = Math.Min(end.iLine, start.iLine);
+                int toLine = Math.Max(end.iLine, start.iLine);
+                int cnt = 0;
+                if (fromLine < 0) return 0;
+
+                for (int y = fromLine; y <= toLine; y++)
+                {
+                    int fromX = y == fromLine ? FromX : 0;
+                    int toX = y == toLine ? Math.Min(tb[y].Count - 1, ToX - 1) : tb[y].Count - 1;
+
+                    cnt += toX - fromX + 1;
+
+                    if (y != toLine && fromLine != toLine)
+                        cnt += Environment.NewLine.Length;
+                }
+
+                return cnt;
+            }
+        }
+
+        /// <summary>
+        /// Range is readonly?
+        /// This property return True if any char of the range contains ReadOnlyStyle.
+        /// Set this property to True/False to mark chars of the range as Readonly/Writable.
+        /// </summary>
+        public bool ReadOnly
+        {
+            get
+            {
+                if (tb.ReadOnly) return true;
+
+                ReadOnlyStyle readonlyStyle = null;
+                foreach (var style in tb.Styles)
+                    if (style is ReadOnlyStyle)
+                    {
+                        readonlyStyle = (ReadOnlyStyle)style;
+                        break;
+                    }
+
+                if (readonlyStyle != null)
+                {
+                    var si = ToStyleIndex(tb.GetStyleIndex(readonlyStyle));
+
+                    if (IsEmpty)
+                    {
+                        //check previous and next chars
+                        var line = tb[start.iLine];
+                        if (columnSelectionMode)
+                        {
+                            foreach (var sr in GetSubRanges(false))
+                            {
+                                line = tb[sr.start.iLine];
+                                if (sr.start.iChar < line.Count && sr.start.iChar > 0)
+                                {
+                                    var left = line[sr.start.iChar - 1];
+                                    var right = line[sr.start.iChar];
+                                    if ((left.style & si) != 0 &&
+                                        (right.style & si) != 0) return true;//we are between readonly chars
+                                }
+                            }
+                        }
+                        else
+                        if (start.iChar < line.Count && start.iChar > 0)
+                        {
+                            var left = line[start.iChar - 1];
+                            var right = line[start.iChar];
+                            if ((left.style & si) != 0 &&
+                                (right.style & si) != 0) return true;//we are between readonly chars
+                        }
+                    }
+                    else
+                        foreach (Char c in Chars)
+                            if ((c.style & si) != 0)//found char with ReadonlyStyle
+                                return true;
+                }
+
+                return false;
+            }
+
+            set
+            {
+                //find exists ReadOnlyStyle of style buffer
+                ReadOnlyStyle readonlyStyle = null;
+                foreach (var style in tb.Styles)
+                    if (style is ReadOnlyStyle)
+                    {
+                        readonlyStyle = (ReadOnlyStyle)style;
+                        break;
+                    }
+
+                //create ReadOnlyStyle
+                if (readonlyStyle == null)
+                    readonlyStyle = new ReadOnlyStyle();
+
+                //set/clear style
+                if (value)
+                    SetStyle(readonlyStyle);
+                else
+                    ClearStyle(readonlyStyle);
+            }
+        }
+
+        /// <summary>
+        /// Start line and char position
+        /// </summary>
+        public Place Start
+        {
+            get { return start; }
+            set
+            {
+                end = start = value;
+                preferedPos = -1;
+                OnSelectionChanged();
+            }
+        }
+
+        /// <summary>
+        /// Text of range
+        /// </summary>
+        /// <remarks>This property has not 'set' accessor because undo/redo stack works only with
+        /// FastColoredTextBox.Selection range. So, if you want to set text, you need to use FastColoredTextBox.Selection
+        /// and FastColoredTextBox.InsertText() mehtod.
+        /// </remarks>
+        public virtual string Text
+        {
+            get
+            {
+                if (ColumnSelectionMode)
+                    return Text_ColumnSelectionMode;
+
+                int fromLine = Math.Min(end.iLine, start.iLine);
+                int toLine = Math.Max(end.iLine, start.iLine);
+                int fromChar = FromX;
+                int toChar = ToX;
+                if (fromLine < 0) return null;
+                //
+                StringBuilder sb = new StringBuilder();
+                for (int y = fromLine; y <= toLine; y++)
+                {
+                    int fromX = y == fromLine ? fromChar : 0;
+                    int toX = y == toLine ? Math.Min(tb[y].Count - 1, toChar - 1) : tb[y].Count - 1;
+                    for (int x = fromX; x <= toX; x++)
+                        sb.Append(tb[y][x].c);
+                    if (y != toLine && fromLine != toLine)
+                        sb.AppendLine();
+                }
+                return sb.ToString();
+            }
+        }
+
+        public int TextLength
+        {
+            get
+            {
+                if (ColumnSelectionMode)
+                    return Length_ColumnSelectionMode(true);
+                else
+                    return Length;
+            }
+        }
+
+        public int ToLine
+        {
+            get { return Math.Max(Start.iLine, End.iLine); }
         }
 
         /// <summary>
@@ -396,410 +390,51 @@ namespace FastColoredTextBoxNS
             }
         }
 
-        public int FromLine
+        public static StyleIndex ToStyleIndex(int i)
         {
-            get { return Math.Min(Start.iLine, End.iLine); }
-        }
-
-        public int ToLine
-        {
-            get { return Math.Max(Start.iLine, End.iLine); }
+            return (StyleIndex)(1 << i);
         }
 
         /// <summary>
-        /// Move range right
+        /// Starts selection position updating
         /// </summary>
-        /// <remarks>This method jump over folded blocks</remarks>
-        public bool GoRight()
+        public void BeginUpdate()
         {
-            Place prevStart = start;
-            GoRight(false);
-            return prevStart != start;
+            updating++;
         }
 
         /// <summary>
-        /// Move range left
+        /// Clear folding markers of all lines of range
         /// </summary>
-        /// <remarks>This method can to go inside folded blocks</remarks>
-        public virtual bool GoRightThroughFolded()
+        public void ClearFoldingMarkers()
         {
-            if (ColumnSelectionMode)
-                return GoRightThroughFolded_ColumnSelectionMode();
-
-            if (start.iLine >= tb.LinesCount - 1 && start.iChar >= tb[tb.LinesCount - 1].Count)
-                return false;
-
-            if (start.iChar < tb[start.iLine].Count)
-                start.Offset(1, 0);
-            else
-                start = new Place(0, start.iLine + 1);
-
-            preferedPos = -1;
-            end = start;
-            OnSelectionChanged();
-            return true;
-        }
-
-        /// <summary>
-        /// Move range left
-        /// </summary>
-        /// <remarks>This method jump over folded blocks</remarks>
-        public bool GoLeft()
-        {
-            ColumnSelectionMode = false;
-
-            Place prevStart = start;
-            GoLeft(false);
-            return prevStart != start;
-        }
-
-        /// <summary>
-        /// Move range left
-        /// </summary>
-        /// <remarks>This method can to go inside folded blocks</remarks>
-        public bool GoLeftThroughFolded()
-        {
-            ColumnSelectionMode = false;
-
-            if (start.iChar == 0 && start.iLine == 0)
-                return false;
-
-            if (start.iChar > 0)
-                start.Offset(-1, 0);
-            else
-                start = new Place(tb[start.iLine - 1].Count, start.iLine - 1);
-
-            preferedPos = -1;
-            end = start;
-            OnSelectionChanged();
-            return true;
-        }
-
-        public void GoLeft(bool shift)
-        {
-            ColumnSelectionMode = false;
-
-            if (!shift)
-                if (start > end)
-                {
-                    Start = End;
-                    return;
-                }
-
-            if (start.iChar != 0 || start.iLine != 0)
-            {
-                if (start.iChar > 0 && tb.LineInfos[start.iLine].VisibleState == VisibleState.Visible)
-                    start.Offset(-1, 0);
-                else
-                {
-                    int i = tb.FindPrevVisibleLine(start.iLine);
-                    if (i == start.iLine) return;
-                    start = new Place(tb[i].Count, i);
-                }
-            }
-
-            if (!shift)
-                end = start;
-
-            OnSelectionChanged();
-
-            preferedPos = -1;
-        }
-
-        public void GoRight(bool shift)
-        {
-            ColumnSelectionMode = false;
-
-            if (!shift)
-                if (start < end)
-                {
-                    Start = End;
-                    return;
-                }
-
-            if (start.iLine < tb.LinesCount - 1 || start.iChar < tb[tb.LinesCount - 1].Count)
-            {
-                if (start.iChar < tb[start.iLine].Count && tb.LineInfos[start.iLine].VisibleState == VisibleState.Visible)
-                    start.Offset(1, 0);
-                else
-                {
-                    int i = tb.FindNextVisibleLine(start.iLine);
-                    if (i == start.iLine) return;
-                    start = new Place(0, i);
-                }
-            }
-
-            if (!shift)
-                end = start;
-
-            OnSelectionChanged();
-
-            preferedPos = -1;
-        }
-
-        internal void GoUp(bool shift)
-        {
-            ColumnSelectionMode = false;
-
-            if (!shift)
-                if (start.iLine > end.iLine)
-                {
-                    Start = End;
-                    return;
-                }
-
-            if (preferedPos < 0)
-                preferedPos = start.iChar - tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar));
-
-            int iWW = tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar);
-            if (iWW == 0)
-            {
-                if (start.iLine <= 0) return;
-                int i = tb.FindPrevVisibleLine(start.iLine);
-                if (i == start.iLine) return;
-                start.iLine = i;
-                iWW = tb.LineInfos[start.iLine].WordWrapStringsCount;
-            }
-
-            if (iWW > 0)
-            {
-                int finish = tb.LineInfos[start.iLine].GetWordWrapStringFinishPosition(iWW - 1, tb[start.iLine]);
-                start.iChar = tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(iWW - 1) + preferedPos;
-                if (start.iChar > finish + 1)
-                    start.iChar = finish + 1;
-            }
-
-            if (!shift)
-                end = start;
-
-            OnSelectionChanged();
-        }
-
-        internal void GoPageUp(bool shift)
-        {
-            ColumnSelectionMode = false;
-
-            if (preferedPos < 0)
-                preferedPos = start.iChar - tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar));
-
-            int pageHeight = tb.ClientRectangle.Height / tb.CharHeight - 1;
-
-            for (int i = 0; i < pageHeight; i++)
-            {
-                int iWW = tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar);
-                if (iWW == 0)
-                {
-                    if (start.iLine <= 0) break;
-                    //pass hidden
-                    int newLine = tb.FindPrevVisibleLine(start.iLine);
-                    if (newLine == start.iLine) break;
-                    start.iLine = newLine;
-                    iWW = tb.LineInfos[start.iLine].WordWrapStringsCount;
-                }
-
-                if (iWW > 0)
-                {
-                    int finish = tb.LineInfos[start.iLine].GetWordWrapStringFinishPosition(iWW - 1, tb[start.iLine]);
-                    start.iChar = tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(iWW - 1) + preferedPos;
-                    if (start.iChar > finish + 1)
-                        start.iChar = finish + 1;
-                }
-            }
-
-            if (!shift)
-                end = start;
-
-            OnSelectionChanged();
-        }
-
-        internal void GoDown(bool shift)
-        {
-            ColumnSelectionMode = false;
-
-            if (!shift)
-                if (start.iLine < end.iLine)
-                {
-                    Start = End;
-                    return;
-                }
-
-            if (preferedPos < 0)
-                preferedPos = start.iChar - tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar));
-
-            int iWW = tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar);
-            if (iWW >= tb.LineInfos[start.iLine].WordWrapStringsCount - 1)
-            {
-                if (start.iLine >= tb.LinesCount - 1) return;
-                //pass hidden
-                int i = tb.FindNextVisibleLine(start.iLine);
-                if (i == start.iLine) return;
-                start.iLine = i;
-                iWW = -1;
-            }
-
-            if (iWW < tb.LineInfos[start.iLine].WordWrapStringsCount - 1)
-            {
-                int finish = tb.LineInfos[start.iLine].GetWordWrapStringFinishPosition(iWW + 1, tb[start.iLine]);
-                start.iChar = tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(iWW + 1) + preferedPos;
-                if (start.iChar > finish + 1)
-                    start.iChar = finish + 1;
-            }
-
-            if (!shift)
-                end = start;
-
-            OnSelectionChanged();
-        }
-
-        internal void GoPageDown(bool shift)
-        {
-            ColumnSelectionMode = false;
-
-            if (preferedPos < 0)
-                preferedPos = start.iChar - tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar));
-
-            int pageHeight = tb.ClientRectangle.Height / tb.CharHeight - 1;
-
-            for (int i = 0; i < pageHeight; i++)
-            {
-                int iWW = tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar);
-                if (iWW >= tb.LineInfos[start.iLine].WordWrapStringsCount - 1)
-                {
-                    if (start.iLine >= tb.LinesCount - 1) break;
-                    //pass hidden
-                    int newLine = tb.FindNextVisibleLine(start.iLine);
-                    if (newLine == start.iLine) break;
-                    start.iLine = newLine;
-                    iWW = -1;
-                }
-
-                if (iWW < tb.LineInfos[start.iLine].WordWrapStringsCount - 1)
-                {
-                    int finish = tb.LineInfos[start.iLine].GetWordWrapStringFinishPosition(iWW + 1, tb[start.iLine]);
-                    start.iChar = tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(iWW + 1) + preferedPos;
-                    if (start.iChar > finish + 1)
-                        start.iChar = finish + 1;
-                }
-            }
-
-            if (!shift)
-                end = start;
-
-            OnSelectionChanged();
-        }
-
-        internal void GoHome(bool shift)
-        {
-            ColumnSelectionMode = false;
-
-            if (start.iLine < 0)
-                return;
-
-            if (tb.LineInfos[start.iLine].VisibleState != VisibleState.Visible)
-                return;
-
-            start = new Place(0, start.iLine);
-
-            if (!shift)
-                end = start;
-
-            OnSelectionChanged();
-
-            preferedPos = -1;
-        }
-
-        internal void GoEnd(bool shift)
-        {
-            ColumnSelectionMode = false;
-
-            if (start.iLine < 0)
-                return;
-            if (tb.LineInfos[start.iLine].VisibleState != VisibleState.Visible)
-                return;
-
-            start = new Place(tb[start.iLine].Count, start.iLine);
-
-            if (!shift)
-                end = start;
-
-            OnSelectionChanged();
-
-            preferedPos = -1;
-        }
-
-        /// <summary>
-        /// Set style for range
-        /// </summary>
-        public void SetStyle(Style style)
-        {
-            //search code for style
-            int code = tb.GetOrSetStyleLayerIndex(style);
             //set code to chars
-            SetStyle(ToStyleIndex(code));
+            int fromLine = Math.Min(End.iLine, Start.iLine);
+            int toLine = Math.Max(End.iLine, Start.iLine);
+            if (fromLine < 0) return;
+            //
+            for (int y = fromLine; y <= toLine; y++)
+                tb[y].ClearFoldingMarkers();
             //
             tb.Invalidate();
         }
 
         /// <summary>
-        /// Set style for given regex pattern
+        /// Clear styles of range
         /// </summary>
-        public void SetStyle(Style style, string regexPattern)
+        public void ClearStyle(params Style[] styles)
         {
-            //search code for style
-            StyleIndex layer = ToStyleIndex(tb.GetOrSetStyleLayerIndex(style));
-            SetStyle(layer, regexPattern, RegexOptions.None);
+            try
+            {
+                ClearStyle(tb.GetStyleIndexMask(styles));
+            }
+            catch {; }
         }
 
         /// <summary>
-        /// Set style for given regex
+        /// Clear styles of range
         /// </summary>
-        public void SetStyle(Style style, Regex regex)
-        {
-            //search code for style
-            StyleIndex layer = ToStyleIndex(tb.GetOrSetStyleLayerIndex(style));
-            SetStyle(layer, regex);
-        }
-
-
-        /// <summary>
-        /// Set style for given regex pattern
-        /// </summary>
-        public void SetStyle(Style style, string regexPattern, RegexOptions options)
-        {
-            //search code for style
-            StyleIndex layer = ToStyleIndex(tb.GetOrSetStyleLayerIndex(style));
-            SetStyle(layer, regexPattern, options);
-        }
-
-        /// <summary>
-        /// Set style for given regex pattern
-        /// </summary>
-        public void SetStyle(StyleIndex styleLayer, string regexPattern, RegexOptions options)
-        {
-            if (Math.Abs(Start.iLine - End.iLine) > 1000)
-                options |= SyntaxHighlighter.RegexCompiledOption;
-            //
-            foreach (var range in GetRanges(regexPattern, options))
-                range.SetStyle(styleLayer);
-            //
-            tb.Invalidate();
-        }
-
-        /// <summary>
-        /// Set style for given regex pattern
-        /// </summary>
-        public void SetStyle(StyleIndex styleLayer, Regex regex)
-        {
-            foreach (var range in GetRanges(regex))
-                range.SetStyle(styleLayer);
-            //
-            tb.Invalidate();
-        }
-
-        /// <summary>
-        /// Appends style to chars of range
-        /// </summary>
-        public void SetStyle(StyleIndex styleIndex)
+        public void ClearStyle(StyleIndex styleIndex)
         {
             //set code to chars
             int fromLine = Math.Min(End.iLine, Start.iLine);
@@ -815,59 +450,262 @@ namespace FastColoredTextBoxNS
                 for (int x = fromX; x <= toX; x++)
                 {
                     Char c = tb[y][x];
-                    c.style |= styleIndex;
+                    c.style &= ~styleIndex;
                     tb[y][x] = c;
                 }
             }
-        }
-
-        /// <summary>
-        /// Sets folding markers
-        /// </summary>
-        /// <param name="startFoldingPattern">Pattern for start folding line</param>
-        /// <param name="finishFoldingPattern">Pattern for finish folding line</param>
-        public void SetFoldingMarkers(string startFoldingPattern, string finishFoldingPattern)
-        {
-            SetFoldingMarkers(startFoldingPattern, finishFoldingPattern, SyntaxHighlighter.RegexCompiledOption);
-        }
-
-        /// <summary>
-        /// Sets folding markers
-        /// </summary>
-        /// <param name="startFoldingPattern">Pattern for start folding line</param>
-        /// <param name="finishFoldingPattern">Pattern for finish folding line</param>
-        public void SetFoldingMarkers(string startFoldingPattern, string finishFoldingPattern, RegexOptions options)
-        {
-            if (startFoldingPattern == finishFoldingPattern)
-            {
-                SetFoldingMarkers(startFoldingPattern, options);
-                return;
-            }
-
-            foreach (var range in GetRanges(startFoldingPattern, options))
-                tb[range.Start.iLine].FoldingStartMarker = startFoldingPattern;
-
-            foreach (var range in GetRanges(finishFoldingPattern, options))
-                tb[range.Start.iLine].FoldingEndMarker = startFoldingPattern;
             //
             tb.Invalidate();
         }
 
         /// <summary>
-        /// Sets folding markers
+        /// Clone range
         /// </summary>
-        /// <param name="startEndFoldingPattern">Pattern for start and end folding line</param>
-        public void SetFoldingMarkers(string foldingPattern, RegexOptions options)
+        /// <returns></returns>
+        public Range Clone()
         {
-            foreach (var range in GetRanges(foldingPattern, options))
+            return (Range)MemberwiseClone();
+        }
+
+        public bool Contains(Place place)
+        {
+            if (place.iLine < Math.Min(start.iLine, end.iLine)) return false;
+            if (place.iLine > Math.Max(start.iLine, end.iLine)) return false;
+
+            Place s = start;
+            Place e = end;
+            //normalize start and end
+            if (s.iLine > e.iLine || (s.iLine == e.iLine && s.iChar > e.iChar))
             {
-                if (range.Start.iLine > 0)
-                    tb[range.Start.iLine - 1].FoldingEndMarker = foldingPattern;
-                tb[range.Start.iLine].FoldingStartMarker = foldingPattern;
+                var temp = s;
+                s = e;
+                e = temp;
             }
 
-            tb.Invalidate();
+            if (columnSelectionMode)
+            {
+                if (place.iChar < s.iChar || place.iChar > e.iChar) return false;
+            }
+            else
+            {
+                if (place.iLine == s.iLine && place.iChar < s.iChar) return false;
+                if (place.iLine == e.iLine && place.iChar > e.iChar) return false;
+            }
+
+            return true;
         }
+
+        /// <summary>
+        /// Ends selection position updating
+        /// </summary>
+        public void EndUpdate()
+        {
+            updating--;
+            if (updating == 0)
+                OnSelectionChanged();
+        }
+
+        /// <summary>
+        /// Expands range from first char of Start line to last char of End line
+        /// </summary>
+        public void Expand()
+        {
+            Normalize();
+            start = new Place(0, start.iLine);
+            end = new Place(tb.GetLineLength(end.iLine), end.iLine);
+        }
+
+        /// <summary>
+        /// Returns required char's number after start of the Range
+        /// </summary>
+        public string GetCharsAfterStart(int charsCount)
+        {
+            return GetCharsBeforeStart(-charsCount);
+        }
+
+        /// <summary>
+        /// Returns required char's number before start of the Range
+        /// </summary>
+        public string GetCharsBeforeStart(int charsCount)
+        {
+            var pos = tb.PlaceToPosition(Start) - charsCount;
+            if (pos < 0) pos = 0;
+
+            return new Range(tb, tb.PositionToPlace(pos), Start).Text;
+        }
+
+        IEnumerator<Place> IEnumerable<Place>.GetEnumerator()
+        {
+            if (ColumnSelectionMode)
+            {
+                foreach (var p in GetEnumerator_ColumnSelectionMode())
+                    yield return p;
+                yield break;
+            }
+
+            int fromLine = Math.Min(end.iLine, start.iLine);
+            int toLine = Math.Max(end.iLine, start.iLine);
+            int fromChar = FromX;
+            int toChar = ToX;
+            if (fromLine < 0) yield break;
+            //
+            for (int y = fromLine; y <= toLine; y++)
+            {
+                int fromX = y == fromLine ? fromChar : 0;
+                int toX = y == toLine ? Math.Min(toChar - 1, tb[y].Count - 1) : tb[y].Count - 1;
+                for (int x = fromX; x <= toX; x++)
+                    yield return new Place(x, y);
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return (this as IEnumerable<Place>).GetEnumerator();
+        }
+
+        /// <summary>
+        /// Get fragment of text around Start place. Returns maximal matched to pattern fragment.
+        /// </summary>
+        /// <param name="allowedSymbolsPattern">Allowed chars pattern for fragment</param>
+        /// <returns>Range of found fragment</returns>
+        public Range GetFragment(string allowedSymbolsPattern)
+        {
+            return GetFragment(allowedSymbolsPattern, RegexOptions.None);
+        }
+
+        /// <summary>
+        /// Get fragment of text around Start place. Returns maximal matched to given Style.
+        /// </summary>
+        /// <param name="style">Allowed style for fragment</param>
+        /// <returns>Range of found fragment</returns>
+        public Range GetFragment(Style style, bool allowLineBreaks)
+        {
+            var mask = tb.GetStyleIndexMask(new Style[] { style });
+            //
+            Range r = new Range(tb);
+            r.Start = Start;
+            //go left, check style
+            while (r.GoLeftThroughFolded())
+            {
+                if (!allowLineBreaks && r.CharAfterStart == '\n')
+                    break;
+                if (r.Start.iChar < tb.GetLineLength(r.Start.iLine))
+                    if ((tb[r.Start].style & mask) == 0)
+                    {
+                        r.GoRightThroughFolded();
+                        break;
+                    }
+            }
+            Place startFragment = r.Start;
+
+            r.Start = Start;
+            //go right, check style
+            do
+            {
+                if (!allowLineBreaks && r.CharAfterStart == '\n')
+                    break;
+                if (r.Start.iChar < tb.GetLineLength(r.Start.iLine))
+                    if ((tb[r.Start].style & mask) == 0)
+                        break;
+            } while (r.GoRightThroughFolded());
+            Place endFragment = r.Start;
+
+            return new Range(tb, startFragment, endFragment);
+        }
+
+        /// <summary>
+        /// Get fragment of text around Start place. Returns maximal mathed to pattern fragment.
+        /// </summary>
+        /// <param name="allowedSymbolsPattern">Allowed chars pattern for fragment</param>
+        /// <returns>Range of found fragment</returns>
+        public Range GetFragment(string allowedSymbolsPattern, RegexOptions options)
+        {
+            Range r = new Range(tb);
+            r.Start = Start;
+            Regex regex = new Regex(allowedSymbolsPattern, options);
+            //go left, check symbols
+            while (r.GoLeftThroughFolded())
+            {
+                if (!regex.IsMatch(r.CharAfterStart.ToString()))
+                {
+                    r.GoRightThroughFolded();
+                    break;
+                }
+            }
+            Place startFragment = r.Start;
+
+            r.Start = Start;
+            //go right, check symbols
+            do
+            {
+                if (!regex.IsMatch(r.CharAfterStart.ToString()))
+                    break;
+            } while (r.GoRightThroughFolded());
+            Place endFragment = r.Start;
+
+            return new Range(tb, startFragment, endFragment);
+        }
+
+        /// <summary>
+        /// Returns intersection with other range,
+        /// empty range returned otherwise
+        /// </summary>
+        /// <param name="range"></param>
+        /// <returns></returns>
+        public virtual Range GetIntersectionWith(Range range)
+        {
+            if (ColumnSelectionMode)
+                return GetIntersectionWith_ColumnSelectionMode(range);
+
+            Range r1 = this.Clone();
+            Range r2 = range.Clone();
+            r1.Normalize();
+            r2.Normalize();
+            Place newStart = r1.Start > r2.Start ? r1.Start : r2.Start;
+            Place newEnd = r1.End < r2.End ? r1.End : r2.End;
+            if (newEnd < newStart)
+                return new Range(tb, start, start);
+            return tb.GetRange(newStart, newEnd);
+        }
+
+        public IEnumerable<Place> GetPlacesCyclic(Place startPlace, bool backward = false)
+        {
+            if (backward)
+            {
+                var r = new Range(this.tb, startPlace, startPlace);
+                while (r.GoLeft() && r.start >= Start)
+                {
+                    if (r.Start.iChar < tb[r.Start.iLine].Count)
+                        yield return r.Start;
+                }
+
+                r = new Range(this.tb, End, End);
+                while (r.GoLeft() && r.start >= startPlace)
+                {
+                    if (r.Start.iChar < tb[r.Start.iLine].Count)
+                        yield return r.Start;
+                }
+            }
+            else
+            {
+                var r = new Range(this.tb, startPlace, startPlace);
+                if (startPlace < End)
+                    do
+                    {
+                        if (r.Start.iChar < tb[r.Start.iLine].Count)
+                            yield return r.Start;
+                    } while (r.GoRight());
+
+                r = new Range(this.tb, Start, Start);
+                if (r.Start < startPlace)
+                    do
+                    {
+                        if (r.Start.iChar < tb[r.Start.iLine].Count)
+                            yield return r.Start;
+                    } while (r.GoRight() && r.Start < startPlace);
+            }
+        }
+
         /// <summary>
         /// Finds ranges for given regex pattern
         /// </summary>
@@ -891,6 +729,31 @@ namespace FastColoredTextBoxNS
             GetText(out text, out charIndexToPlace);
             //create regex
             Regex regex = new Regex(regexPattern, options);
+            //
+            foreach (Match m in regex.Matches(text))
+            {
+                Range r = new Range(this.tb);
+                //try get 'range' group, otherwise use group 0
+                Group group = m.Groups["range"];
+                if (!group.Success)
+                    group = m.Groups[0];
+                //
+                r.Start = charIndexToPlace[group.Index];
+                r.End = charIndexToPlace[group.Index + group.Length];
+                yield return r;
+            }
+        }
+
+        /// <summary>
+        /// Finds ranges for given regex
+        /// </summary>
+        /// <returns>Enumeration of ranges</returns>
+        public IEnumerable<Range> GetRanges(Regex regex)
+        {
+            //get text
+            string text;
+            List<Place> charIndexToPlace;
+            GetText(out text, out charIndexToPlace);
             //
             foreach (Match m in regex.Matches(text))
             {
@@ -989,301 +852,171 @@ namespace FastColoredTextBoxNS
             }
         }
 
-        /// <summary>
-        /// Finds ranges for given regex
-        /// </summary>
-        /// <returns>Enumeration of ranges</returns>
-        public IEnumerable<Range> GetRanges(Regex regex)
+        public IEnumerable<Range> GetSubRanges(bool includeEmpty)
         {
-            //get text
-            string text;
-            List<Place> charIndexToPlace;
-            GetText(out text, out charIndexToPlace);
-            //
-            foreach (Match m in regex.Matches(text))
+            if (!ColumnSelectionMode)
             {
-                Range r = new Range(this.tb);
-                //try get 'range' group, otherwise use group 0
-                Group group = m.Groups["range"];
-                if (!group.Success)
-                    group = m.Groups[0];
-                //
-                r.Start = charIndexToPlace[group.Index];
-                r.End = charIndexToPlace[group.Index + group.Length];
+                yield return this;
+                yield break;
+            }
+
+            var rect = Bounds;
+            for (int y = rect.iStartLine; y <= rect.iEndLine; y++)
+            {
+                if (rect.iStartChar > tb[y].Count && !includeEmpty)
+                    continue;
+
+                var r = new Range(tb, rect.iStartChar, y, Math.Min(rect.iEndChar, tb[y].Count), y);
                 yield return r;
             }
         }
 
         /// <summary>
-        /// Clear styles of range
+        /// Returns union with other range.
         /// </summary>
-        public void ClearStyle(params Style[] styles)
+        /// <param name="range"></param>
+        /// <returns></returns>
+        public Range GetUnionWith(Range range)
         {
-            try
-            {
-                ClearStyle(tb.GetStyleIndexMask(styles));
-            }
-            catch {; }
+            Range r1 = this.Clone();
+            Range r2 = range.Clone();
+            r1.Normalize();
+            r2.Normalize();
+            Place newStart = r1.Start < r2.Start ? r1.Start : r2.Start;
+            Place newEnd = r1.End > r2.End ? r1.End : r2.End;
+
+            return tb.GetRange(newStart, newEnd);
         }
 
         /// <summary>
-        /// Clear styles of range
+        /// Move range left
         /// </summary>
-        public void ClearStyle(StyleIndex styleIndex)
+        /// <remarks>This method jump over folded blocks</remarks>
+        public bool GoLeft()
         {
-            //set code to chars
-            int fromLine = Math.Min(End.iLine, Start.iLine);
-            int toLine = Math.Max(End.iLine, Start.iLine);
-            int fromChar = FromX;
-            int toChar = ToX;
-            if (fromLine < 0) return;
-            //
-            for (int y = fromLine; y <= toLine; y++)
-            {
-                int fromX = y == fromLine ? fromChar : 0;
-                int toX = y == toLine ? Math.Min(toChar - 1, tb[y].Count - 1) : tb[y].Count - 1;
-                for (int x = fromX; x <= toX; x++)
+            ColumnSelectionMode = false;
+
+            Place prevStart = start;
+            GoLeft(false);
+            return prevStart != start;
+        }
+
+        public void GoLeft(bool shift)
+        {
+            ColumnSelectionMode = false;
+
+            if (!shift)
+                if (start > end)
                 {
-                    Char c = tb[y][x];
-                    c.style &= ~styleIndex;
-                    tb[y][x] = c;
+                    Start = End;
+                    return;
+                }
+
+            if (start.iChar != 0 || start.iLine != 0)
+            {
+                if (start.iChar > 0 && tb.LineInfos[start.iLine].VisibleState == VisibleState.Visible)
+                    start.Offset(-1, 0);
+                else
+                {
+                    int i = tb.FindPrevVisibleLine(start.iLine);
+                    if (i == start.iLine) return;
+                    start = new Place(tb[i].Count, i);
                 }
             }
-            //
-            tb.Invalidate();
+
+            if (!shift)
+                end = start;
+
+            OnSelectionChanged();
+
+            preferedPos = -1;
         }
 
         /// <summary>
-        /// Clear folding markers of all lines of range
+        /// Move range left
         /// </summary>
-        public void ClearFoldingMarkers()
+        /// <remarks>This method can to go inside folded blocks</remarks>
+        public bool GoLeftThroughFolded()
         {
-            //set code to chars
-            int fromLine = Math.Min(End.iLine, Start.iLine);
-            int toLine = Math.Max(End.iLine, Start.iLine);
-            if (fromLine < 0) return;
-            //
-            for (int y = fromLine; y <= toLine; y++)
-                tb[y].ClearFoldingMarkers();
-            //
-            tb.Invalidate();
-        }
+            ColumnSelectionMode = false;
 
-        void OnSelectionChanged()
-        {
-            //clear cache
-            cachedTextVersion = -1;
-            cachedText = null;
-            cachedCharIndexToPlace = null;
-            //
-            if (tb.Selection == this)
-                if (updating == 0)
-                    tb.OnSelectionChanged();
+            if (start.iChar == 0 && start.iLine == 0)
+                return false;
+
+            if (start.iChar > 0)
+                start.Offset(-1, 0);
+            else
+                start = new Place(tb[start.iLine - 1].Count, start.iLine - 1);
+
+            preferedPos = -1;
+            end = start;
+            OnSelectionChanged();
+            return true;
         }
 
         /// <summary>
-        /// Starts selection position updating
+        /// Move range right
         /// </summary>
-        public void BeginUpdate()
+        /// <remarks>This method jump over folded blocks</remarks>
+        public bool GoRight()
         {
-            updating++;
+            Place prevStart = start;
+            GoRight(false);
+            return prevStart != start;
+        }
+
+        public void GoRight(bool shift)
+        {
+            ColumnSelectionMode = false;
+
+            if (!shift)
+                if (start < end)
+                {
+                    Start = End;
+                    return;
+                }
+
+            if (start.iLine < tb.LinesCount - 1 || start.iChar < tb[tb.LinesCount - 1].Count)
+            {
+                if (start.iChar < tb[start.iLine].Count && tb.LineInfos[start.iLine].VisibleState == VisibleState.Visible)
+                    start.Offset(1, 0);
+                else
+                {
+                    int i = tb.FindNextVisibleLine(start.iLine);
+                    if (i == start.iLine) return;
+                    start = new Place(0, i);
+                }
+            }
+
+            if (!shift)
+                end = start;
+
+            OnSelectionChanged();
+
+            preferedPos = -1;
         }
 
         /// <summary>
-        /// Ends selection position updating
+        /// Move range left
         /// </summary>
-        public void EndUpdate()
-        {
-            updating--;
-            if (updating == 0)
-                OnSelectionChanged();
-        }
-
-        public override string ToString()
-        {
-            return "Start: " + Start + " End: " + End;
-        }
-
-        /// <summary>
-        /// Exchanges Start and End if End appears before Start
-        /// </summary>
-        public void Normalize()
-        {
-            if (Start > End)
-                Inverse();
-        }
-
-        /// <summary>
-        /// Exchanges Start and End
-        /// </summary>
-        public void Inverse()
-        {
-            var temp = start;
-            start = end;
-            end = temp;
-        }
-
-        /// <summary>
-        /// Expands range from first char of Start line to last char of End line
-        /// </summary>
-        public void Expand()
-        {
-            Normalize();
-            start = new Place(0, start.iLine);
-            end = new Place(tb.GetLineLength(end.iLine), end.iLine);
-        }
-
-        IEnumerator<Place> IEnumerable<Place>.GetEnumerator()
+        /// <remarks>This method can to go inside folded blocks</remarks>
+        public virtual bool GoRightThroughFolded()
         {
             if (ColumnSelectionMode)
-            {
-                foreach (var p in GetEnumerator_ColumnSelectionMode())
-                    yield return p;
-                yield break;
-            }
+                return GoRightThroughFolded_ColumnSelectionMode();
 
-            int fromLine = Math.Min(end.iLine, start.iLine);
-            int toLine = Math.Max(end.iLine, start.iLine);
-            int fromChar = FromX;
-            int toChar = ToX;
-            if (fromLine < 0) yield break;
-            //
-            for (int y = fromLine; y <= toLine; y++)
-            {
-                int fromX = y == fromLine ? fromChar : 0;
-                int toX = y == toLine ? Math.Min(toChar - 1, tb[y].Count - 1) : tb[y].Count - 1;
-                for (int x = fromX; x <= toX; x++)
-                    yield return new Place(x, y);
-            }
-        }
+            if (start.iLine >= tb.LinesCount - 1 && start.iChar >= tb[tb.LinesCount - 1].Count)
+                return false;
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return (this as IEnumerable<Place>).GetEnumerator();
-        }
+            if (start.iChar < tb[start.iLine].Count)
+                start.Offset(1, 0);
+            else
+                start = new Place(0, start.iLine + 1);
 
-        /// <summary>
-        /// Chars of range (exclude \n)
-        /// </summary>
-        public IEnumerable<Char> Chars
-        {
-            get
-            {
-                if (ColumnSelectionMode)
-                {
-                    foreach (var p in GetEnumerator_ColumnSelectionMode())
-                        yield return tb[p];
-                    yield break;
-                }
-
-                int fromLine = Math.Min(end.iLine, start.iLine);
-                int toLine = Math.Max(end.iLine, start.iLine);
-                int fromChar = FromX;
-                int toChar = ToX;
-                if (fromLine < 0) yield break;
-                //
-                for (int y = fromLine; y <= toLine; y++)
-                {
-                    int fromX = y == fromLine ? fromChar : 0;
-                    int toX = y == toLine ? Math.Min(toChar - 1, tb[y].Count - 1) : tb[y].Count - 1;
-                    var line = tb[y];
-                    for (int x = fromX; x <= toX; x++)
-                        yield return line[x];
-                }
-            }
-        }
-
-        /// <summary>
-        /// Get fragment of text around Start place. Returns maximal matched to pattern fragment.
-        /// </summary>
-        /// <param name="allowedSymbolsPattern">Allowed chars pattern for fragment</param>
-        /// <returns>Range of found fragment</returns>
-        public Range GetFragment(string allowedSymbolsPattern)
-        {
-            return GetFragment(allowedSymbolsPattern, RegexOptions.None);
-        }
-
-        /// <summary>
-        /// Get fragment of text around Start place. Returns maximal matched to given Style.
-        /// </summary>
-        /// <param name="style">Allowed style for fragment</param>
-        /// <returns>Range of found fragment</returns>
-        public Range GetFragment(Style style, bool allowLineBreaks)
-        {
-            var mask = tb.GetStyleIndexMask(new Style[] { style });
-            //
-            Range r = new Range(tb);
-            r.Start = Start;
-            //go left, check style
-            while (r.GoLeftThroughFolded())
-            {
-                if (!allowLineBreaks && r.CharAfterStart == '\n')
-                    break;
-                if (r.Start.iChar < tb.GetLineLength(r.Start.iLine))
-                    if ((tb[r.Start].style & mask) == 0)
-                    {
-                        r.GoRightThroughFolded();
-                        break;
-                    }
-            }
-            Place startFragment = r.Start;
-
-            r.Start = Start;
-            //go right, check style
-            do
-            {
-                if (!allowLineBreaks && r.CharAfterStart == '\n')
-                    break;
-                if (r.Start.iChar < tb.GetLineLength(r.Start.iLine))
-                    if ((tb[r.Start].style & mask) == 0)
-                        break;
-            } while (r.GoRightThroughFolded());
-            Place endFragment = r.Start;
-
-            return new Range(tb, startFragment, endFragment);
-        }
-
-        /// <summary>
-        /// Get fragment of text around Start place. Returns maximal mathed to pattern fragment.
-        /// </summary>
-        /// <param name="allowedSymbolsPattern">Allowed chars pattern for fragment</param>
-        /// <returns>Range of found fragment</returns>
-        public Range GetFragment(string allowedSymbolsPattern, RegexOptions options)
-        {
-            Range r = new Range(tb);
-            r.Start = Start;
-            Regex regex = new Regex(allowedSymbolsPattern, options);
-            //go left, check symbols
-            while (r.GoLeftThroughFolded())
-            {
-                if (!regex.IsMatch(r.CharAfterStart.ToString()))
-                {
-                    r.GoRightThroughFolded();
-                    break;
-                }
-            }
-            Place startFragment = r.Start;
-
-            r.Start = Start;
-            //go right, check symbols
-            do
-            {
-                if (!regex.IsMatch(r.CharAfterStart.ToString()))
-                    break;
-            } while (r.GoRightThroughFolded());
-            Place endFragment = r.Start;
-
-            return new Range(tb, startFragment, endFragment);
-        }
-
-        bool IsIdentifierChar(char c)
-        {
-            return char.IsLetterOrDigit(c) || c == '_';
-        }
-
-        bool IsSpaceChar(char c)
-        {
-            return c == ' ' || c == '\t';
+            preferedPos = -1;
+            end = start;
+            OnSelectionChanged();
+            return true;
         }
 
         public void GoWordLeft(bool shift)
@@ -1332,7 +1065,6 @@ namespace FastColoredTextBoxNS
 
             bool wasNewLine = false;
 
-
             if (range.CharAfterStart == '\n')
             {
                 range.GoRight(shift);
@@ -1348,7 +1080,6 @@ namespace FastColoredTextBoxNS
 
             if (!((wasSpace || wasNewLine) && goToStartOfNextWord))
             {
-
                 bool wasIdentifier = false;
                 while (IsIdentifierChar(range.CharAfterStart))
                 {
@@ -1371,150 +1102,14 @@ namespace FastColoredTextBoxNS
                 GoLeft(shift);
         }
 
-        internal void GoFirst(bool shift)
-        {
-            ColumnSelectionMode = false;
-
-            start = new Place(0, 0);
-            if (tb.LineInfos[Start.iLine].VisibleState != VisibleState.Visible)
-                tb.ExpandBlock(Start.iLine);
-
-            if (!shift)
-                end = start;
-
-            OnSelectionChanged();
-        }
-
-        internal void GoLast(bool shift)
-        {
-            ColumnSelectionMode = false;
-
-            start = new Place(tb[tb.LinesCount - 1].Count, tb.LinesCount - 1);
-            if (tb.LineInfos[Start.iLine].VisibleState != VisibleState.Visible)
-                tb.ExpandBlock(Start.iLine);
-
-            if (!shift)
-                end = start;
-
-            OnSelectionChanged();
-        }
-
-        public static StyleIndex ToStyleIndex(int i)
-        {
-            return (StyleIndex)(1 << i);
-        }
-
-        public RangeRect Bounds
-        {
-            get
-            {
-                int minX = Math.Min(Start.iChar, End.iChar);
-                int minY = Math.Min(Start.iLine, End.iLine);
-                int maxX = Math.Max(Start.iChar, End.iChar);
-                int maxY = Math.Max(Start.iLine, End.iLine);
-                return new RangeRect(minY, minX, maxY, maxX);
-            }
-        }
-
-        public IEnumerable<Range> GetSubRanges(bool includeEmpty)
-        {
-            if (!ColumnSelectionMode)
-            {
-                yield return this;
-                yield break;
-            }
-
-            var rect = Bounds;
-            for (int y = rect.iStartLine; y <= rect.iEndLine; y++)
-            {
-                if (rect.iStartChar > tb[y].Count && !includeEmpty)
-                    continue;
-
-                var r = new Range(tb, rect.iStartChar, y, Math.Min(rect.iEndChar, tb[y].Count), y);
-                yield return r;
-            }
-        }
-
         /// <summary>
-        /// Range is readonly?
-        /// This property return True if any char of the range contains ReadOnlyStyle.
-        /// Set this property to True/False to mark chars of the range as Readonly/Writable.
+        /// Exchanges Start and End
         /// </summary>
-        public bool ReadOnly
+        public void Inverse()
         {
-            get
-            {
-                if (tb.ReadOnly) return true;
-
-                ReadOnlyStyle readonlyStyle = null;
-                foreach (var style in tb.Styles)
-                    if (style is ReadOnlyStyle)
-                    {
-                        readonlyStyle = (ReadOnlyStyle)style;
-                        break;
-                    }
-
-                if (readonlyStyle != null)
-                {
-                    var si = ToStyleIndex(tb.GetStyleIndex(readonlyStyle));
-
-                    if (IsEmpty)
-                    {
-                        //check previous and next chars
-                        var line = tb[start.iLine];
-                        if (columnSelectionMode)
-                        {
-                            foreach (var sr in GetSubRanges(false))
-                            {
-                                line = tb[sr.start.iLine];
-                                if (sr.start.iChar < line.Count && sr.start.iChar > 0)
-                                {
-                                    var left = line[sr.start.iChar - 1];
-                                    var right = line[sr.start.iChar];
-                                    if ((left.style & si) != 0 &&
-                                        (right.style & si) != 0) return true;//we are between readonly chars
-                                }
-                            }
-                        }
-                        else
-                        if (start.iChar < line.Count && start.iChar > 0)
-                        {
-                            var left = line[start.iChar - 1];
-                            var right = line[start.iChar];
-                            if ((left.style & si) != 0 &&
-                                (right.style & si) != 0) return true;//we are between readonly chars
-                        }
-                    }
-                    else
-                        foreach (Char c in Chars)
-                            if ((c.style & si) != 0)//found char with ReadonlyStyle
-                                return true;
-                }
-
-                return false;
-            }
-
-            set
-            {
-                //find exists ReadOnlyStyle of style buffer
-                ReadOnlyStyle readonlyStyle = null;
-                foreach (var style in tb.Styles)
-                    if (style is ReadOnlyStyle)
-                    {
-                        readonlyStyle = (ReadOnlyStyle)style;
-                        break;
-                    }
-
-                //create ReadOnlyStyle
-                if (readonlyStyle == null)
-                    readonlyStyle = new ReadOnlyStyle();
-
-                //set/clear style
-                if (value)
-                    SetStyle(readonlyStyle);
-                else
-                    ClearStyle(readonlyStyle);
-            }
+            var temp = start;
+            start = end;
+            end = temp;
         }
 
         /// <summary>
@@ -1557,45 +1152,526 @@ namespace FastColoredTextBoxNS
             return r.ReadOnly;
         }
 
-        public IEnumerable<Place> GetPlacesCyclic(Place startPlace, bool backward = false)
+        /// <summary>
+        /// Exchanges Start and End if End appears before Start
+        /// </summary>
+        public void Normalize()
         {
-            if (backward)
-            {
-                var r = new Range(this.tb, startPlace, startPlace);
-                while (r.GoLeft() && r.start >= Start)
-                {
-                    if (r.Start.iChar < tb[r.Start.iLine].Count)
-                        yield return r.Start;
-                }
+            if (Start > End)
+                Inverse();
+        }
 
-                r = new Range(this.tb, End, End);
-                while (r.GoLeft() && r.start >= startPlace)
-                {
-                    if (r.Start.iChar < tb[r.Start.iLine].Count)
-                        yield return r.Start;
-                }
-            }
+        /// <summary>
+        /// Select all chars of control
+        /// </summary>
+        public void SelectAll()
+        {
+            ColumnSelectionMode = false;
+
+            Start = new Place(0, 0);
+            if (tb.LinesCount == 0)
+                Start = new Place(0, 0);
             else
             {
-                var r = new Range(this.tb, startPlace, startPlace);
-                if (startPlace < End)
-                    do
-                    {
-                        if (r.Start.iChar < tb[r.Start.iLine].Count)
-                            yield return r.Start;
-                    } while (r.GoRight());
+                end = new Place(0, 0);
+                start = new Place(tb[tb.LinesCount - 1].Count, tb.LinesCount - 1);
+            }
+            if (this == tb.Selection)
+                tb.Invalidate();
+        }
 
-                r = new Range(this.tb, Start, Start);
-                if (r.Start < startPlace)
-                    do
-                    {
-                        if (r.Start.iChar < tb[r.Start.iLine].Count)
-                            yield return r.Start;
-                    } while (r.GoRight() && r.Start < startPlace);
+        /// <summary>
+        /// Sets folding markers
+        /// </summary>
+        /// <param name="startFoldingPattern">Pattern for start folding line</param>
+        /// <param name="finishFoldingPattern">Pattern for finish folding line</param>
+        public void SetFoldingMarkers(string startFoldingPattern, string finishFoldingPattern)
+        {
+            SetFoldingMarkers(startFoldingPattern, finishFoldingPattern, SyntaxHighlighter.RegexCompiledOption);
+        }
+
+        /// <summary>
+        /// Sets folding markers
+        /// </summary>
+        /// <param name="startFoldingPattern">Pattern for start folding line</param>
+        /// <param name="finishFoldingPattern">Pattern for finish folding line</param>
+        public void SetFoldingMarkers(string startFoldingPattern, string finishFoldingPattern, RegexOptions options)
+        {
+            if (startFoldingPattern == finishFoldingPattern)
+            {
+                SetFoldingMarkers(startFoldingPattern, options);
+                return;
+            }
+
+            foreach (var range in GetRanges(startFoldingPattern, options))
+                tb[range.Start.iLine].FoldingStartMarker = startFoldingPattern;
+
+            foreach (var range in GetRanges(finishFoldingPattern, options))
+                tb[range.Start.iLine].FoldingEndMarker = startFoldingPattern;
+            //
+            tb.Invalidate();
+        }
+
+        /// <summary>
+        /// Sets folding markers
+        /// </summary>
+        /// <param name="startEndFoldingPattern">Pattern for start and end folding line</param>
+        public void SetFoldingMarkers(string foldingPattern, RegexOptions options)
+        {
+            foreach (var range in GetRanges(foldingPattern, options))
+            {
+                if (range.Start.iLine > 0)
+                    tb[range.Start.iLine - 1].FoldingEndMarker = foldingPattern;
+                tb[range.Start.iLine].FoldingStartMarker = foldingPattern;
+            }
+
+            tb.Invalidate();
+        }
+
+        /// <summary>
+        /// Set style for range
+        /// </summary>
+        public void SetStyle(Style style)
+        {
+            //search code for style
+            int code = tb.GetOrSetStyleLayerIndex(style);
+            //set code to chars
+            SetStyle(ToStyleIndex(code));
+            //
+            tb.Invalidate();
+        }
+
+        /// <summary>
+        /// Set style for given regex pattern
+        /// </summary>
+        public void SetStyle(Style style, string regexPattern)
+        {
+            //search code for style
+            StyleIndex layer = ToStyleIndex(tb.GetOrSetStyleLayerIndex(style));
+            SetStyle(layer, regexPattern, RegexOptions.None);
+        }
+
+        /// <summary>
+        /// Set style for given regex
+        /// </summary>
+        public void SetStyle(Style style, Regex regex)
+        {
+            //search code for style
+            StyleIndex layer = ToStyleIndex(tb.GetOrSetStyleLayerIndex(style));
+            SetStyle(layer, regex);
+        }
+
+        /// <summary>
+        /// Set style for given regex pattern
+        /// </summary>
+        public void SetStyle(Style style, string regexPattern, RegexOptions options)
+        {
+            //search code for style
+            StyleIndex layer = ToStyleIndex(tb.GetOrSetStyleLayerIndex(style));
+            SetStyle(layer, regexPattern, options);
+        }
+
+        /// <summary>
+        /// Set style for given regex pattern
+        /// </summary>
+        public void SetStyle(StyleIndex styleLayer, string regexPattern, RegexOptions options)
+        {
+            if (Math.Abs(Start.iLine - End.iLine) > 1000)
+                options |= SyntaxHighlighter.RegexCompiledOption;
+            //
+            foreach (var range in GetRanges(regexPattern, options))
+                range.SetStyle(styleLayer);
+            //
+            tb.Invalidate();
+        }
+
+        /// <summary>
+        /// Set style for given regex pattern
+        /// </summary>
+        public void SetStyle(StyleIndex styleLayer, Regex regex)
+        {
+            foreach (var range in GetRanges(regex))
+                range.SetStyle(styleLayer);
+            //
+            tb.Invalidate();
+        }
+
+        /// <summary>
+        /// Appends style to chars of range
+        /// </summary>
+        public void SetStyle(StyleIndex styleIndex)
+        {
+            //set code to chars
+            int fromLine = Math.Min(End.iLine, Start.iLine);
+            int toLine = Math.Max(End.iLine, Start.iLine);
+            int fromChar = FromX;
+            int toChar = ToX;
+            if (fromLine < 0) return;
+            //
+            for (int y = fromLine; y <= toLine; y++)
+            {
+                int fromX = y == fromLine ? fromChar : 0;
+                int toX = y == toLine ? Math.Min(toChar - 1, tb[y].Count - 1) : tb[y].Count - 1;
+                for (int x = fromX; x <= toX; x++)
+                {
+                    Char c = tb[y][x];
+                    c.style |= styleIndex;
+                    tb[y][x] = c;
+                }
             }
         }
 
+        public override string ToString()
+        {
+            return "Start: " + Start + " End: " + End;
+        }
+
+        internal void GetText(out string text, out List<Place> charIndexToPlace)
+        {
+            //try get cached text
+            if (tb.TextVersion == cachedTextVersion)
+            {
+                text = cachedText;
+                charIndexToPlace = cachedCharIndexToPlace;
+                return;
+            }
+            //
+            int fromLine = Math.Min(end.iLine, start.iLine);
+            int toLine = Math.Max(end.iLine, start.iLine);
+            int fromChar = FromX;
+            int toChar = ToX;
+
+            StringBuilder sb = new StringBuilder((toLine - fromLine) * 50);
+            charIndexToPlace = new List<Place>(sb.Capacity);
+            if (fromLine >= 0)
+            {
+                for (int y = fromLine; y <= toLine; y++)
+                {
+                    int fromX = y == fromLine ? fromChar : 0;
+                    int toX = y == toLine ? Math.Min(toChar - 1, tb[y].Count - 1) : tb[y].Count - 1;
+                    for (int x = fromX; x <= toX; x++)
+                    {
+                        sb.Append(tb[y][x].c);
+                        charIndexToPlace.Add(new Place(x, y));
+                    }
+                    if (y != toLine && fromLine != toLine)
+                        foreach (char c in Environment.NewLine)
+                        {
+                            sb.Append(c);
+                            charIndexToPlace.Add(new Place(tb[y].Count/*???*/, y));
+                        }
+                }
+            }
+            text = sb.ToString();
+            charIndexToPlace.Add(End > Start ? End : Start);
+            //caching
+            cachedText = text;
+            cachedCharIndexToPlace = charIndexToPlace;
+            cachedTextVersion = tb.TextVersion;
+        }
+
+        internal void GoDown(bool shift)
+        {
+            ColumnSelectionMode = false;
+
+            if (!shift)
+                if (start.iLine < end.iLine)
+                {
+                    Start = End;
+                    return;
+                }
+
+            if (preferedPos < 0)
+                preferedPos = start.iChar - tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar));
+
+            int iWW = tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar);
+            if (iWW >= tb.LineInfos[start.iLine].WordWrapStringsCount - 1)
+            {
+                if (start.iLine >= tb.LinesCount - 1) return;
+                //pass hidden
+                int i = tb.FindNextVisibleLine(start.iLine);
+                if (i == start.iLine) return;
+                start.iLine = i;
+                iWW = -1;
+            }
+
+            if (iWW < tb.LineInfos[start.iLine].WordWrapStringsCount - 1)
+            {
+                int finish = tb.LineInfos[start.iLine].GetWordWrapStringFinishPosition(iWW + 1, tb[start.iLine]);
+                start.iChar = tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(iWW + 1) + preferedPos;
+                if (start.iChar > finish + 1)
+                    start.iChar = finish + 1;
+            }
+
+            if (!shift)
+                end = start;
+
+            OnSelectionChanged();
+        }
+
+        internal void GoEnd(bool shift)
+        {
+            ColumnSelectionMode = false;
+
+            if (start.iLine < 0)
+                return;
+            if (tb.LineInfos[start.iLine].VisibleState != VisibleState.Visible)
+                return;
+
+            start = new Place(tb[start.iLine].Count, start.iLine);
+
+            if (!shift)
+                end = start;
+
+            OnSelectionChanged();
+
+            preferedPos = -1;
+        }
+
+        internal void GoFirst(bool shift)
+        {
+            ColumnSelectionMode = false;
+
+            start = new Place(0, 0);
+            if (tb.LineInfos[Start.iLine].VisibleState != VisibleState.Visible)
+                tb.ExpandBlock(Start.iLine);
+
+            if (!shift)
+                end = start;
+
+            OnSelectionChanged();
+        }
+
+        internal void GoHome(bool shift)
+        {
+            ColumnSelectionMode = false;
+
+            if (start.iLine < 0)
+                return;
+
+            if (tb.LineInfos[start.iLine].VisibleState != VisibleState.Visible)
+                return;
+
+            start = new Place(0, start.iLine);
+
+            if (!shift)
+                end = start;
+
+            OnSelectionChanged();
+
+            preferedPos = -1;
+        }
+
+        internal void GoLast(bool shift)
+        {
+            ColumnSelectionMode = false;
+
+            start = new Place(tb[tb.LinesCount - 1].Count, tb.LinesCount - 1);
+            if (tb.LineInfos[Start.iLine].VisibleState != VisibleState.Visible)
+                tb.ExpandBlock(Start.iLine);
+
+            if (!shift)
+                end = start;
+
+            OnSelectionChanged();
+        }
+
+        internal void GoPageDown(bool shift)
+        {
+            ColumnSelectionMode = false;
+
+            if (preferedPos < 0)
+                preferedPos = start.iChar - tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar));
+
+            int pageHeight = tb.ClientRectangle.Height / tb.CharHeight - 1;
+
+            for (int i = 0; i < pageHeight; i++)
+            {
+                int iWW = tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar);
+                if (iWW >= tb.LineInfos[start.iLine].WordWrapStringsCount - 1)
+                {
+                    if (start.iLine >= tb.LinesCount - 1) break;
+                    //pass hidden
+                    int newLine = tb.FindNextVisibleLine(start.iLine);
+                    if (newLine == start.iLine) break;
+                    start.iLine = newLine;
+                    iWW = -1;
+                }
+
+                if (iWW < tb.LineInfos[start.iLine].WordWrapStringsCount - 1)
+                {
+                    int finish = tb.LineInfos[start.iLine].GetWordWrapStringFinishPosition(iWW + 1, tb[start.iLine]);
+                    start.iChar = tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(iWW + 1) + preferedPos;
+                    if (start.iChar > finish + 1)
+                        start.iChar = finish + 1;
+                }
+            }
+
+            if (!shift)
+                end = start;
+
+            OnSelectionChanged();
+        }
+
+        internal void GoPageUp(bool shift)
+        {
+            ColumnSelectionMode = false;
+
+            if (preferedPos < 0)
+                preferedPos = start.iChar - tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar));
+
+            int pageHeight = tb.ClientRectangle.Height / tb.CharHeight - 1;
+
+            for (int i = 0; i < pageHeight; i++)
+            {
+                int iWW = tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar);
+                if (iWW == 0)
+                {
+                    if (start.iLine <= 0) break;
+                    //pass hidden
+                    int newLine = tb.FindPrevVisibleLine(start.iLine);
+                    if (newLine == start.iLine) break;
+                    start.iLine = newLine;
+                    iWW = tb.LineInfos[start.iLine].WordWrapStringsCount;
+                }
+
+                if (iWW > 0)
+                {
+                    int finish = tb.LineInfos[start.iLine].GetWordWrapStringFinishPosition(iWW - 1, tb[start.iLine]);
+                    start.iChar = tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(iWW - 1) + preferedPos;
+                    if (start.iChar > finish + 1)
+                        start.iChar = finish + 1;
+                }
+            }
+
+            if (!shift)
+                end = start;
+
+            OnSelectionChanged();
+        }
+
+        internal void GoUp(bool shift)
+        {
+            ColumnSelectionMode = false;
+
+            if (!shift)
+                if (start.iLine > end.iLine)
+                {
+                    Start = End;
+                    return;
+                }
+
+            if (preferedPos < 0)
+                preferedPos = start.iChar - tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar));
+
+            int iWW = tb.LineInfos[start.iLine].GetWordWrapStringIndex(start.iChar);
+            if (iWW == 0)
+            {
+                if (start.iLine <= 0) return;
+                int i = tb.FindPrevVisibleLine(start.iLine);
+                if (i == start.iLine) return;
+                start.iLine = i;
+                iWW = tb.LineInfos[start.iLine].WordWrapStringsCount;
+            }
+
+            if (iWW > 0)
+            {
+                int finish = tb.LineInfos[start.iLine].GetWordWrapStringFinishPosition(iWW - 1, tb[start.iLine]);
+                start.iChar = tb.LineInfos[start.iLine].GetWordWrapStringStartPosition(iWW - 1) + preferedPos;
+                if (start.iChar > finish + 1)
+                    start.iChar = finish + 1;
+            }
+
+            if (!shift)
+                end = start;
+
+            OnSelectionChanged();
+        }
+
+        private bool IsIdentifierChar(char c)
+        {
+            return char.IsLetterOrDigit(c) || c == '_';
+        }
+
+        private bool IsSpaceChar(char c)
+        {
+            return c == ' ' || c == '\t';
+        }
+
+        private void OnSelectionChanged()
+        {
+            //clear cache
+            cachedTextVersion = -1;
+            cachedText = null;
+            cachedCharIndexToPlace = null;
+            //
+            if (tb.Selection == this)
+                if (updating == 0)
+                    tb.OnSelectionChanged();
+        }
+
         #region ColumnSelectionMode
+
+        private string Text_ColumnSelectionMode
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                var bounds = Bounds;
+                if (bounds.iStartLine < 0) return "";
+                //
+                for (int y = bounds.iStartLine; y <= bounds.iEndLine; y++)
+                {
+                    for (int x = bounds.iStartChar; x < bounds.iEndChar; x++)
+                    {
+                        if (x < tb[y].Count)
+                            sb.Append(tb[y][x].c);
+                    }
+                    if (bounds.iEndLine != bounds.iStartLine && y != bounds.iEndLine)
+                        sb.AppendLine();
+                }
+
+                return sb.ToString();
+            }
+        }
+
+        internal void GoDown_ColumnSelectionMode()
+        {
+            var iLine = tb.FindNextVisibleLine(End.iLine);
+            End = new Place(End.iChar, iLine);
+        }
+
+        internal void GoLeft_ColumnSelectionMode()
+        {
+            if (End.iChar > 0)
+                End = new Place(End.iChar - 1, End.iLine);
+        }
+
+        internal void GoRight_ColumnSelectionMode()
+        {
+            End = new Place(End.iChar + 1, End.iLine);
+        }
+
+        internal void GoUp_ColumnSelectionMode()
+        {
+            var iLine = tb.FindPrevVisibleLine(End.iLine);
+            End = new Place(End.iChar, iLine);
+        }
+
+        private IEnumerable<Place> GetEnumerator_ColumnSelectionMode()
+        {
+            var bounds = Bounds;
+            if (bounds.iStartLine < 0) yield break;
+            //
+            for (int y = bounds.iStartLine; y <= bounds.iEndLine; y++)
+            {
+                for (int x = bounds.iStartChar; x < bounds.iEndChar; x++)
+                {
+                    if (x < tb[y].Count)
+                        yield return new Place(x, y);
+                }
+            }
+        }
 
         private Range GetIntersectionWith_ColumnSelectionMode(Range range)
         {
@@ -1634,44 +1710,6 @@ namespace FastColoredTextBoxNS
             return true;
         }
 
-        private IEnumerable<Place> GetEnumerator_ColumnSelectionMode()
-        {
-            var bounds = Bounds;
-            if (bounds.iStartLine < 0) yield break;
-            //
-            for (int y = bounds.iStartLine; y <= bounds.iEndLine; y++)
-            {
-                for (int x = bounds.iStartChar; x < bounds.iEndChar; x++)
-                {
-                    if (x < tb[y].Count)
-                        yield return new Place(x, y);
-                }
-            }
-        }
-
-        private string Text_ColumnSelectionMode
-        {
-            get
-            {
-                StringBuilder sb = new StringBuilder();
-                var bounds = Bounds;
-                if (bounds.iStartLine < 0) return "";
-                //
-                for (int y = bounds.iStartLine; y <= bounds.iEndLine; y++)
-                {
-                    for (int x = bounds.iStartChar; x < bounds.iEndChar; x++)
-                    {
-                        if (x < tb[y].Count)
-                            sb.Append(tb[y][x].c);
-                    }
-                    if (bounds.iEndLine != bounds.iStartLine && y != bounds.iEndLine)
-                        sb.AppendLine();
-                }
-
-                return sb.ToString();
-            }
-        }
-
         private int Length_ColumnSelectionMode(bool withNewLines)
         {
             var bounds = Bounds;
@@ -1692,45 +1730,6 @@ namespace FastColoredTextBoxNS
             return cnt;
         }
 
-        internal void GoDown_ColumnSelectionMode()
-        {
-            var iLine = tb.FindNextVisibleLine(End.iLine);
-            End = new Place(End.iChar, iLine);
-        }
-
-        internal void GoUp_ColumnSelectionMode()
-        {
-            var iLine = tb.FindPrevVisibleLine(End.iLine);
-            End = new Place(End.iChar, iLine);
-        }
-
-        internal void GoRight_ColumnSelectionMode()
-        {
-            End = new Place(End.iChar + 1, End.iLine);
-        }
-
-        internal void GoLeft_ColumnSelectionMode()
-        {
-            if (End.iChar > 0)
-                End = new Place(End.iChar - 1, End.iLine);
-        }
-
-        #endregion
-    }
-
-    public struct RangeRect
-    {
-        public RangeRect(int iStartLine, int iStartChar, int iEndLine, int iEndChar)
-        {
-            this.iStartLine = iStartLine;
-            this.iStartChar = iStartChar;
-            this.iEndLine = iEndLine;
-            this.iEndChar = iEndChar;
-        }
-
-        public int iStartLine;
-        public int iStartChar;
-        public int iEndLine;
-        public int iEndChar;
+        #endregion ColumnSelectionMode
     }
 }

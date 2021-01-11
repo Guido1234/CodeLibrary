@@ -198,6 +198,18 @@ namespace CodeLibrary.Controls
         [Category("CollectionListBox")]
         public string ColorProperty { get; set; }
 
+        public int ColumnWidth
+        {
+            get
+            {
+                return column.Width;
+            }
+            set
+            {
+                column.Width = value;
+            }
+        }
+
         /// <summary>
         /// Gets / Sets the default category name
         /// </summary>
@@ -211,33 +223,6 @@ namespace CodeLibrary.Controls
         [Description("")]
         [Category("CollectionListBox")]
         public string ImageProperty { get; set; }
-
-        public SortOrder Sorting
-        {
-            get
-            {
-                return listViewSelected.Sorting;
-            }
-            set
-            {
-                listViewSelected.Sorting = value;
-            }
-               
-        }
-
-        public int ColumnWidth
-        { 
-            get
-            {
-                return column.Width;
-            }
-            set
-            {
-                column.Width = value;
-            }
-        
-        }
-
 
         public bool MultiSelect
         {
@@ -385,6 +370,18 @@ namespace CodeLibrary.Controls
             {
                 showToolstrip = value;
                 ShowHideToolstrip();
+            }
+        }
+
+        public SortOrder Sorting
+        {
+            get
+            {
+                return listViewSelected.Sorting;
+            }
+            set
+            {
+                listViewSelected.Sorting = value;
             }
         }
 

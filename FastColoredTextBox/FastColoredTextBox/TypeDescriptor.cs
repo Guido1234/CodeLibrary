@@ -6,32 +6,30 @@ namespace FastColoredTextBoxNS
 {
     ///
     /// These classes are required for correct data binding to Text property of FastColoredTextbox
-    /// 
-    class FCTBDescriptionProvider : TypeDescriptionProvider
+    ///
+    internal class FCTBDescriptionProvider : TypeDescriptionProvider
     {
         public FCTBDescriptionProvider(Type type)
             : base(GetDefaultTypeProvider(type))
         {
         }
 
-        private static TypeDescriptionProvider GetDefaultTypeProvider(Type type)
-        {
-            return TypeDescriptor.GetProvider(type);
-        }
-
-
-
         public override ICustomTypeDescriptor GetTypeDescriptor(Type objectType, object instance)
         {
             ICustomTypeDescriptor defaultDescriptor = base.GetTypeDescriptor(objectType, instance);
             return new FCTBTypeDescriptor(defaultDescriptor, instance);
         }
+
+        private static TypeDescriptionProvider GetDefaultTypeProvider(Type type)
+        {
+            return TypeDescriptor.GetProvider(type);
+        }
     }
 
-    class FCTBTypeDescriptor : CustomTypeDescriptor
+    internal class FCTBTypeDescriptor : CustomTypeDescriptor
     {
-        ICustomTypeDescriptor parent;
-        object instance;
+        private object instance;
+        private ICustomTypeDescriptor parent;
 
         public FCTBTypeDescriptor(ICustomTypeDescriptor parent, object instance)
             : base(parent)
@@ -61,16 +59,11 @@ namespace FastColoredTextBoxNS
         }
     }
 
-    class FooTextChangedDescriptor : EventDescriptor
+    internal class FooTextChangedDescriptor : EventDescriptor
     {
         public FooTextChangedDescriptor(MemberDescriptor desc)
             : base(desc)
         {
-        }
-
-        public override void AddEventHandler(object component, Delegate value)
-        {
-            (component as FastColoredTextBox).BindingTextChanged += value as EventHandler;
         }
 
         public override Type ComponentType
@@ -86,6 +79,11 @@ namespace FastColoredTextBoxNS
         public override bool IsMulticast
         {
             get { return true; }
+        }
+
+        public override void AddEventHandler(object component, Delegate value)
+        {
+            (component as FastColoredTextBox).BindingTextChanged += value as EventHandler;
         }
 
         public override void RemoveEventHandler(object component, Delegate value)

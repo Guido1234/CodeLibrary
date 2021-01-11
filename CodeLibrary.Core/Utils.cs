@@ -32,6 +32,16 @@ namespace CodeLibrary.Core
             UTF8 = 6
         }
 
+        public static decimal Bound(decimal value, decimal lowbound, decimal highbound) => (value > highbound) ? highbound : (value < lowbound) ? lowbound : value;
+
+        public static Int16 Bound(Int16 value, Int16 lowbound, Int16 highbound) => (value >= highbound) ? highbound : (value <= lowbound) ? lowbound : value;
+
+        public static Int32 Bound(Int32 value, Int32 lowbound, Int32 highbound) => (value >= highbound) ? highbound : (value <= lowbound) ? lowbound : value;
+
+        public static Int64 Bound(Int64 value, Int64 lowbound, Int64 highbound) => (value >= highbound) ? highbound : (value <= lowbound) ? lowbound : value;
+
+        public static double Bound(double value, double lowbound, double highbound) => (value >= highbound) ? highbound : (value <= lowbound) ? lowbound : value;
+
         public static string ByteArrayToString(byte[] bytes) => ByteArrayToString(bytes, TextEncoding.UTF8);
 
         public static string ByteArrayToString(byte[] bytes, TextEncoding encoding) => GetEncoder(encoding).GetString(bytes);
@@ -140,6 +150,125 @@ namespace CodeLibrary.Core
             return types;
         }
 
+        /// <summary>
+        /// Berekend het weeknummer voor een opgegeven datum.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns>Weeknummer</returns>
+        public static int GetWeekNumber(DateTime date)
+        {
+            const int JAN = 1;
+            const int DEC = 12;
+            const int LASTDAYOFDEC = 31;
+            const int FIRSTDAYOFJAN = 1;
+            const int THURSDAY = 4;
+            bool ThursdayFlag = false;
+
+            // Get the day number since the beginning of the year
+            int DayOfYear = date.DayOfYear;
+
+            // Get the numeric weekday of the first day of the
+            // year (using sunday as FirstDay)
+            int StartWeekDayOfYear = (int)(new DateTime(date.Year, JAN, FIRSTDAYOFJAN)).DayOfWeek;
+            int EndWeekDayOfYear = (int)(new DateTime(date.Year, DEC, LASTDAYOFDEC)).DayOfWeek;
+
+            // Compensate for the fact that we are using monday
+            // as the first day of the week
+            if (StartWeekDayOfYear == 0)
+                StartWeekDayOfYear = 7;
+            if (EndWeekDayOfYear == 0)
+                EndWeekDayOfYear = 7;
+
+            // Calculate the number of days in the first and last week
+            int DaysInFirstWeek = 8 - (StartWeekDayOfYear);
+            int DaysInLastWeek = 8 - (EndWeekDayOfYear);
+
+            // If the year either starts or ends on a thursday it will have a 53rd week
+            if (StartWeekDayOfYear == THURSDAY || EndWeekDayOfYear == THURSDAY)
+                ThursdayFlag = true;
+
+            // We begin by calculating the number of FULL weeks between the start of the year and
+            // our date. The number is rounded up, so the smallest possible value is 0.
+            int FullWeeks = (int)System.Math.Ceiling((DayOfYear - (DaysInFirstWeek)) / 7.0);
+
+            int WeekNum = FullWeeks;
+
+            // If the first week of the year has at least four days, then the actual week number for our date
+            // can be incremented by one.
+            if (DaysInFirstWeek >= THURSDAY)
+                WeekNum = WeekNum + 1;
+
+            // If week number is larger than week 52 (and the year doesn't either start or end on a thursday)
+            // then the correct week number is 1.
+            if (WeekNum > 52 && !ThursdayFlag)
+                WeekNum = 1;
+
+            // If week number is still 0, it means that we are trying to evaluate the week number for a
+            // week that belongs in the previous year (since that week has 3 days or less in our date's year).
+            // We therefore make a recursive call using the last day of the previous year.
+            if (WeekNum == 0)
+                WeekNum = GetWeekNumber(new DateTime(date.Year - 1, DEC, LASTDAYOFDEC));
+
+            return WeekNum;
+        }
+
+        /// <summary>
+        /// Returns the number of weeks for a year.
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public static int GetWeeksInYear(int year)
+        {
+            const int JAN = 1;
+            const int DEC = 12;
+            const int LASTDAYOFDEC = 31;
+            const int FIRSTDAYOFJAN = 1;
+            const int THURSDAY = 4;
+
+            // Get the numeric weekday of the first day of the
+            // year (using sunday as FirstDay)
+            int StartWeekDayOfYear = (int)(new DateTime(year, JAN, FIRSTDAYOFJAN)).DayOfWeek;
+            int EndWeekDayOfYear = (int)(new DateTime(year, DEC, LASTDAYOFDEC)).DayOfWeek;
+
+            // Compensate for the fact that we are using monday
+            // as the first day of the week
+            StartWeekDayOfYear = (StartWeekDayOfYear == 0) ? 7 : StartWeekDayOfYear;
+            EndWeekDayOfYear = (EndWeekDayOfYear == 0) ? 7 : EndWeekDayOfYear;
+
+            // If the year either starts or ends on a thursday it will have a 53rd week
+            return (StartWeekDayOfYear == THURSDAY || EndWeekDayOfYear == THURSDAY) ? 53 : 52;
+        }
+
+        /// <summary>
+        /// Calculates start date for the week
+        /// </summary>
+        /// <param name="week"></param>
+        /// <param name="year"></param>
+        /// <returns>StartDate or endDate</returns>
+        public static DateTime GetWeekStartDate(int week, int year)
+        {
+            const int FIRSTDAYOFJAN = 1;
+            const int JAN = 1;
+            const int THURSDAY = 4;
+
+            week = Bound(week, 1, GetWeeksInYear(year));
+
+            // Calculate Day of the week
+            int StartWeekDayOfYear = (int)(new DateTime(year, JAN, FIRSTDAYOFJAN)).DayOfWeek;
+            StartWeekDayOfYear = (StartWeekDayOfYear == 0) ? 7 : StartWeekDayOfYear;
+
+            // Calculate the number of days in the first
+            int DaysInFirstWeek = 8 - (StartWeekDayOfYear);
+            DateTime startDateFirstWeek = new DateTime(year, JAN, FIRSTDAYOFJAN);
+
+            if (DaysInFirstWeek >= THURSDAY)
+                startDateFirstWeek = startDateFirstWeek.AddDays(-(StartWeekDayOfYear - 1)); // Date for first day of the week, might be in december previous year.
+            else
+                startDateFirstWeek = startDateFirstWeek.AddDays(DaysInFirstWeek); // To few days in the week for january the first, shift to the next week
+
+            return startDateFirstWeek.AddDays((week - 1) * 7);
+        }
+
         public static FileOrDirectory IsFileOrDirectory(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -237,9 +366,6 @@ namespace CodeLibrary.Core
                 editKey.SetValue(key, value);
         }
 
-
-
-
         public static List<string> Split(string text, string splitter, bool skipEmpty)
         {
             int _splitterLen = splitter.Length;
@@ -267,6 +393,48 @@ namespace CodeLibrary.Core
             }
 
             return _items;
+        }
+
+        public static string[] SplitLines(string text)
+        {
+            var _result = new List<string>();
+            var _partBuilder = new StringBuilder();
+            var _textCharArray = text.ToCharArray();
+            var _prevChar = (char)0;
+
+            for (int ii = 0; ii < _textCharArray.Length; ii++)
+            {
+                char _currChar = _textCharArray[ii];
+
+                if (_currChar == '\n' && _prevChar == '\r')
+                {
+                    _partBuilder.Length--;
+                    _result.Add(_partBuilder.ToString());
+                    _partBuilder = new StringBuilder();
+                    _prevChar = (char)0;
+                    continue;
+                }
+                if (_currChar == '\n' && _prevChar != '\r')
+                {
+                    _result.Add(_partBuilder.ToString());
+                    _partBuilder = new StringBuilder();
+                    _prevChar = (char)0;
+                    continue;
+                }
+                if (_prevChar == '\n' || _prevChar == '\r')
+                {
+                    if (_currChar != '\r' && _currChar != '\n')
+                        _partBuilder.Append(_currChar);
+
+                    _result.Add(_partBuilder.ToString());
+                    _partBuilder = new StringBuilder();
+                    _prevChar = _textCharArray[ii];
+                    continue;
+                }
+                _partBuilder.Append(_currChar);
+                _prevChar = _textCharArray[ii];
+            }
+            return _result.ToArray();
         }
 
         public static string[] SplitPath(string path, char separator)
@@ -322,181 +490,6 @@ namespace CodeLibrary.Core
                 using (StreamReader streamReader = new StreamReader(stream))
                     return streamReader.ReadToEnd();
             }
-        }
-
-
-        /// <summary>
-        /// Berekend het weeknummer voor een opgegeven datum.
-        /// </summary>
-        /// <param name="date"></param>
-        /// <returns>Weeknummer</returns>
-        public static int GetWeekNumber(DateTime date)
-        {
-            const int JAN = 1;
-            const int DEC = 12;
-            const int LASTDAYOFDEC = 31;
-            const int FIRSTDAYOFJAN = 1;
-            const int THURSDAY = 4;
-            bool ThursdayFlag = false;
-
-            // Get the day number since the beginning of the year
-            int DayOfYear = date.DayOfYear;
-
-            // Get the numeric weekday of the first day of the
-            // year (using sunday as FirstDay)
-            int StartWeekDayOfYear = (int)(new DateTime(date.Year, JAN, FIRSTDAYOFJAN)).DayOfWeek;
-            int EndWeekDayOfYear = (int)(new DateTime(date.Year, DEC, LASTDAYOFDEC)).DayOfWeek;
-
-            // Compensate for the fact that we are using monday
-            // as the first day of the week
-            if (StartWeekDayOfYear == 0)
-                StartWeekDayOfYear = 7;
-            if (EndWeekDayOfYear == 0)
-                EndWeekDayOfYear = 7;
-
-            // Calculate the number of days in the first and last week
-            int DaysInFirstWeek = 8 - (StartWeekDayOfYear);
-            int DaysInLastWeek = 8 - (EndWeekDayOfYear);
-
-            // If the year either starts or ends on a thursday it will have a 53rd week
-            if (StartWeekDayOfYear == THURSDAY || EndWeekDayOfYear == THURSDAY)
-                ThursdayFlag = true;
-
-            // We begin by calculating the number of FULL weeks between the start of the year and
-            // our date. The number is rounded up, so the smallest possible value is 0.
-            int FullWeeks = (int)System.Math.Ceiling((DayOfYear - (DaysInFirstWeek)) / 7.0);
-
-            int WeekNum = FullWeeks;
-
-            // If the first week of the year has at least four days, then the actual week number for our date
-            // can be incremented by one.
-            if (DaysInFirstWeek >= THURSDAY)
-                WeekNum = WeekNum + 1;
-
-            // If week number is larger than week 52 (and the year doesn't either start or end on a thursday)
-            // then the correct week number is 1.
-            if (WeekNum > 52 && !ThursdayFlag)
-                WeekNum = 1;
-
-            // If week number is still 0, it means that we are trying to evaluate the week number for a
-            // week that belongs in the previous year (since that week has 3 days or less in our date's year).
-            // We therefore make a recursive call using the last day of the previous year.
-            if (WeekNum == 0)
-                WeekNum = GetWeekNumber(new DateTime(date.Year - 1, DEC, LASTDAYOFDEC));
-
-            return WeekNum;
-        }
-         
-        /// <summary>
-        /// Calculates start date for the week
-        /// </summary>
-        /// <param name="week"></param>
-        /// <param name="year"></param>
-        /// <returns>StartDate or endDate</returns>
-        public static DateTime GetWeekStartDate(int week, int year)
-        {
-            const int FIRSTDAYOFJAN = 1;
-            const int JAN = 1;
-            const int THURSDAY = 4;
-
-            week = Bound(week, 1, GetWeeksInYear(year));
-
-            // Calculate Day of the week
-            int StartWeekDayOfYear = (int)(new DateTime(year, JAN, FIRSTDAYOFJAN)).DayOfWeek;
-            StartWeekDayOfYear = (StartWeekDayOfYear == 0) ? 7 : StartWeekDayOfYear;
-
-            // Calculate the number of days in the first
-            int DaysInFirstWeek = 8 - (StartWeekDayOfYear);
-            DateTime startDateFirstWeek = new DateTime(year, JAN, FIRSTDAYOFJAN);
-
-            if (DaysInFirstWeek >= THURSDAY)
-                startDateFirstWeek = startDateFirstWeek.AddDays(-(StartWeekDayOfYear - 1)); // Date for first day of the week, might be in december previous year.
-            else
-                startDateFirstWeek = startDateFirstWeek.AddDays(DaysInFirstWeek); // To few days in the week for january the first, shift to the next week
-
-            return startDateFirstWeek.AddDays((week - 1) * 7);
-        }
-
-
-        public static decimal Bound(decimal value, decimal lowbound, decimal highbound) => (value > highbound) ? highbound : (value < lowbound) ? lowbound : value;
-
-        public static Int16 Bound(Int16 value, Int16 lowbound, Int16 highbound) => (value >= highbound) ? highbound : (value <= lowbound) ? lowbound : value;
-
-        public static Int32 Bound(Int32 value, Int32 lowbound, Int32 highbound) => (value >= highbound) ? highbound : (value <= lowbound) ? lowbound : value;
-
-        public static Int64 Bound(Int64 value, Int64 lowbound, Int64 highbound) => (value >= highbound) ? highbound : (value <= lowbound) ? lowbound : value;
-
-        public static double Bound(double value, double lowbound, double highbound) => (value >= highbound) ? highbound : (value <= lowbound) ? lowbound : value;
-
-
-        /// <summary>
-        /// Returns the number of weeks for a year.
-        /// </summary>
-        /// <param name="year"></param>
-        /// <returns></returns>
-        public static int GetWeeksInYear(int year)
-        {
-            const int JAN = 1;
-            const int DEC = 12;
-            const int LASTDAYOFDEC = 31;
-            const int FIRSTDAYOFJAN = 1;
-            const int THURSDAY = 4;
-
-            // Get the numeric weekday of the first day of the
-            // year (using sunday as FirstDay)
-            int StartWeekDayOfYear = (int)(new DateTime(year, JAN, FIRSTDAYOFJAN)).DayOfWeek;
-            int EndWeekDayOfYear = (int)(new DateTime(year, DEC, LASTDAYOFDEC)).DayOfWeek;
-
-            // Compensate for the fact that we are using monday
-            // as the first day of the week 
-            StartWeekDayOfYear = (StartWeekDayOfYear == 0) ? 7 : StartWeekDayOfYear;
-            EndWeekDayOfYear = (EndWeekDayOfYear == 0) ? 7 : EndWeekDayOfYear;
-
-            // If the year either starts or ends on a thursday it will have a 53rd week
-            return (StartWeekDayOfYear == THURSDAY || EndWeekDayOfYear == THURSDAY) ? 53 : 52;
-        }
-
-
-        public static string[] SplitLines(string text)
-        {
-            var _result = new List<string>();
-            var _partBuilder = new StringBuilder();
-            var _textCharArray = text.ToCharArray();
-            var _prevChar = (char)0;
-
-            for (int ii = 0; ii < _textCharArray.Length; ii++)
-            {
-                char _currChar = _textCharArray[ii];
-
-                if (_currChar == '\n' && _prevChar == '\r')
-                {
-                    _partBuilder.Length--;
-                    _result.Add(_partBuilder.ToString());
-                    _partBuilder = new StringBuilder();
-                    _prevChar = (char)0;
-                    continue;
-                }
-                if (_currChar == '\n' && _prevChar != '\r')
-                {
-                    _result.Add(_partBuilder.ToString());
-                    _partBuilder = new StringBuilder();
-                    _prevChar = (char)0;
-                    continue;
-                }
-                if (_prevChar == '\n' || _prevChar == '\r')
-                {
-                    if (_currChar != '\r' && _currChar != '\n')
-                        _partBuilder.Append(_currChar);
-
-                    _result.Add(_partBuilder.ToString());
-                    _partBuilder = new StringBuilder();
-                    _prevChar = _textCharArray[ii];
-                    continue;
-                }
-                _partBuilder.Append(_currChar);
-                _prevChar = _textCharArray[ii];
-            }
-            return _result.ToArray();
         }
     }
 }

@@ -1,10 +1,9 @@
-﻿using CodeLibrary.Core;
-using DevToys;
+﻿using DevToys;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
- 
+
 namespace CodeLibrary.Core
 {
     public static class Config
@@ -12,9 +11,8 @@ namespace CodeLibrary.Core
         public static string AppFolder { get; set; }
         public static bool DarkMode { get; set; } = true;
 
+        public static string DefaultNoteType { get; set; }
         public static string FavoriteFile => Utils.PathCombine(AppFolder, "Favorite.json");
-
-        public static string RtfStylesFile => Utils.PathCombine(AppFolder, "RtfStyles.json");
 
         public static List<string> FavoriteLibs { get; set; } = new List<string>();
         public static bool HighContrastMode { get; set; } = true;
@@ -22,15 +20,10 @@ namespace CodeLibrary.Core
         public static string LastOpenedFile { get; set; }
         public static bool OpenDefaultOnStart { get; set; }
         public static string PluginPath { get; set; }
-
-        public static string DefaultNoteType { get; set; }
-
+        public static string RtfStylesFile => Utils.PathCombine(AppFolder, "RtfStyles.json");
         public static int Zoom { get; set; } = 100;
 
         public static VersionNumber CurrentVersion() => new VersionNumber(Assembly.GetExecutingAssembly().GetName().Version.ToString());
-
-        public static VersionNumber PreviousVersion() => new VersionNumber(Utils.GetCurrentUserRegisterKey(Regpath(), Constants.VERSION));
-
 
         public static bool IsNewVersion()
         {
@@ -51,15 +44,13 @@ namespace CodeLibrary.Core
 
             HighContrastMode = ConvertUtility.ToBoolean(Utils.GetCurrentUserRegisterKey(regpath, Constants.HIGHCONTRASTMODE), false);
 
-
             DefaultNoteType = Utils.GetCurrentUserRegisterKey(regpath, Constants.DEFAULT_NOTE_TYPE);
-
 
             PluginPath = Utils.GetCurrentUserRegisterKey(regpath, Constants.PLUGINPATH);
 
             AppFolder = Utils.PathCombine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Guido Utilities", "CodeLibrary");
 
-            StyleCollection.Instance.Load(RtfStylesFile); 
+            StyleCollection.Instance.Load(RtfStylesFile);
 
             if (File.Exists(FavoriteFile))
             {
@@ -67,6 +58,8 @@ namespace CodeLibrary.Core
                 FavoriteLibs = Utils.FromJson<List<string>>(_json);
             }
         }
+
+        public static VersionNumber PreviousVersion() => new VersionNumber(Utils.GetCurrentUserRegisterKey(Regpath(), Constants.VERSION));
 
         public static void Save()
         {

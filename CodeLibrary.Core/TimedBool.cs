@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Timers;
- 
+
 namespace CodeLibrary.Core
 {
     public class TimedBool
     {
         private TimeSpan _retention = new TimeSpan(0, 0, 0, 0, 300);
         private DateTime _trueTime = DateTime.Now;
-
-        public event EventHandler<EventArgs> Expired = delegate { };
 
         private Timer IntervalTimer = new Timer(300);
 
@@ -20,16 +18,12 @@ namespace CodeLibrary.Core
             IntervalTimer.Elapsed += IntervalTimer_Elapsed;
         }
 
-        private void IntervalTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            IntervalTimer.Enabled = false;
-            Expired(this, new EventArgs());
-        }
-
         public TimedBool(TimeSpan retention) : this()
         {
             _retention = retention;
         }
+
+        public event EventHandler<EventArgs> Expired = delegate { };
 
         public bool Value
         {
@@ -38,7 +32,6 @@ namespace CodeLibrary.Core
                 IntervalTimer.Enabled = false;
                 _trueTime = DateTime.Now;
                 IntervalTimer.Enabled = true;
-                
             }
             get
             {
@@ -60,5 +53,11 @@ namespace CodeLibrary.Core
         public static bool operator ==(TimedBool a, bool b) => a.Value == b;
 
         public static bool operator ==(bool a, TimedBool b) => b.Value == a;
+
+        private void IntervalTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            IntervalTimer.Enabled = false;
+            Expired(this, new EventArgs());
+        }
     }
 }

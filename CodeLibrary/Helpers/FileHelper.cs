@@ -20,6 +20,7 @@ namespace CodeLibrary
         private string _Find = string.Empty;
         private DateTime _lastAutoSavedDate = new DateTime();
         private DateTime _lastOpenedDate = DateTime.Now;
+        private Cursor _PrevCursor;
         private int _updating = 0;
 
         public FileHelper(TreeView treeview, FormCodeLibrary mainform)
@@ -28,42 +29,14 @@ namespace CodeLibrary
             _mainform = mainform;
             _lastAutoSavedDate = DateTime.Now;
             _autoSaveTimer.Interval = 1000;
-            _autoSaveTimer.Tick += AutoSaveTimer_Tick; 
+            _autoSaveTimer.Tick += AutoSaveTimer_Tick;
             _autoSaveTimer.Start();
         }
 
-        public void RestoreBackup()
-        {
-            if (string.IsNullOrEmpty(CurrentFile))
-            {
-                return;
-            }    
-
-            FormBackupRestore _f = new FormBackupRestore(CurrentFile);
-            var _result = _f.ShowDialog();
-            if (_result == DialogResult.OK)
-            {
-                LoadBackup(_f.Selected.Path);
-            }
-        }
-        private void LoadBackup(string file)
-        {
-            string _lastOpened = Config.LastOpenedFile;
-
-            BeginUpdate();
-
-            if (file != null)
-                if (Utils.IsFileOrDirectory(file) == Utils.FileOrDirectory.File)
-                    OpenFile(file, null);
-
-            Config.LastOpenedFile = _lastOpened;
-            CurrentFile = _lastOpened;
-            SetTitle();
-            EndUpdate();
-        }
-
+        public TreeNode ClipBoardMonitorNode { get; set; }
 
         public string CurrentFile { get; set; }
+
         public bool IsUpdating => _updating > 0;
 
         public SecureString Password { get; set; }
@@ -72,11 +45,7 @@ namespace CodeLibrary
 
         public TreeNode TrashcanNode { get; set; }
 
-        public TreeNode ClipBoardMonitorNode { get; set; }
-
         public TreeviewHelper TreeHelper { get; set; }
-
-        private Cursor _PrevCursor;
 
         public void BeginUpdate()
         {
@@ -84,7 +53,7 @@ namespace CodeLibrary
             {
                 _PrevCursor = _mainform.Cursor;
             }
-            _updating++;            
+            _updating++;
             _mainform.UseWaitCursor = true;
             _mainform.Cursor = Cursors.WaitCursor;
         }
@@ -326,15 +295,19 @@ namespace CodeLibrary
                     case "xmlt":
                         codetype = CodeType.XML;
                         break;
+
                     case "js":
                         codetype = CodeType.JS;
                         break;
+
                     case "php":
                         codetype = CodeType.PHP;
                         break;
+
                     case "lua":
                         codetype = CodeType.Lua;
                         break;
+
                     case "rtf":
                         codetype = CodeType.RTF;
                         break;
@@ -444,6 +417,21 @@ namespace CodeLibrary
             EndUpdate();
         }
 
+        public void RestoreBackup()
+        {
+            if (string.IsNullOrEmpty(CurrentFile))
+            {
+                return;
+            }
+
+            FormBackupRestore _f = new FormBackupRestore(CurrentFile);
+            var _result = _f.ShowDialog();
+            if (_result == DialogResult.OK)
+            {
+                LoadBackup(_f.Selected.Path);
+            }
+        }
+
         public void SaveFile(bool saveas) => SaveFile(saveas, null);
 
         public void SaveFile(bool saveas, TreeNode rootnode)
@@ -536,8 +524,6 @@ namespace CodeLibrary
 
         private void AutoSaveFile()
         {
-            
-
             string _fileName = GetAutoSaveFileName();
 
             CodeSnippetCollection _collection = new CodeSnippetCollection { LastSaved = _lastOpenedDate };
@@ -665,10 +651,24 @@ namespace CodeLibrary
             return path.Substring(ii, path.Length - ii);
         }
 
+        private void LoadBackup(string file)
+        {
+            string _lastOpened = Config.LastOpenedFile;
+
+            BeginUpdate();
+
+            if (file != null)
+                if (Utils.IsFileOrDirectory(file) == Utils.FileOrDirectory.File)
+                    OpenFile(file, null);
+
+            Config.LastOpenedFile = _lastOpened;
+            CurrentFile = _lastOpened;
+            SetTitle();
+            EndUpdate();
+        }
+
         private void Save(CodeSnippetCollection collection, string fileName)
         {
-            
-
             collection.ToBase64();
             string _json = Utils.ToJson(collection);
 

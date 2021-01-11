@@ -3,7 +3,7 @@ using System;
 using System.Windows.Forms;
 
 namespace CodeLibrary
-{ 
+{
     public partial class FormAddNote : Form
     {
         public FormAddNote()
@@ -12,12 +12,10 @@ namespace CodeLibrary
             Load += FormAddNote_Load;
         }
 
-        public string NoteName { get; set; }
-        public bool Root { get; set; }
-
-        public int Repeat { get; set; } = 1;
-
         public bool DefaultParent { get; set; }
+        public string NoteName { get; set; }
+        public int Repeat { get; set; } = 1;
+        public bool Root { get; set; }
         public CodeType SelectedType { get; set; }
 
         private void dialogButton1_DialogButtonClick(object sender, Controls.DialogButton.DialogButtonClickEventArgs e)

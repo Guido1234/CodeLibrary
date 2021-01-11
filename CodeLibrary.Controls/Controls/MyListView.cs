@@ -10,17 +10,16 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
 
-
 namespace CodeLibrary.Controls
 {
     public class MyListView : ListView
     {
+        private readonly List<object> _RemindSelected = new List<object>();
         private Dictionary<string, DisplayFormatAttribute> _Formatters;
         private HashSet<string> _Hidden;
         private dynamic _ItemDict;
         private PropertyInfo[] _Properties;
         private string[] _PropertyNames;
-        private readonly List<object> _RemindSelected = new List<object>();
         private List<ColumnInfo> _RemindSettings = new List<ColumnInfo>();
         private Type _Type;
         private Dictionary<string, int> _Widths;

@@ -45,17 +45,17 @@ namespace DevToys
     /// </summary>
     public sealed class DictionaryList<TPOCO, TPRIMARYKEY> : IEnumerable<TPOCO>, ICollection<TPOCO>
     {
+        private readonly Func<TPOCO, TPRIMARYKEY> _IndexFunctionPrimaryKey;
+        private readonly Dictionary<TPRIMARYKEY, int> _PhysicalIndexes1 = new Dictionary<TPRIMARYKEY, int>();
+        private readonly Dictionary<int, TPRIMARYKEY> _PhysicalIndexes2 = new Dictionary<int, TPRIMARYKEY>();
         private LookupItem<TPRIMARYKEY> _AlternativeIndexer = null;
         private int _Autonumber = 0;
         private Expression<Func<TPOCO, int>> _AutoNumberField;
         private int _AutonumberStepSize = 1;
         private TimeSpan _ExpirationTime = TimeSpan.Zero;
-        private readonly Func<TPOCO, TPRIMARYKEY> _IndexFunctionPrimaryKey;
         private Dictionary<TPRIMARYKEY, TPOCO> _Items = new Dictionary<TPRIMARYKEY, TPOCO>();
         private Dictionary<string, LookupItem<dynamic>> _Lookupfunctions;
         private bool _MustRebuild = false; // indicates whether the lookups should be rebuild-ed.
-        private readonly Dictionary<TPRIMARYKEY, int> _PhysicalIndexes1 = new Dictionary<TPRIMARYKEY, int>();
-        private readonly Dictionary<int, TPRIMARYKEY> _PhysicalIndexes2 = new Dictionary<int, TPRIMARYKEY>();
         private bool _SupressPropertyChanged = false;
 
         public DictionaryList(Func<TPOCO, TPRIMARYKEY> predecate) => _IndexFunctionPrimaryKey = predecate;
@@ -454,8 +454,6 @@ namespace DevToys
             if (item is INotifyPropertyChanged)
                 ((INotifyPropertyChanged)item).PropertyChanged += Propertychanged_PropertyChanged;
         }
-
-
 
         private void UnRegisterPropertyChanged(TPOCO item)
         {

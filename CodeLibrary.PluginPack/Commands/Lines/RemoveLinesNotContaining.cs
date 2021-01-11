@@ -16,10 +16,9 @@ namespace CodeLibrary.PluginPack
         public string DisplayName => "Remove Lines Not Containing";
         public Guid Id => Guid.Parse("4e605db3-1807-4a6b-b818-27c1691301c2");
         public Image Image => null;
+        public string NotContaining { get; set; }
         public bool OmitResult { get; set; } = false;
         public Keys ShortcutKeys => Keys.None;
-
-        public string NotContaining { get; set; }
 
         public void Apply(ISelInfo sel)
         {
@@ -44,16 +43,6 @@ namespace CodeLibrary.PluginPack
             sel.SelectedText = sb.ToString().TrimEnd(new char[] { '\r', '\n' });
         }
 
-        private bool Contains(string line, string[] contains)
-        {
-            foreach (string item in contains)
-            {
-                if (line.Contains(item))
-                    return true;
-            }
-            return false;
-        }
-
         public bool Configure()
         {
             FormRemoveLinesContaining f = new FormRemoveLinesContaining();
@@ -70,5 +59,14 @@ namespace CodeLibrary.PluginPack
             return false;
         }
 
+        private bool Contains(string line, string[] contains)
+        {
+            foreach (string item in contains)
+            {
+                if (line.Contains(item))
+                    return true;
+            }
+            return false;
+        }
     }
 }

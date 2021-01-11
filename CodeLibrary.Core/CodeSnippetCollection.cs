@@ -1,8 +1,7 @@
-﻿using CodeLibrary.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
- 
+
 namespace CodeLibrary.Core
 {
     [DataContract()]
@@ -32,8 +31,6 @@ namespace CodeLibrary.Core
         {
             if (Version == 0)
                 return;
-
-
 
             foreach (CodeSnippet item in Items)
             {

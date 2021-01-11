@@ -10,16 +10,26 @@ namespace FastColoredTextBoxNS
     {
         public EventHandler TargetChanged;
 
+        private FastColoredTextBox target;
+
+        public Ruler()
+        {
+            InitializeComponent();
+
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
+            MinimumSize = new Size(0, 24);
+            MaximumSize = new Size(int.MaxValue / 2, 24);
+
+            BackColor2 = SystemColors.ControlLight;
+            TickColor = Color.DarkGray;
+            CaretTickColor = Color.Black;
+        }
+
         [DefaultValue(typeof(Color), "ControlLight")]
         public Color BackColor2 { get; set; }
 
-        [DefaultValue(typeof(Color), "DarkGray")]
-        public Color TickColor { get; set; }
-
         [DefaultValue(typeof(Color), "Black")]
         public Color CaretTickColor { get; set; }
-
-        FastColoredTextBox target;
 
         [Description("Target FastColoredTextBox")]
         public FastColoredTextBox Target
@@ -35,61 +45,8 @@ namespace FastColoredTextBoxNS
             }
         }
 
-        public Ruler()
-        {
-            InitializeComponent();
-
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
-            MinimumSize = new Size(0, 24);
-            MaximumSize = new Size(int.MaxValue / 2, 24);
-
-            BackColor2 = SystemColors.ControlLight;
-            TickColor = Color.DarkGray;
-            CaretTickColor = Color.Black;
-        }
-
-
-
-        protected virtual void OnTargetChanged()
-        {
-            if (TargetChanged != null)
-                TargetChanged(this, EventArgs.Empty);
-        }
-
-        protected virtual void UnSubscribe(FastColoredTextBox target)
-        {
-            target.Scroll -= new ScrollEventHandler(target_Scroll);
-            target.SelectionChanged -= new EventHandler(target_SelectionChanged);
-            target.VisibleRangeChanged -= new EventHandler(target_VisibleRangeChanged);
-        }
-
-        protected virtual void Subscribe(FastColoredTextBox target)
-        {
-            target.Scroll += new ScrollEventHandler(target_Scroll);
-            target.SelectionChanged += new EventHandler(target_SelectionChanged);
-            target.VisibleRangeChanged += new EventHandler(target_VisibleRangeChanged);
-        }
-
-        void target_VisibleRangeChanged(object sender, EventArgs e)
-        {
-            Invalidate();
-        }
-
-        void target_SelectionChanged(object sender, EventArgs e)
-        {
-            Invalidate();
-        }
-
-        protected virtual void target_Scroll(object sender, ScrollEventArgs e)
-        {
-            Invalidate();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            Invalidate();
-        }
+        [DefaultValue(typeof(Color), "DarkGray")]
+        public Color TickColor { get; set; }
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -130,6 +87,47 @@ namespace FastColoredTextBoxNS
                 e.Graphics.DrawLine(pen, new Point(car.X, fontSize.Height + 1), new Point(car.X, Height - 4));
                 e.Graphics.DrawLine(pen, new Point(car.X + 2, fontSize.Height + 3), new Point(car.X + 2, Height - 4));
             }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Invalidate();
+        }
+
+        protected virtual void OnTargetChanged()
+        {
+            if (TargetChanged != null)
+                TargetChanged(this, EventArgs.Empty);
+        }
+
+        protected virtual void Subscribe(FastColoredTextBox target)
+        {
+            target.Scroll += new ScrollEventHandler(target_Scroll);
+            target.SelectionChanged += new EventHandler(target_SelectionChanged);
+            target.VisibleRangeChanged += new EventHandler(target_VisibleRangeChanged);
+        }
+
+        protected virtual void target_Scroll(object sender, ScrollEventArgs e)
+        {
+            Invalidate();
+        }
+
+        protected virtual void UnSubscribe(FastColoredTextBox target)
+        {
+            target.Scroll -= new ScrollEventHandler(target_Scroll);
+            target.SelectionChanged -= new EventHandler(target_SelectionChanged);
+            target.VisibleRangeChanged -= new EventHandler(target_VisibleRangeChanged);
+        }
+
+        private void target_SelectionChanged(object sender, EventArgs e)
+        {
+            Invalidate();
+        }
+
+        private void target_VisibleRangeChanged(object sender, EventArgs e)
+        {
+            Invalidate();
         }
     }
 }

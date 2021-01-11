@@ -7,49 +7,14 @@ namespace FastColoredTextBoxNS
 {
     public partial class ReplaceForm : Form
     {
-        FastColoredTextBox tb;
-        bool firstSearch = true;
-        Place startPlace;
+        private bool firstSearch = true;
+        private Place startPlace;
+        private FastColoredTextBox tb;
 
         public ReplaceForm(FastColoredTextBox tb)
         {
             InitializeComponent();
             this.tb = tb;
-        }
-
-        private void btClose_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void btFindNext_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!Find(tbFind.Text))
-                    MessageBox.Show("Not found");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        public List<Range> FindAll(string pattern)
-        {
-            var opt = cbMatchCase.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
-            if (!cbRegex.Checked)
-                pattern = Regex.Escape(pattern);
-            if (cbWholeWord.Checked)
-                pattern = "\\b" + pattern + "\\b";
-            //
-            var range = tb.Selection.IsEmpty ? tb.Range.Clone() : tb.Selection.Clone();
-            //
-            var list = new List<Range>();
-            foreach (var r in range.GetRangesByLines(pattern, opt))
-                list.Add(r);
-
-            return list;
         }
 
         public bool Find(string pattern)
@@ -91,12 +56,27 @@ namespace FastColoredTextBoxNS
             return false;
         }
 
-        private void tbFind_KeyPress(object sender, KeyPressEventArgs e)
+        public List<Range> FindAll(string pattern)
         {
-            if (e.KeyChar == '\r')
-                btFindNext_Click(sender, null);
-            if (e.KeyChar == '\x1b')
-                Hide();
+            var opt = cbMatchCase.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
+            if (!cbRegex.Checked)
+                pattern = Regex.Escape(pattern);
+            if (cbWholeWord.Checked)
+                pattern = "\\b" + pattern + "\\b";
+            //
+            var range = tb.Selection.IsEmpty ? tb.Range.Clone() : tb.Selection.Clone();
+            //
+            var list = new List<Range>();
+            foreach (var r in range.GetRangesByLines(pattern, opt))
+                list.Add(r);
+
+            return list;
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            tbFind.Focus();
+            ResetSerach();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) // David
@@ -109,14 +89,22 @@ namespace FastColoredTextBoxNS
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void ReplaceForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void btClose_Click(object sender, EventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing)
+            Close();
+        }
+
+        private void btFindNext_Click(object sender, EventArgs e)
+        {
+            try
             {
-                e.Cancel = true;
-                Hide();
+                if (!Find(tbFind.Text))
+                    MessageBox.Show("Not found");
             }
-            this.tb.Focus();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void btReplace_Click(object sender, EventArgs e)
@@ -168,20 +156,32 @@ namespace FastColoredTextBoxNS
             tb.Selection.EndUpdate();
         }
 
-        protected override void OnActivated(EventArgs e)
+        private void cbMatchCase_CheckedChanged(object sender, EventArgs e)
         {
-            tbFind.Focus();
             ResetSerach();
         }
 
-        void ResetSerach()
+        private void ReplaceForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                Hide();
+            }
+            this.tb.Focus();
+        }
+
+        private void ResetSerach()
         {
             firstSearch = true;
         }
 
-        private void cbMatchCase_CheckedChanged(object sender, EventArgs e)
+        private void tbFind_KeyPress(object sender, KeyPressEventArgs e)
         {
-            ResetSerach();
+            if (e.KeyChar == '\r')
+                btFindNext_Click(sender, null);
+            if (e.KeyChar == '\x1b')
+                Hide();
         }
     }
 }
