@@ -71,6 +71,31 @@ namespace CodeLibrary
             _TextBoxHelper.CurrentSnippet = snippet;
             _mainform.rtfEditor.ClearUndo();
             _mainform.rtfEditor.ResetText();
+
+            _mainform.rtfEditor.OwnTheme = snippet.RTFOwnTheme;
+            if (_mainform.rtfEditor.OwnTheme)
+            {
+                _mainform.rtfEditor.SetOwnTheme(snippet.RTFTheme);
+            }
+            else
+            {
+                if (Config.HighContrastMode)
+                {
+                    _mainform.rtfEditor.Theme = RtfTheme.HighContrast;
+                }
+                else
+                {
+                    if (Config.DarkMode)
+                    {
+                        _mainform.rtfEditor.Theme = RtfTheme.Dark;
+                    }
+                    else
+                    {
+                        _mainform.rtfEditor.Theme = RtfTheme.Light;
+                    }
+                }
+            }
+
             _mainform.rtfEditor.Rtf = snippet.RTF;
 
             _mainform.rtfEditor.Zoom = Config.Zoom;
@@ -119,6 +144,13 @@ namespace CodeLibrary
 
             snippet.RTF = _rtf.Rtf;
             snippet.Code = _rtf.Text;
+
+            snippet.RTFOwnTheme = _mainform.rtfEditor.OwnTheme;
+            if (snippet.RTFOwnTheme)
+            {
+                snippet.RTFTheme = _mainform.rtfEditor.Theme;
+            }
+
         }
 
         public void SelectAll() => _rtf.SelectAll();
@@ -199,7 +231,7 @@ namespace CodeLibrary
                 _mainform.contextMenuStripPopup.Show(Cursor.Position.X, Cursor.Position.Y);
             }
         }
-
+         
         private bool DocShortCut(KeyEventArgs e)
         {
             var _snippet = CodeLib.Instance.GetByShortCut(e.KeyData).FirstOrDefault();
@@ -209,6 +241,7 @@ namespace CodeLibrary
                 StringTemplate stringtemplate = new StringTemplate();
                 string result = stringtemplate.Format(_snippet.Code, _rtf.SelectedText);
                 _rtf.SelectedText = result;
+                _rtf.Focus();
                 return true;
             }
 

@@ -3,8 +3,8 @@ using System;
 using System.ComponentModel;
 
 namespace GK.Template.Methods
-{
-    public enum SkipMode
+{ 
+    public enum KeepMode
     {
         [Description("The part of the value equals one of specified values.")]
         ContainsOneOf = 1,
@@ -32,11 +32,11 @@ namespace GK.Template.Methods
     }
 
     [Category("Logic")]
-    [FormatMethod(Name = "SkipData",
-        Aliasses = "Skip",
-        Example = "{0:Skip(\"Equals\", \"aa\", \"cc\")}")]
-    [Description("Skips datarow when criteria is met.")]
-    public sealed class MethodSkipData : MethodBase
+    [FormatMethod(Name = "KeepLine",
+        Aliasses = "Keep",
+        Example = "{0:Keep(\"Equals\", \"aa\", \"cc\")}")]
+    [Description("Keep line when criteria is met.")]
+    public sealed class MethodKeepLine : MethodBase
     {
         [FormatMethodParameter(Optional = false, Order = 2)]
         [Description("Depending on type of mode: StartEndsWith requires 2 parameters (1 for start, 1 for end), isNumeric and isAlpha both requires 1 parameter, other modes have unlimited parameters.")]
@@ -48,6 +48,7 @@ namespace GK.Template.Methods
 
         public override string Apply(string value)
         {
+            SkipData = true;
             switch (Mode)
             {
                 case SkipMode.ContainsOneOf:
@@ -55,8 +56,8 @@ namespace GK.Template.Methods
                     {
                         if (value.Contains(s))
                         {
-                            SkipData = true;
-                            return string.Empty;
+                            SkipData = false;
+                            return value;
                         }
                     }
                     break;
@@ -66,8 +67,8 @@ namespace GK.Template.Methods
                     {
                         if (value.EndsWith(s))
                         {
-                            SkipData = true;
-                            return string.Empty;
+                            SkipData = false;
+                            return value;
                         }
                     }
                     break;
@@ -77,8 +78,8 @@ namespace GK.Template.Methods
                     {
                         if (value.Equals(s))
                         {
-                            SkipData = true;
-                            return string.Empty;
+                            SkipData = false;
+                            return value;
                         }
                     }
                     break;
@@ -86,16 +87,16 @@ namespace GK.Template.Methods
                 case SkipMode.IsAlpha:
                     if (IsAlpha(value))
                     {
-                        SkipData = true;
-                        return string.Empty;
+                        SkipData = false;
+                        return value;
                     }
                     break;
 
                 case SkipMode.IsNumeric:
                     if (IsNumeric(value))
                     {
-                        SkipData = true;
-                        return string.Empty;
+                        SkipData = false;
+                        return value;
                     }
                     break;
 
@@ -104,8 +105,8 @@ namespace GK.Template.Methods
                     {
                         if (!value.Equals(s))
                         {
-                            SkipData = true;
-                            return string.Empty;
+                            SkipData = false;
+                            return value;
                         }
                     }
                     break;
@@ -115,8 +116,8 @@ namespace GK.Template.Methods
                     {
                         if (value.StartsWith(Items[0]) && value.EndsWith(Items[1]))
                         {
-                            SkipData = true;
-                            return string.Empty;
+                            SkipData = false;
+                            return value;
                         }
                     }
                     break;
@@ -126,13 +127,13 @@ namespace GK.Template.Methods
                     {
                         if (value.StartsWith(s))
                         {
-                            SkipData = true;
-                            return string.Empty;
+                            SkipData = false;
+                            return value;
                         }
                     }
                     break;
             }
-            return value;
+            return string.Empty;
         }
 
         private bool IsAlpha(string s)

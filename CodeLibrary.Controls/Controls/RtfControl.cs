@@ -31,6 +31,7 @@ namespace CodeLibrary.Controls.Controls
             btBold.Click += BtBold_Click;
             btItalic.Click += BtItalic_Click;
             btUnderline.Click += BtUnderline_Click;
+            btSwitchTheme.Click += BtSwitchTheme_Click;
 
             btForeColor.Click += BtForeColor_Click;
 
@@ -58,10 +59,6 @@ namespace CodeLibrary.Controls.Controls
             _FontSizeComboBoxHelper.ManualSelectedIndexChanged += _FontSizeComboBoxHelper_ManualSelectedIndexChanged;
             _FontSizeComboBoxHelper.Fill(new int[] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 });
 
-            _FontStyleComboBoxHelper = new ComboBoxHelper<RtfControlStyle>(cbStyles.ComboBox);
-            _FontStyleComboBoxHelper.ManualSelectedIndexChanged += _FontStyleComboBoxHelper_ManualSelectedIndexChanged;
-            _FontStyleComboBoxHelper.Fill(StyleCollection.Instance.Styles);
-
             updateStyle.Click += UpdateStyle_Click;
             addStyle.Click += AddStyle_Click;
             removeStyle.Click += RemoveStyle_Click;
@@ -71,6 +68,8 @@ namespace CodeLibrary.Controls.Controls
             _FontComboBoxHelper = new ComboBoxHelper<string>(cmbFont.ComboBox);
             _FontComboBoxHelper.ManualSelectedIndexChanged += _FontComboBox_ManualSelectedIndexChanged;
             _FontComboBoxHelper.Fill(FontFamily.Families.Where(f => f.IsStyleAvailable(FontStyle.Regular)).Select(s => s.Name));
+
+            UpdateStyles();
 
             cmbFont.ComboBox.DrawItem += ComboBox_DrawItem;
             cmbFont.ComboBox.MeasureItem += ComboBox_MeasureItem;
@@ -84,32 +83,83 @@ namespace CodeLibrary.Controls.Controls
             this.Resize += RtfControl_Resize;
         }
 
+
+        public void UpdateStyles()
+        {
+            cbStyles.ComboBox.Items.Clear();
+            _FontStyleComboBoxHelper = new ComboBoxHelper<RtfControlStyle>(cbStyles.ComboBox);
+            _FontStyleComboBoxHelper.ManualSelectedIndexChanged += _FontStyleComboBoxHelper_ManualSelectedIndexChanged;
+            _FontStyleComboBoxHelper.Fill(StyleCollection.Instance.Styles);
+        }
+
+
+        private RtfTheme _theme;
+
+        public RtfTheme Theme
+        {
+            get
+            {
+                return _theme;
+            }
+            set
+            {
+                if (OwnTheme)
+                {
+                    return;
+                }
+                _theme = value;
+                SwitchTheme(_theme);
+            }
+        }
+
+        public void SetOwnTheme(RtfTheme theme)
+        {
+            _theme = theme;
+            SwitchTheme(_theme);
+        }
+
+        public bool OwnTheme { get; set; } = false;
+
+        private void BtSwitchTheme_Click(object sender, EventArgs e)
+        {
+            OwnTheme = true;
+            switch (_theme)
+            {
+                case RtfTheme.Dark:
+                    _theme = RtfTheme.HighContrast;
+                    break;
+                case RtfTheme.HighContrast:
+                    _theme = RtfTheme.Light;
+                    break;
+                case RtfTheme.Light:
+                    _theme = RtfTheme.Dark;
+                    break;
+            }
+            SwitchTheme(_theme);
+        }
+
+        private void SwitchTheme(RtfTheme theme)
+        {
+            switch (theme)
+            {
+                case RtfTheme.Dark:
+                    rtf.BackColor = Color.FromArgb(255, 40, 40, 40);
+                    rtf.ForeColor = Color.FromArgb(255, 255, 255, 255);
+                    break;
+                case RtfTheme.Light:
+                    rtf.BackColor = Color.FromArgb(255, 255, 255, 255);
+                    rtf.ForeColor = Color.FromArgb(255, 0, 0, 0);
+                    break;
+                case RtfTheme.HighContrast:
+                    rtf.BackColor = Color.FromArgb(255, 10, 10, 10);
+                    rtf.ForeColor = Color.FromArgb(255, 255, 255, 255);
+                    break;
+            }
+        }
+
+
         public event EventHandler TextChanged;
 
-        public Color EditorBackColor
-        {
-            get
-            {
-                return rtf.BackColor;
-            }
-            set
-            {
-                rtf.BackColor = value;
-                BackColor = value;
-            }
-        }
-
-        public Color EditorForeColor
-        {
-            get
-            {
-                return rtf.ForeColor;
-            }
-            set
-            {
-                rtf.ForeColor = value;
-            }
-        }
 
         public string Rtf
         {
@@ -625,11 +675,13 @@ namespace CodeLibrary.Controls.Controls
             if (_item == null)
                 return;
 
+            _item.Color = rtf.SelectionColor;
             _item.FontSize = rtf.SelectionFont.Size;
             _item.FontFamily = rtf.SelectionFont.Name;
             _item.FontStyle = rtf.SelectionFont.Style;
             _item.HorizontalAlignment = rtf.SelectionAlignment;
             SetButtons();
         }
+
     }
 }

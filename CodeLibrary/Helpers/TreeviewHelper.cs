@@ -261,33 +261,29 @@ namespace CodeLibrary
             SetLibraryMenuState();
         }
 
-        public bool FindNodeById(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-                return false;
-
-            foreach (TreeNode node in _treeViewLibrary.Nodes)
-            {
-                if (node.Name.Equals(id))
-                {
-                    _treeViewLibrary.SelectedNode = node;
-                    //SetSelectedNode(node);
-                    SetLibraryMenuState();
-                    return true;
-                }
-                bool b = FindNodeById(id, node);
-                if (b)
-                    return true;
-            }
-            return false;
-        }
-
         public bool FindNodeByPath(string fullpath)
         {
             if (string.IsNullOrEmpty(fullpath))
                 return false;
 
             foreach (TreeNode node in _treeViewLibrary.Nodes)
+            {
+                if (node.FullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    _treeViewLibrary.SelectedNode = node;
+                    SetLibraryMenuState();
+                    return true;
+                }
+                bool b = FindNodeByPath(fullpath, node);
+                if (b)
+                    return true;
+            }
+            return false;
+        }
+
+        private bool FindNodeByPath(string fullpath, TreeNode parent)
+        {
+            foreach (TreeNode node in parent.Nodes)
             {
                 if (node.FullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -322,7 +318,16 @@ namespace CodeLibrary
 
             CodeSnippet _snippet = FromNode(node);
             if (!string.IsNullOrEmpty(_snippet.DefaultChildCode))
-                return string.Format(_snippet.DefaultChildCode, DateTime.Now, nodecount);
+            {
+                try
+                {
+                    return string.Format(_snippet.DefaultChildCode, DateTime.Now, nodecount);
+                }
+                catch
+                {
+                    return _snippet.DefaultChildCode;
+                }
+            }
 
             if (node.Parent == null)
                 return defaultDefault;
@@ -351,7 +356,16 @@ namespace CodeLibrary
 
             CodeSnippet _snippet = FromNode(node);
             if (!string.IsNullOrEmpty(_snippet.DefaultChildName))
-                return string.Format(_snippet.DefaultChildName, DateTime.Now, nodecount);
+            {
+                try
+                {
+                    return string.Format(_snippet.DefaultChildName, DateTime.Now, nodecount);
+                }
+                catch
+                {
+                    return _snippet.DefaultChildName;
+                }
+            }
 
             if (node.Parent == null)
                 return defaultDefault;
@@ -629,7 +643,11 @@ namespace CodeLibrary
 
                     break;
             }
-            _textBoxHelper.ApplySettings();
+            if (_snippet.CodeType != CodeType.Image)
+            {
+                _textBoxHelper.ApplySettings();
+            }
+
             NoteIcon();
         }
 
@@ -839,22 +857,7 @@ namespace CodeLibrary
             return false;
         }
 
-        private bool FindNodeByPath(string fullpath, TreeNode parent)
-        {
-            foreach (TreeNode node in parent.Nodes)
-            {
-                if (node.FullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    _treeViewLibrary.SelectedNode = node;
-                    SetLibraryMenuState();
-                    return true;
-                }
-                bool b = FindNodeByPath(fullpath, node);
-                if (b)
-                    return true;
-            }
-            return false;
-        }
+
 
         private void ImageViewer_ImageMouseClick(object sender, MouseEventArgs e)
         {
@@ -951,8 +954,12 @@ namespace CodeLibrary
             if (_result == DialogResult.OK)
             {
                 string _filename = _dialog.FileName;
-                byte[] _bytes = ConvertImageToByteArray(_mainform.imageViewer.Image, 100L);
-                File.WriteAllBytes(_filename, _bytes);
+
+                CodeSnippet _snippet = CodeLib.Instance.Library.Get(_SelectedId);
+                File.WriteAllBytes(_filename, _snippet.Blob);
+
+                //byte[] _bytes = ConvertImageToByteArray(_mainform.imageViewer.Image);
+                //File.WriteAllBytes(_filename, _bytes);
             }
         }
 
@@ -1227,7 +1234,7 @@ namespace CodeLibrary
                 DeleteSelectedNode();
             }
         }
-
+ 
         private void TreeViewLibrary_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)

@@ -55,6 +55,7 @@ namespace CodeLibrary.Controls.Controls
             this.updateStyle = new System.Windows.Forms.ToolStripMenuItem();
             this.addStyle = new System.Windows.Forms.ToolStripMenuItem();
             this.removeStyle = new System.Windows.Forms.ToolStripMenuItem();
+            this.btSwitchTheme = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,7 +94,8 @@ namespace CodeLibrary.Controls.Controls
             this.btIndentPlus,
             this.toolStripSeparator4,
             this.cbStyles,
-            this.toolStripDropDownButton1});
+            this.toolStripDropDownButton1,
+            this.btSwitchTheme});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -226,7 +228,7 @@ namespace CodeLibrary.Controls.Controls
             this.btBullets.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btBullets.Name = "btBullets";
             this.btBullets.Size = new System.Drawing.Size(23, 20);
-            this.btBullets.Text = "toolStripButton1";
+            this.btBullets.Text = "Bullets";
             // 
             // btIndentMin
             // 
@@ -294,6 +296,15 @@ namespace CodeLibrary.Controls.Controls
             this.removeStyle.Size = new System.Drawing.Size(145, 22);
             this.removeStyle.Text = "Remove Style";
             // 
+            // btSwitchTheme
+            // 
+            this.btSwitchTheme.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btSwitchTheme.Image = global::CodeLibrary.Controls.Properties.Resources._switch;
+            this.btSwitchTheme.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btSwitchTheme.Name = "btSwitchTheme";
+            this.btSwitchTheme.Size = new System.Drawing.Size(23, 20);
+            this.btSwitchTheme.Text = "Switch Theme";
+            // 
             // RtfControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -336,5 +347,6 @@ namespace CodeLibrary.Controls.Controls
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem removeStyle;
         private System.Windows.Forms.ToolStripButton btBullets;
+        private System.Windows.Forms.ToolStripButton btSwitchTheme;
     }
 }

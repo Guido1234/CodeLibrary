@@ -59,6 +59,15 @@ BUG FIXES:
 
 -   Drag drop system notes should not be allowed.
 
+-   Save Image => GDI+ Error message
+
+-   Error, open file with last selection an Image
+
+-   Error, Default child code containing wrong format
+
+-   Error, Default child name containing wrong format
+
+-   Error, Access Denied
 ----------------------------------------------------------------------
 Version 1.9:
 -   Added Clipboard menu to Note context menu item.
@@ -226,6 +235,21 @@ Version 1.5:
             tbCode.HighContrastStyle();
             tbCode.WordWrap = true;
             tbCode.GotoLine(0);
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://sourceforge.net/u/guidok915");
+        }
+
+        private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/Guido1234/CodeLibrary");
+        }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/PavelTorgashov/FastColoredTextBox");
         }
     }
 }

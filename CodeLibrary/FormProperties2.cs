@@ -6,7 +6,7 @@ using System.Windows.Forms;
 namespace CodeLibrary
 {
     public partial class FormProperties2 : Form
-    {
+    { 
         private readonly EnumComboBoxModeHelper<CodeType> _defaultTypeComboBoxHelper;
         private readonly EnumComboBoxModeHelper<Keys> _shortCutKeysComboHelper;
         private readonly EnumComboBoxModeHelper<CodeType> _typeComboBoxHelper;
@@ -58,6 +58,7 @@ namespace CodeLibrary
             tbCode.Text = Snippet.DefaultChildCode ?? string.Empty;
             rtf.Rtf = Snippet.DefaultChildRtf ?? string.Empty;
 
+            cbExpand.Checked = Snippet.Expanded;
             checkBoxCodeType.Checked = Snippet.DefaultChildCodeTypeEnabled;
             _defaultTypeComboBoxHelper.SetSelectedIndex(Snippet.DefaultChildCodeType);
             _typeComboBoxHelper.SetSelectedIndex(Snippet.CodeType);
@@ -72,11 +73,18 @@ namespace CodeLibrary
                 datePicker.Value = Snippet.AlarmDate.Value.Date;
                 timeControl.Value = Snippet.AlarmDate.Value;
             }
+            Keys _keys = Snippet.ShortCutKeys;
 
-            Keys _keys = Snippet.ShortCutKeys & ~Keys.Control;
+            cbControl.Checked = _keys.HasFlag(Keys.Control);
+            cbAlt.Checked = _keys.HasFlag(Keys.Alt);
+            cbShift.Checked = _keys.HasFlag(Keys.Shift);
+
+            _keys = Snippet.ShortCutKeys & ~Keys.Control;
             _keys = _keys & ~Keys.Alt;
             _keys = _keys & ~Keys.Shift;
             _shortCutKeysComboHelper.SetSelectedIndex(_keys);
+
+
         }
 
         private void DialogButton_DialogButtonClick(object sender, DialogButton.DialogButtonClickEventArgs e)
@@ -92,7 +100,10 @@ namespace CodeLibrary
 
                 if (Snippet.DefaultChildCodeType == CodeType.RTF)
                 {
-                    Snippet.DefaultChildRtf = rtf.Rtf ?? string.Empty;
+                    if (!string.IsNullOrEmpty(rtf.Text))
+                    {
+                        Snippet.DefaultChildRtf = rtf.Rtf;
+                    }
                 }
                 else
                 {
@@ -100,6 +111,7 @@ namespace CodeLibrary
                 }
                 Snippet.DefaultChildCodeTypeEnabled = checkBoxCodeType.Checked;
 
+                Snippet.Expanded = cbExpand.Checked;
                 Snippet.Important = cbImportant.Checked;
                 Snippet.AlarmActive = cbAlarm.Checked;
                 Snippet.Wordwrap = cbWordWrap.Checked;

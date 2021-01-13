@@ -1,4 +1,5 @@
 ﻿using CodeLibrary.Core;
+using CodeLibrary.Helpers;
 using DevToys;
 using System;
 using System.Collections.Generic;
@@ -17,14 +18,16 @@ namespace CodeLibrary
         private readonly FormCodeLibrary _mainform;
         private readonly TreeView _treeview;
         private String _AutoSaveFileName = string.Empty;
+        private readonly DebugHelper _DebugHelper;
         private string _Find = string.Empty;
         private DateTime _lastAutoSavedDate = new DateTime();
         private DateTime _lastOpenedDate = DateTime.Now;
         private Cursor _PrevCursor;
         private int _updating = 0;
 
-        public FileHelper(TreeView treeview, FormCodeLibrary mainform)
+        public FileHelper(TreeView treeview, FormCodeLibrary mainform, DebugHelper debugHelper)
         {
+            _DebugHelper = debugHelper;
             _treeview = treeview;
             _mainform = mainform;
             _lastAutoSavedDate = DateTime.Now;
@@ -61,6 +64,8 @@ namespace CodeLibrary
         public Dictionary<string, TreeNode> CodeCollectionToForm(string find)
         {
             _Find = find;
+
+            List<TreeNode> _expandNodes = new List<TreeNode>();
 
             _treeview.BeginUpdate();
 
@@ -103,6 +108,13 @@ namespace CodeLibrary
 
                 if (snippet.Important)
                     _treeview.SelectedNode = node;
+
+                if (snippet.Expanded)
+                    _expandNodes.Add(node);                    
+            }
+            foreach (TreeNode node in _expandNodes)
+            {
+                node.Expand();
             }
 
             CodeLib.Instance.BuildNodeIndexer(_treeview);
@@ -504,7 +516,7 @@ namespace CodeLibrary
 
             Save(_collection, _selectedfile);
         }
-
+ 
         private static CodeSnippetCollection ReadCollection(string filename, SecureString password)
         {
             string _data = File.ReadAllText(filename, Encoding.Default);
@@ -684,7 +696,21 @@ namespace CodeLibrary
             //FileContainer _fileContainer = new FileContainer() { Version = Program.VersionNumber.ToString(), IsEncrypted = _encrypted, Data = _base64Json };
             //string _json2 = Utils.ToJson(_fileContainer);
 
-            File.WriteAllText(fileName, _json);
+            try
+            {
+                File.WriteAllText(fileName, _json);
+            }
+            catch (UnauthorizedAccessException ua)
+            {
+                MessageBox.Show(_mainform, $"Access to file '{fileName}' denied!.", "File error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            catch (Exception e)
+            {
+                return;
+            }
+
+            
         }
 
         private void SetTitle()

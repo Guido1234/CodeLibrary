@@ -51,7 +51,6 @@ namespace CodeLibrary
             this.timeControl = new System.Windows.Forms.DateTimePicker();
             this.cbType = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.dialogButton = new CodeLibrary.Controls.DialogButton();
             this.cbWordWrap = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -59,8 +58,10 @@ namespace CodeLibrary
             this.Icons = new System.Windows.Forms.ImageList(this.components);
             this.picture = new System.Windows.Forms.PictureBox();
             this.cbHtmlPreview = new System.Windows.Forms.CheckBox();
-            this.rtf = new CodeLibrary.Controls.Controls.RtfControl();
             this.lbName = new System.Windows.Forms.Label();
+            this.cbExpand = new System.Windows.Forms.CheckBox();
+            this.rtf = new CodeLibrary.Controls.Controls.RtfControl();
+            this.dialogButton = new CodeLibrary.Controls.DialogButton();
             ((System.ComponentModel.ISupportInitialize)(this.tbCode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -192,7 +193,7 @@ namespace CodeLibrary
             // 
             this.comboBoxShortCutKeys.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxShortCutKeys.FormattingEnabled = true;
-            this.comboBoxShortCutKeys.Location = new System.Drawing.Point(64, 288);
+            this.comboBoxShortCutKeys.Location = new System.Drawing.Point(64, 316);
             this.comboBoxShortCutKeys.Name = "comboBoxShortCutKeys";
             this.comboBoxShortCutKeys.Size = new System.Drawing.Size(165, 21);
             this.comboBoxShortCutKeys.TabIndex = 16;
@@ -200,7 +201,7 @@ namespace CodeLibrary
             // cbControl
             // 
             this.cbControl.AutoSize = true;
-            this.cbControl.Location = new System.Drawing.Point(63, 265);
+            this.cbControl.Location = new System.Drawing.Point(63, 293);
             this.cbControl.Name = "cbControl";
             this.cbControl.Size = new System.Drawing.Size(59, 17);
             this.cbControl.TabIndex = 17;
@@ -210,7 +211,7 @@ namespace CodeLibrary
             // cbShift
             // 
             this.cbShift.AutoSize = true;
-            this.cbShift.Location = new System.Drawing.Point(128, 265);
+            this.cbShift.Location = new System.Drawing.Point(128, 293);
             this.cbShift.Name = "cbShift";
             this.cbShift.Size = new System.Drawing.Size(47, 17);
             this.cbShift.TabIndex = 18;
@@ -220,7 +221,7 @@ namespace CodeLibrary
             // cbAlt
             // 
             this.cbAlt.AutoSize = true;
-            this.cbAlt.Location = new System.Drawing.Point(181, 265);
+            this.cbAlt.Location = new System.Drawing.Point(181, 293);
             this.cbAlt.Name = "cbAlt";
             this.cbAlt.Size = new System.Drawing.Size(38, 17);
             this.cbAlt.TabIndex = 19;
@@ -231,7 +232,7 @@ namespace CodeLibrary
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(60, 245);
+            this.label1.Location = new System.Drawing.Point(60, 273);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(142, 13);
             this.label1.TabIndex = 20;
@@ -267,22 +268,6 @@ namespace CodeLibrary
             this.label4.TabIndex = 23;
             this.label4.Text = "Properties:";
             // 
-            // dialogButton
-            // 
-            this.dialogButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.dialogButton.ButtonMode = CodeLibrary.Controls.DialogButton.DialogButtonMode.OkCancel;
-            this.dialogButton.Location = new System.Drawing.Point(571, 386);
-            this.dialogButton.Name = "dialogButton";
-            this.dialogButton.Size = new System.Drawing.Size(156, 23);
-            this.dialogButton.TabIndex = 0;
-            this.dialogButton.TextCancel = "Cancel";
-            this.dialogButton.TextIgnore = "Ignore";
-            this.dialogButton.TextNo = "No";
-            this.dialogButton.TextOk = "Ok";
-            this.dialogButton.TextRetry = "Retry";
-            this.dialogButton.TextYes = "Yes";
-            this.dialogButton.DialogButtonClick += new CodeLibrary.Controls.DialogButton.DialogButtonClickEventHandler(this.DialogButton_DialogButtonClick);
-            // 
             // cbWordWrap
             // 
             this.cbWordWrap.AutoSize = true;
@@ -317,7 +302,7 @@ namespace CodeLibrary
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(61, 312);
+            this.label7.Location = new System.Drawing.Point(61, 340);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(355, 13);
             this.label7.TabIndex = 27;
@@ -360,11 +345,29 @@ namespace CodeLibrary
             this.cbHtmlPreview.Text = "Html Preview";
             this.cbHtmlPreview.UseVisualStyleBackColor = true;
             // 
+            // lbName
+            // 
+            this.lbName.AutoSize = true;
+            this.lbName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbName.Location = new System.Drawing.Point(60, 18);
+            this.lbName.Name = "lbName";
+            this.lbName.Size = new System.Drawing.Size(51, 16);
+            this.lbName.TabIndex = 31;
+            this.lbName.Text = "NAME";
+            // 
+            // cbExpand
+            // 
+            this.cbExpand.AutoSize = true;
+            this.cbExpand.Location = new System.Drawing.Point(64, 237);
+            this.cbExpand.Name = "cbExpand";
+            this.cbExpand.Size = new System.Drawing.Size(91, 17);
+            this.cbExpand.TabIndex = 32;
+            this.cbExpand.Text = "Expand Node";
+            this.cbExpand.UseVisualStyleBackColor = true;
+            // 
             // rtf
             // 
             this.rtf.BackColor = System.Drawing.SystemColors.Window;
-            this.rtf.EditorBackColor = System.Drawing.SystemColors.Window;
-            this.rtf.EditorForeColor = System.Drawing.SystemColors.WindowText;
             this.rtf.Location = new System.Drawing.Point(351, 191);
             this.rtf.Name = "rtf";
             this.rtf.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
@@ -377,15 +380,21 @@ namespace CodeLibrary
             this.rtf.Visible = false;
             this.rtf.Zoom = 100;
             // 
-            // lbName
+            // dialogButton
             // 
-            this.lbName.AutoSize = true;
-            this.lbName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbName.Location = new System.Drawing.Point(60, 18);
-            this.lbName.Name = "lbName";
-            this.lbName.Size = new System.Drawing.Size(51, 16);
-            this.lbName.TabIndex = 31;
-            this.lbName.Text = "NAME";
+            this.dialogButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.dialogButton.ButtonMode = CodeLibrary.Controls.DialogButton.DialogButtonMode.OkCancel;
+            this.dialogButton.Location = new System.Drawing.Point(571, 386);
+            this.dialogButton.Name = "dialogButton";
+            this.dialogButton.Size = new System.Drawing.Size(156, 23);
+            this.dialogButton.TabIndex = 0;
+            this.dialogButton.TextCancel = "Cancel";
+            this.dialogButton.TextIgnore = "Ignore";
+            this.dialogButton.TextNo = "No";
+            this.dialogButton.TextOk = "Ok";
+            this.dialogButton.TextRetry = "Retry";
+            this.dialogButton.TextYes = "Yes";
+            this.dialogButton.DialogButtonClick += new CodeLibrary.Controls.DialogButton.DialogButtonClickEventHandler(this.DialogButton_DialogButtonClick);
             // 
             // FormProperties2
             // 
@@ -393,6 +402,7 @@ namespace CodeLibrary
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(760, 421);
+            this.Controls.Add(this.cbExpand);
             this.Controls.Add(this.lbName);
             this.Controls.Add(this.rtf);
             this.Controls.Add(this.cbHtmlPreview);
@@ -468,5 +478,6 @@ namespace CodeLibrary
         private System.Windows.Forms.CheckBox cbHtmlPreview;
         private Controls.Controls.RtfControl rtf;
         private System.Windows.Forms.Label lbName;
+        private System.Windows.Forms.CheckBox cbExpand;
     }
 }

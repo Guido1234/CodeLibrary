@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
-
+ 
 namespace CodeLibrary.Core
 {
     [DataContract()]
@@ -22,83 +22,74 @@ namespace CodeLibrary.Core
         [DataMember(Name = "AlarmDate")]
         public DateTime? AlarmDate { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "Blob")]
         public byte[] Blob { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "CodeBookmarks")]
         public List<CodeBookmark> Bookmarks { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "Code")]
         public string Code { get; set; } = string.Empty;
 
         [DataMember(Name = "CodeType")]
         public CodeType CodeType { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "CreationDate")]
         public string CreationDate { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "CurrentLine")]
         public int CurrentLine { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "CyclicShortCut")]
         public bool CyclicShortCut { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "DefaultChildCode")]
         public string DefaultChildCode { get; set; } = string.Empty;
 
-        [Browsable(false)]
         [DataMember(Name = "DefaultChildCodeType")]
         public CodeType DefaultChildCodeType { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "DefaultChildCodeTypeEnabled")]
         public bool DefaultChildCodeTypeEnabled { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "DefaultChildName")]
         public string DefaultChildName { get; set; } = string.Empty;
 
-        [Browsable(false)]
         [DataMember(Name = "DefaultChildRtf")]
         public string DefaultChildRtf { get; set; } = string.Empty;
 
         [DataMember(Name = "HtmlPreview")]
         public bool HtmlPreview { get; set; } = false;
 
-        [Browsable(false)]
         [DataMember(Name = "Id")]
         public string Id { get; set; } = string.Empty;
+
+        //[DataMember(Name = "PId")]
+        //public string ParentId { get; set; } = string.Empty;
+
+        //[DataMember(Name = "PCSet")]
+        //public bool ParentChildRelationSet { get; set; } = false;
 
         [DataMember(Name = "Important")]
         public bool Important { get; set; }
 
-        [Browsable(false)]
+        [DataMember(Name = "Expanded")]
+        public bool Expanded { get; set; }
+
         public bool Locked { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "Name")]
         public string Name { get; set; } = string.Empty;
 
-        [Browsable(false)]
         [DataMember(Name = "Order")]
         public int Order { get; set; }
 
-        [Browsable(false)]
         [DataMember(Name = "Path")]
         public string Path { get; set; } = string.Empty;
 
-        [Browsable(false)]
         [DataMember(Name = "RTF")]
         public string RTF { get; set; } = string.Empty;
 
-        [Browsable(false)]
         [DataMember(Name = "RTFAlwaysWhite")]
         public bool RTFAlwaysWhite { get; set; } = false;
 
@@ -107,6 +98,14 @@ namespace CodeLibrary.Core
 
         [DataMember(Name = "Wordwrap")]
         public bool Wordwrap { get; set; }
+
+
+        [DataMember(Name = "RTFLM")]
+        public bool RTFOwnTheme { get; set; } = false;
+
+        [DataMember(Name = "RtfTheme")]
+        public RtfTheme RTFTheme { get; set; } =  RtfTheme.Light;
+
 
         public static CodeSnippet ClipboardMonitorSnippet() => new CodeSnippet() { Code = string.Empty, CodeType = CodeType.System, Name = Constants.CLIPBOARDMONITOR_TITLE, Path = Constants.CLIPBOARDMONITOR_TITLE, Id = Constants.CLIPBOARDMONITOR };
 

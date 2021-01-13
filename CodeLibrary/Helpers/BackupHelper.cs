@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace CodeLibrary
 {
@@ -31,9 +32,22 @@ namespace CodeLibrary
             FileInfo file = new FileInfo(CurrentFile);
             string newName = $"{file.Name.Replace($".{file.Extension}", string.Empty)}_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.bak";
             FileInfo bakfile = new FileInfo(Path.Combine(file.Directory.FullName, newName));
+            
             if (!bakfile.Exists)
-                File.Move(file.FullName, bakfile.FullName);
-
+            {
+                try
+                {
+                    File.Move(file.FullName, bakfile.FullName);
+                }
+                catch (UnauthorizedAccessException ua)
+                {
+                    return;
+                }
+                catch (Exception e)
+                {
+                    return;
+                }
+            }
             DeleteOlderbackupFiles(-21); // Delete everything.
             DeleteOlderbackupFilesKeepOnePerDay(-2); // keep latest per day.
         }
@@ -72,7 +86,7 @@ namespace CodeLibrary
 
             if (!file.Directory.Exists)
                 return;
-
+ 
             string pattern = $"{file.Name.Replace($".{file.Extension}", string.Empty)}_*.bak";
 
             DateTime filterDate = DateTime.Now.AddDays(-2);

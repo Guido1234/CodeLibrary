@@ -10,7 +10,7 @@ using System.Windows.Forms;
 namespace CodeLibrary
 {
     public class FastColoredTextBoxHelper : ITextBoxHelper
-    {
+    { 
         private readonly FormCodeLibrary _mainform;
         private readonly FastColoredTextBox _tb;
         private readonly TextBoxHelper _TextBoxHelper;
@@ -347,6 +347,7 @@ namespace CodeLibrary
                 StringTemplate stringtemplate = new StringTemplate();
                 string result = stringtemplate.Format(_snippet.Code, _tb.SelectedText);
                 _tb.SelectedText = result;
+                _tb.Focus();
                 return true;
             }
 
@@ -420,8 +421,6 @@ namespace CodeLibrary
                 e.Handled = true;
                 return;
             }
-
-            //ScreenToCode(_TextBoxHelper.CurrentSnippet);
         }
 
         private void TbCode_MouseUp(object sender, MouseEventArgs e)
@@ -438,8 +437,6 @@ namespace CodeLibrary
 
             if (_supressTextChanged)
                 return;
-
-            //ScreenToCode(_TextBoxHelper.CurrentSnippet);
         }
 
         private void UpdateHtmlPreview()

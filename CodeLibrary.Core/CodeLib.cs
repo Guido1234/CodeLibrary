@@ -7,7 +7,7 @@ using System.Windows.Forms;
 namespace CodeLibrary.Core
 {
     public class CodeLib
-    {
+    { 
         private static CodeLib _Instance;
         private int _CurrentHashCode = 0;
         private int _InitialHashCode = 0;
@@ -32,6 +32,15 @@ namespace CodeLibrary.Core
             get
             {
                 return Library.Get(Constants.CLIPBOARDMONITOR);
+            }
+        }
+
+
+        public CodeSnippet Trashcan
+        {
+            get
+            {
+                return Library.Get(Constants.TRASHCAN);
             }
         }
 
@@ -97,6 +106,17 @@ namespace CodeLibrary.Core
 
             Library.Clear();
             Library.AddRange(collection.Items);
+
+            if (ClipboardMonitor != null)
+            {
+                ClipboardMonitor.Order = -1;
+                ClipboardMonitor.Path = "Clipboard Monitor";
+            }
+            if (Trashcan != null)
+            {
+                Trashcan.Order = -2;
+                Trashcan.Path = "Trashcan";
+            }
         }
 
         public void New()

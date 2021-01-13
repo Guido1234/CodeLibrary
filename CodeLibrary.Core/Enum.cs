@@ -1,7 +1,14 @@
 ﻿using System.ComponentModel;
 
 namespace CodeLibrary.Core
-{
+{ 
+    public enum RtfTheme
+    {
+        Dark,
+        Light,
+        HighContrast
+    }
+
     public enum CodeType
     {
         Folder = 0,

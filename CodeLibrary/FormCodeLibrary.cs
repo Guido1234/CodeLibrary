@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Security;
+using System.Text;
 using System.Windows.Forms;
 
 namespace CodeLibrary
@@ -17,9 +18,9 @@ namespace CodeLibrary
         private readonly ClipboardMonitorHelper _clipboardMonitorHelper;
         private readonly FavoriteHelper _FavoriteHelper;
         private readonly FileHelper _fileHelper;
-        private readonly TextSelectionHelper _selectionHelper;
         private readonly TextBoxHelper _textboxHelper;
         private readonly TreeviewHelper _treeHelper;
+        private readonly DebugHelper _debugHelper;
         private TextEditorContainer _CurrentEditor = new TextEditorContainer();
         private bool _exitWithoutSaving = false;
         private MainPluginHelper _PluginHelper;
@@ -29,12 +30,13 @@ namespace CodeLibrary
         {
             InitializeComponent();
             DoubleBuffered = true;
-            _fileHelper = new FileHelper(treeViewLibrary, this);
+            _debugHelper = new DebugHelper(this);
+            _fileHelper = new FileHelper(treeViewLibrary, this, _debugHelper);
             _FavoriteHelper = new FavoriteHelper(favoriteLibrariesToolStripMenuItem, _fileHelper);
             _textboxHelper = new TextBoxHelper(this);
-            _selectionHelper = new TextSelectionHelper(tbCode);
             _treeHelper = new TreeviewHelper(this, _textboxHelper, _fileHelper);
             _clipboardMonitorHelper = new ClipboardMonitorHelper(this, _textboxHelper, _treeHelper);
+
             _fileHelper.TreeHelper = _treeHelper;
 
             containerLeft.Dock = DockStyle.Fill;
@@ -128,10 +130,10 @@ namespace CodeLibrary
 
         private void asSelectedTextToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(tbCode.SelectedText))
+            if (string.IsNullOrEmpty(_textboxHelper.SelectedText))
                 return;
 
-            treeViewLibrary.SelectedNode.Text = tbCode.SelectedText;
+            treeViewLibrary.SelectedNode.Text = _textboxHelper.SelectedText;
         }
 
         private void asSelectionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -279,6 +281,8 @@ namespace CodeLibrary
         {
             Config.Load();
 
+            rtfEditor.UpdateStyles();
+
             if (Config.HighContrastMode)
                 HighContrastTheme();
             else if (Config.DarkMode)
@@ -304,8 +308,6 @@ namespace CodeLibrary
             _fileHelper.Reload();
             _FavoriteHelper.BuildMenu();
         }
-
-        private void GoToSiteToolStripMenuItem_Click(object sender, EventArgs e) => System.Diagnostics.Process.Start("https://sourceforge.net/u/guidok915");
 
         private void HighContrastToolStripMenuItem_Click(object sender, EventArgs e) => HighContrastTheme();
 
@@ -338,10 +340,6 @@ namespace CodeLibrary
         private void LightToolStripMenuItem_Click(object sender, EventArgs e) => LightTheme();
 
         private void LoadToolStripMenuItem_Click(object sender, EventArgs e) => _fileHelper.OpenFile();
-
-        private void LowerCaseToolStripMenuItem_Click(object sender, EventArgs e) => _selectionHelper.SelectedText = _selectionHelper.SelectedText.ToLower();
-
-        private void LowerCaseToolStripMenuItem1_Click(object sender, EventArgs e) => _selectionHelper.SelectedText = _selectionHelper.SelectedText.ToLower();
 
         private void luaToolStripMenuItem_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.Lua);
 
@@ -378,8 +376,7 @@ namespace CodeLibrary
             BackColor = Color.FromArgb(255, 100, 100, 100);
             treeViewLibrary.ForeColor = Color.White;
             treeViewLibrary.BackColor = Color.FromArgb(255, 75, 75, 75);
-            rtfEditor.EditorBackColor = Color.FromArgb(255, 40, 40, 40);
-            rtfEditor.EditorForeColor = Color.FromArgb(255, 255, 255, 255);
+            rtfEditor.Theme = RtfTheme.Dark;
 
             tbCode.IndentBackColor = Color.FromArgb(255, 75, 75, 75);
             tbCode.BackColor = Color.FromArgb(255, 40, 40, 40);
@@ -432,8 +429,8 @@ namespace CodeLibrary
             treeViewLibrary.ForeColor = Color.White;
             treeViewLibrary.BackColor = Color.FromArgb(255, 35, 35, 35);
             tbCode.IndentBackColor = Color.FromArgb(255, 35, 35, 35);
-            rtfEditor.EditorBackColor = Color.FromArgb(255, 10, 10, 10);
-            rtfEditor.EditorForeColor = Color.FromArgb(255, 255, 255, 255);
+            rtfEditor.Theme = RtfTheme.HighContrast;
+
 
             tbCode.BackColor = Color.FromArgb(255, 10, 10, 10);
             tbCode.CaretColor = Color.White;
@@ -484,8 +481,7 @@ namespace CodeLibrary
             treeViewLibrary.ForeColor = Color.FromArgb(255, 0, 0, 0);
             treeViewLibrary.BackColor = Color.FromArgb(255, 255, 255, 255);
             tbCode.IndentBackColor = Color.FromArgb(255, 255, 255, 255);
-            rtfEditor.EditorBackColor = Color.FromArgb(255, 255, 255, 255);
-            rtfEditor.EditorForeColor = Color.FromArgb(255, 0, 0, 0);
+            rtfEditor.Theme = RtfTheme.Light;
 
             tbCode.BackColor = Color.FromArgb(255, 255, 255, 255);
             tbCode.ForeColor = Color.Black;
@@ -719,5 +715,10 @@ namespace CodeLibrary
         private void xMLToolStripMenuItem_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.XML);
 
         private void xMLToolStripMenuItem1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.XML);
+
+
+        private void demoProjectToolStripMenuItem_Click(object sender, EventArgs e) => _FavoriteHelper.OpenDemo();
+
+        private void exampleLibraryToolStripMenuItem_Click(object sender, EventArgs e) => _FavoriteHelper.OpenCSharpLibrary();
     }
 }

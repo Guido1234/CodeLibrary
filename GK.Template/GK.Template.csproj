@@ -59,7 +59,8 @@
     <Compile Include="Methods\MethodCamelCaseLower.cs" />
     <Compile Include="Methods\MethodKeepQuoted.cs" />
     <Compile Include="Methods\MethodLoremIpsum.cs" />
-    <Compile Include="Methods\MethodSkipData.cs" />
+    <Compile Include="Methods\MethodKeepLine.cs" />
+    <Compile Include="Methods\MethodSkipLine.cs" />
     <Compile Include="Methods\MethodBase.cs" />
     <Compile Include="Methods\MethodAsciiValue.cs" />
     <Compile Include="Methods\MethodDec.cs" />

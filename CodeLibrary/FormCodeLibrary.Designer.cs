@@ -126,7 +126,7 @@
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem36 = new System.Windows.Forms.ToolStripSeparator();
             this.favoriteLibrariesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addCurrentToFavoriteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeCurrentFromFavoriteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -213,10 +213,14 @@
             this.switchLast2DocumentsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.configurePluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuDebug = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuReadOnlyLibrary = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.goToSiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem49 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem35 = new System.Windows.Forms.ToolStripSeparator();
+            this.demoProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exampleLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.container1 = new CodeLibrary.Controls.Container();
             this.contextMenuClipboardMonitor = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -278,7 +282,7 @@
             this.tbPath.Location = new System.Drawing.Point(1, 3);
             this.tbPath.Name = "tbPath";
             this.tbPath.ReadOnly = true;
-            this.tbPath.Size = new System.Drawing.Size(882, 20);
+            this.tbPath.Size = new System.Drawing.Size(889, 20);
             this.tbPath.TabIndex = 3;
             // 
             // contextMenuStripPopup
@@ -505,17 +509,15 @@
             // rtfEditor
             // 
             this.rtfEditor.BackColor = System.Drawing.SystemColors.Window;
-            this.rtfEditor.EditorBackColor = System.Drawing.SystemColors.Window;
-            this.rtfEditor.EditorForeColor = System.Drawing.SystemColors.WindowText;
             this.rtfEditor.Location = new System.Drawing.Point(5, 15);
             this.rtfEditor.Name = "rtfEditor";
-            this.rtfEditor.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
-    "d\\f0\\fs17\\par\r\n}\r\n";
+            this.rtfEditor.OwnTheme = false;
+            this.rtfEditor.Rtf = resources.GetString("rtfEditor.Rtf");
             this.rtfEditor.SelectedRtf = "";
             this.rtfEditor.SelectedText = "";
             this.rtfEditor.Size = new System.Drawing.Size(433, 74);
             this.rtfEditor.TabIndex = 0;
+            this.rtfEditor.Theme = CodeLibrary.Core.RtfTheme.Dark;
             this.rtfEditor.Zoom = 100;
             // 
             // containerInfoBar
@@ -531,7 +533,7 @@
             this.containerInfoBar.Controls.Add(this.hScrollBarZoom);
             this.containerInfoBar.Location = new System.Drawing.Point(1, 833);
             this.containerInfoBar.Name = "containerInfoBar";
-            this.containerInfoBar.Size = new System.Drawing.Size(797, 21);
+            this.containerInfoBar.Size = new System.Drawing.Size(804, 21);
             this.containerInfoBar.TabIndex = 19;
             // 
             // label2
@@ -571,7 +573,7 @@
             // 
             this.labelZoomPerc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelZoomPerc.AutoSize = true;
-            this.labelZoomPerc.Location = new System.Drawing.Point(736, 7);
+            this.labelZoomPerc.Location = new System.Drawing.Point(743, 7);
             this.labelZoomPerc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelZoomPerc.Name = "labelZoomPerc";
             this.labelZoomPerc.Size = new System.Drawing.Size(13, 13);
@@ -592,7 +594,7 @@
             // hScrollBarZoom
             // 
             this.hScrollBarZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBarZoom.Location = new System.Drawing.Point(580, 6);
+            this.hScrollBarZoom.Location = new System.Drawing.Point(587, 6);
             this.hScrollBarZoom.Maximum = 250;
             this.hScrollBarZoom.Minimum = 50;
             this.hScrollBarZoom.Name = "hScrollBarZoom";
@@ -674,6 +676,7 @@
             this.tbCode.CharWidth = 8;
             this.tbCode.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.tbCode.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.tbCode.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.tbCode.Hotkeys = resources.GetString("tbCode.Hotkeys");
             this.tbCode.IsReplaceMode = false;
             this.tbCode.Language = FastColoredTextBoxNS.Language.CSharp;
@@ -713,7 +716,7 @@
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(888, 8);
+            this.pictureBox1.Location = new System.Drawing.Point(895, 8);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(16, 16);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -1154,7 +1157,7 @@
             this.loadToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
-            this.toolStripMenuItem1,
+            this.toolStripMenuItem36,
             this.favoriteLibrariesToolStripMenuItem,
             this.addCurrentToFavoriteToolStripMenuItem,
             this.removeCurrentFromFavoriteToolStripMenuItem,
@@ -1177,6 +1180,7 @@
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.Size = new System.Drawing.Size(250, 38);
             this.newToolStripMenuItem.Text = "New";
+            this.newToolStripMenuItem.ToolTipText = "Create a new document without saving current";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.NewToolStripMenuItem_Click);
             // 
             // toolStripMenuItem19
@@ -1212,10 +1216,10 @@
             this.saveAsToolStripMenuItem.Text = "Save as";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
             // 
-            // toolStripMenuItem1
+            // toolStripMenuItem36
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(247, 6);
+            this.toolStripMenuItem36.Name = "toolStripMenuItem36";
+            this.toolStripMenuItem36.Size = new System.Drawing.Size(247, 6);
             // 
             // favoriteLibrariesToolStripMenuItem
             // 
@@ -1845,7 +1849,10 @@
             this.toolStripMenuItem2,
             this.switchLast2DocumentsToolStripMenuItem1,
             this.toolStripMenuItem6,
-            this.configurePluginsToolStripMenuItem});
+            this.configurePluginsToolStripMenuItem,
+            this.debugSeparator,
+            this.mnuDebug});
+            this.toolsToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Replace;
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 22);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -1946,34 +1953,61 @@
             this.configurePluginsToolStripMenuItem.Text = "Configure Plugins";
             this.configurePluginsToolStripMenuItem.Click += new System.EventHandler(this.ConfigurePluginsToolStripMenuItem_Click);
             // 
+            // debugSeparator
+            // 
+            this.debugSeparator.Name = "debugSeparator";
+            this.debugSeparator.Size = new System.Drawing.Size(243, 6);
+            // 
+            // mnuDebug
+            // 
+            this.mnuDebug.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuReadOnlyLibrary});
+            this.mnuDebug.Name = "mnuDebug";
+            this.mnuDebug.Size = new System.Drawing.Size(246, 38);
+            this.mnuDebug.Text = "Debug";
+            // 
+            // mnuReadOnlyLibrary
+            // 
+            this.mnuReadOnlyLibrary.Name = "mnuReadOnlyLibrary";
+            this.mnuReadOnlyLibrary.Size = new System.Drawing.Size(186, 22);
+            this.mnuReadOnlyLibrary.Text = "Set Library Read Only";
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.goToSiteToolStripMenuItem,
-            this.toolStripMenuItem49,
-            this.aboutToolStripMenuItem});
+            this.aboutToolStripMenuItem,
+            this.toolStripMenuItem35,
+            this.demoProjectToolStripMenuItem,
+            this.exampleLibraryToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 22);
             this.helpToolStripMenuItem.Text = "Help";
             // 
-            // goToSiteToolStripMenuItem
-            // 
-            this.goToSiteToolStripMenuItem.Name = "goToSiteToolStripMenuItem";
-            this.goToSiteToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.goToSiteToolStripMenuItem.Text = "Go to Site";
-            this.goToSiteToolStripMenuItem.Click += new System.EventHandler(this.GoToSiteToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem49
-            // 
-            this.toolStripMenuItem49.Name = "toolStripMenuItem49";
-            this.toolStripMenuItem49.Size = new System.Drawing.Size(122, 6);
-            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem35
+            // 
+            this.toolStripMenuItem35.Name = "toolStripMenuItem35";
+            this.toolStripMenuItem35.Size = new System.Drawing.Size(177, 6);
+            // 
+            // demoProjectToolStripMenuItem
+            // 
+            this.demoProjectToolStripMenuItem.Name = "demoProjectToolStripMenuItem";
+            this.demoProjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.demoProjectToolStripMenuItem.Text = "Demo Library";
+            this.demoProjectToolStripMenuItem.Click += new System.EventHandler(this.demoProjectToolStripMenuItem_Click);
+            // 
+            // exampleLibraryToolStripMenuItem
+            // 
+            this.exampleLibraryToolStripMenuItem.Name = "exampleLibraryToolStripMenuItem";
+            this.exampleLibraryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exampleLibraryToolStripMenuItem.Text = "Example Library";
+            this.exampleLibraryToolStripMenuItem.Click += new System.EventHandler(this.exampleLibraryToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -2152,7 +2186,6 @@
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem favoriteLibrariesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addCurrentToFavoriteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeCurrentFromFavoriteToolStripMenuItem;
@@ -2214,8 +2247,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem configurePluginsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem goToSiteToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem49;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem15;
@@ -2268,6 +2299,13 @@
         public System.Windows.Forms.ToolStripMenuItem mnuSearch;
         public System.Windows.Forms.ToolStripMenuItem mnuProperties1;
         public System.Windows.Forms.ToolStripMenuItem mnuAddDialog;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem35;
+        private System.Windows.Forms.ToolStripMenuItem demoProjectToolStripMenuItem;
+        public System.Windows.Forms.ToolStripSeparator debugSeparator;
+        public System.Windows.Forms.ToolStripMenuItem mnuDebug;
+        public System.Windows.Forms.ToolStripMenuItem mnuReadOnlyLibrary;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem36;
+        private System.Windows.Forms.ToolStripMenuItem exampleLibraryToolStripMenuItem;
     }
 }
 

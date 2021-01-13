@@ -140,7 +140,40 @@ namespace CodeLibrary.Helpers
 
             if (!File.Exists(_filename))
             {
-                MessageBox.Show($"File '{_filename}' does not long exists!.");
+                MessageBox.Show($"File '{_filename}' does not exists!.");
+                return;
+            }
+
+            _fileHelper.OpenFile(_filename, null);
+        }
+
+
+        public void OpenDemo()
+        {
+            string _filename = Path.Combine(Application.StartupPath, @"Libraries\Demo.json");
+            
+ 
+            _fileHelper.SaveFile(false);
+
+            if (!File.Exists(_filename))
+            {
+                MessageBox.Show($"File '{_filename}' does not exists!.");
+                return;
+            }
+
+            _fileHelper.OpenFile(_filename, null);
+        }
+
+        public void OpenCSharpLibrary()
+        {
+            string _filename = Path.Combine(Application.StartupPath, @"Libraries\CSharp Library.json");
+
+
+            _fileHelper.SaveFile(false);
+
+            if (!File.Exists(_filename))
+            {
+                MessageBox.Show($"File '{_filename}' does not exists!.");
                 return;
             }
 

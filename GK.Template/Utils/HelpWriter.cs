@@ -10,36 +10,41 @@ namespace GK.Template
 {
     public class HelpWriter
     {
-        private string BuildItemHelp(FormatMethodAttribute at, StringBuilder sb)
+        private string BuildItemHelp(FormatMethodAttribute at)
         {
             string tmp = @"
 
-{0}
-{1}
-------------------------------------------------
-
-Aliasses:
-{2}
-
-Description:
-{3}
-
-Example:
+<h1>{0}</h1>
+<h3>{1}</h3>
+<hr/>
+<b>Aliasses:</b></br>
+{2}</br>
+</br>
+<b>Description:</b></br>
+{3}</br>
+</br>
+<b>Parameters:</b></br>
+{5}</br>
+</br>
+</hr>
+<b>Example:</b></br>
 {4}
-
-Parameters
-{5}
-
+</br>
 ";
-
+            StringBuilder sb = new StringBuilder();
+            if (at.Parameters.Count == 0)
+            {
+                sb.Append("<li><i>None</i></li>");
+            }
             foreach (FormatMethodParameterAttribute prm in at.Parameters)
             {
-                sb.Append("<li>");
+                sb.Append("<li>\r\n");
                 sb.AppendFormat("{0} ", prm.Name);
                 sb.AppendFormat("{0}", prm.Optional == true ? "<i>optional</i>" : "");
                 sb.AppendFormat("{0}", prm.IsParams == true ? "<i>params</i>" : "");
                 if (!string.IsNullOrEmpty(prm.Description))
-                    sb.AppendFormat("<br/>{0}", prm.Description.Replace("\r\n", "<br/>"));
+                    sb.AppendFormat("<br/>\r\n{0}", prm.Description.Replace("\r\n", "<br/>"));
+
                 if (prm.PropertyReference.PropertyType.BaseType == typeof(Enum))
                 {
                     foreach (int val in EnumUtility.GetValues(prm.PropertyReference.PropertyType))
@@ -47,15 +52,15 @@ Parameters
                         sb.Append("<ul>");
                         string name = Enum.GetName(prm.PropertyReference.PropertyType, val);
                         string description = EnumUtility.GetDescription(EnumUtility.GetValueByName(prm.PropertyReference.PropertyType, name));
-                        sb.AppendFormat("<li>{0}<br/>{1}</li>", name, description);
-                        sb.Append("</ul>");
+                        sb.AppendFormat("<li>{0}<br/>{1}</li>\r\n", name, description);
+                        sb.Append("</ul>\r\n");
                     }
                 }
 
                 sb.Append("</li>");
             }
 
-            return string.Format(tmp, at.Name, at.ToString(), at.Aliasses.Replace("\r\n", "<br/>"), at.Description.Replace("\r\n", "<br/>"), at.Example.Replace("\r\n", "<br/>"), sb.ToString());
+            return string.Format(tmp, at.Name, at.ToString(), at.Aliasses, at.Description, at.Example, sb.ToString());
         }
 
         private string BuildItemHelp(DataCommandAttribute at, StringBuilder sb)
@@ -99,7 +104,7 @@ Parameters
             return string.Format(tmp, "", at.Name, at.ToString(), at.Aliasses.Replace("\r\n", "<br/>"), at.Description.Replace("\r\n", "<br/>"), at.Example.Replace("\r\n", "<br/>"), sb.ToString());
         }
 
-        private void ListCommands(StringBuilder sb)
+        public void ListCommands(StringBuilder sb)
         {
             List<Type> methodtTypes = Utils.GetObjectsWithBaseType(typeof(DataCommandBase), true);
             List<DataCommandAttribute> attribs = new List<DataCommandAttribute>();
@@ -121,7 +126,7 @@ Parameters
             }
         }
 
-        private void ListFormatters(StringBuilder sb)
+        public void ListFormatters(StringBuilder sb)
         {
             List<Type> methodtTypes = Utils.GetObjectsWithBaseType(typeof(MethodBase), true);
             List<FormatMethodAttribute> attribs = new List<FormatMethodAttribute>();
@@ -139,7 +144,7 @@ Parameters
 
             foreach (FormatMethodAttribute att in attribs)
             {
-                BuildItemHelp(att, sb);
+                sb.Append(BuildItemHelp(att));
             }
         }
     }
