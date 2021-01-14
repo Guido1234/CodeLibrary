@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Security;
-using System.Text;
 using System.Windows.Forms;
 
 namespace CodeLibrary
@@ -16,11 +15,11 @@ namespace CodeLibrary
     public partial class FormCodeLibrary : Form
     {
         private readonly ClipboardMonitorHelper _clipboardMonitorHelper;
+        private readonly DebugHelper _debugHelper;
         private readonly FavoriteHelper _FavoriteHelper;
         private readonly FileHelper _fileHelper;
         private readonly TextBoxHelper _textboxHelper;
         private readonly TreeviewHelper _treeHelper;
-        private readonly DebugHelper _debugHelper;
         private TextEditorContainer _CurrentEditor = new TextEditorContainer();
         private bool _exitWithoutSaving = false;
         private MainPluginHelper _PluginHelper;
@@ -59,6 +58,7 @@ namespace CodeLibrary
             rtfEditor.Dock = DockStyle.Fill;
 
             webBrowser.Dock = DockStyle.Fill;
+            webBrowser.ScriptErrorsSuppressed = true;
             webBrowser.AllowWebBrowserDrop = false;
             webBrowser.DocumentText = "";
 
@@ -85,6 +85,14 @@ namespace CodeLibrary
         }
 
         public void SaveEditor() => _textboxHelper.Save();
+
+        public void SetZoom()
+        {
+            hScrollBarZoom.Value = Config.Zoom;
+            tbCode.Zoom = hScrollBarZoom.Value;
+            rtfEditor.Zoom = hScrollBarZoom.Value;
+            labelZoomPerc.Text = $"{tbCode.Zoom}%";
+        }
 
         internal void SetEditor(ITextEditor editor)
         {
@@ -191,13 +199,15 @@ namespace CodeLibrary
 
         private void DarkToolStripMenuItem_Click(object sender, EventArgs e) => DarkTheme();
 
+        private void demoProjectToolStripMenuItem_Click(object sender, EventArgs e) => _FavoriteHelper.OpenDemo();
+
         private void EditNodeProperties()
         {
             if (_treeHelper.IsSystem(treeViewLibrary.SelectedNode))
                 return;
 
             CodeSnippet _snippet = _treeHelper.FromNode(treeViewLibrary.SelectedNode);
-            FormProperties2 _form = new FormProperties2 { Snippet = _snippet };
+            FormProperties _form = new FormProperties { Snippet = _snippet };
             _form.ShowDialog(this);
 
             CodeLib.Instance.Refresh();
@@ -232,6 +242,8 @@ namespace CodeLibrary
             MethodCalc methodCalc = new MethodCalc();
             _textboxHelper.SelectedText = _textboxHelper.SelectedText + " = " + methodCalc.Apply(_textboxHelper.SelectedText);
         }
+
+        private void exampleLibraryToolStripMenuItem_Click(object sender, EventArgs e) => _FavoriteHelper.OpenCSharpLibrary();
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e) => Close();
 
@@ -279,9 +291,9 @@ namespace CodeLibrary
 
         private void FormCodeLibrary_Load(object sender, EventArgs e)
         {
+            this.Enabled = false;
+            splitContainerCode.Panel2Collapsed = true;
             Config.Load();
-
-            rtfEditor.UpdateStyles();
 
             if (Config.HighContrastMode)
                 HighContrastTheme();
@@ -290,23 +302,30 @@ namespace CodeLibrary
             else
                 LightTheme();
 
+            Application.DoEvents();
+
+            rtfEditor.UpdateStyles();
+
+            webBrowser.Document.OpenNew(true);
+
             tbPath.BorderStyle = BorderStyle.FixedSingle;
 
-            if (string.IsNullOrEmpty(_fileHelper.CurrentFile))
+            if (string.IsNullOrEmpty(Config.LastOpenedFile))
                 _fileHelper.NewDoc();
 
             _PluginHelper = new MainPluginHelper(_CurrentEditor, pluginsToolStripEditMenuItem, pluginsToolStripContextMenu);
-
-            SetZoom();
 
             if (Config.IsNewVersion())
             {
                 FormAbout _frmAbout = new FormAbout();
                 _frmAbout.ShowDialog(this);
             }
-
+            Application.DoEvents();
             _fileHelper.Reload();
             _FavoriteHelper.BuildMenu();
+
+            SetZoom();
+            this.Enabled = true;
         }
 
         private void HighContrastToolStripMenuItem_Click(object sender, EventArgs e) => HighContrastTheme();
@@ -431,7 +450,6 @@ namespace CodeLibrary
             tbCode.IndentBackColor = Color.FromArgb(255, 35, 35, 35);
             rtfEditor.Theme = RtfTheme.HighContrast;
 
-
             tbCode.BackColor = Color.FromArgb(255, 10, 10, 10);
             tbCode.CaretColor = Color.White;
             tbCode.ForeColor = Color.LightGray;
@@ -516,6 +534,10 @@ namespace CodeLibrary
         }
 
         #endregion themes
+
+        private void mnuMarkDown_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.MarkDown);
+
+        private void mnuMarkDown1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.MarkDown);
 
         private void MoveDownToolStripMenuItem_Click(object sender, EventArgs e) => _treeHelper.MoveDown();
 
@@ -638,14 +660,6 @@ namespace CodeLibrary
                 SetPassWord(f.Password);
         }
 
-        private void SetZoom()
-        {
-            hScrollBarZoom.Value = Config.Zoom;
-            tbCode.Zoom = hScrollBarZoom.Value;
-            rtfEditor.Zoom = hScrollBarZoom.Value;
-            labelZoomPerc.Text = $"{tbCode.Zoom}%";
-        }
-
         private void SortChildrenToolStripMenuItem_Click(object sender, EventArgs e) => treeViewLibrary.Sort();
 
         private void SortChildrenToolStripMenuItem1_Click(object sender, EventArgs e) => treeViewLibrary.Sort();
@@ -716,9 +730,17 @@ namespace CodeLibrary
 
         private void xMLToolStripMenuItem1_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.XML);
 
+        private void xToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (var item in CodeLib.Instance.Library)
+            {
+                item.CreationDate = DateTime.MinValue.ToString("yyyyMMdd hh:nn"); 
+            }
+        }
 
-        private void demoProjectToolStripMenuItem_Click(object sender, EventArgs e) => _FavoriteHelper.OpenDemo();
+        private void munCopyContentsAndMerge_Click(object sender, EventArgs e) => Clipboard.SetText(_textboxHelper.Merge());
 
-        private void exampleLibraryToolStripMenuItem_Click(object sender, EventArgs e) => _FavoriteHelper.OpenCSharpLibrary();
+        private void munCopyContentsAndMerge1_Click(object sender, EventArgs e) => Clipboard.SetText( _textboxHelper.Merge());
+
     }
 }

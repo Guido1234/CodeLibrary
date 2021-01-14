@@ -1,16 +1,17 @@
 ﻿using CodeLibrary.Core;
 using FastColoredTextBoxNS;
 using GK.Template;
+using MarkdownSharp;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-
+ 
 namespace CodeLibrary
 {
     public class FastColoredTextBoxHelper : ITextBoxHelper
-    { 
+    {
         private readonly FormCodeLibrary _mainform;
         private readonly FastColoredTextBox _tb;
         private readonly TextBoxHelper _TextBoxHelper;
@@ -156,7 +157,7 @@ namespace CodeLibrary
 
         public void GotoLine(int line) => _tb.GotoLine(line);
 
-        public string Merge(string text)
+        public string Merge(string text, CodeType targetType)
         {
             string _newText = text;
             var _matches = _regexWildCards.Matches(text);
@@ -166,7 +167,16 @@ namespace CodeLibrary
                 if (_snippet.CodeType == CodeType.Image)
                 {
                     string _base64 = Convert.ToBase64String(_snippet.Blob);
-                    _newText = _newText.Replace($"#[{match.Value}]#", string.Format(@"<img src=""data:image/png;base64,{0}"" />", _base64));
+                    switch (targetType)
+                    {
+                        case CodeType.MarkDown:
+                            _newText = _newText.Replace($"#[{match.Value}]#", string.Format(@"![{0}](data:image/png;base64,{1})", _snippet.Path, _base64));
+                            break;
+
+                        default:
+                            _newText = _newText.Replace($"#[{match.Value}]#", string.Format(@"<img src=""data:image/png;base64,{0}"" />", _base64));
+                            break;
+                    }
                 }
                 else
                 {
@@ -280,6 +290,14 @@ namespace CodeLibrary
                     _mainform.containerRtfEditor.Visible = false;
                     break;
 
+                case CodeType.MarkDown:
+                    CodeInsight.Instance.SetInsightHandler(null);
+                    _tb.Language = FastColoredTextBoxNS.Language.Custom;
+                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
+                    _mainform.containerCode.Visible = true;
+                    _mainform.containerRtfEditor.Visible = false;
+                    break;
+
                 case CodeType.RTF:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _tb.Language = FastColoredTextBoxNS.Language.Custom;
@@ -336,6 +354,33 @@ namespace CodeLibrary
             _mainform.wordwrapToolStripMenuItem.Checked = _TextBoxHelper.CurrentSnippet.Wordwrap;
 
             return _TextBoxHelper.CurrentSnippet.Wordwrap;
+        }
+
+        public void UpdateHtmlPreview()
+        {
+            _mainform.webBrowser.AllowNavigation = true;
+
+            if (!_mainform.splitContainerCode.Panel2Collapsed)
+            {
+                if (_TextBoxHelper.CurrentSnippet.CodeType == CodeType.MarkDown)
+                {
+                    try
+                    {
+                        Markdown _markdown = new Markdown();
+                        string _text = Merge(_tb.Text, CodeType.MarkDown);
+                        _text = _markdown.Transform(_text);
+                        _mainform.webBrowser.DocumentText = _text;
+                    }
+                    catch
+                    {
+                        _mainform.webBrowser.DocumentText = string.Empty;
+                    }
+                }
+                else
+                {
+                    _mainform.webBrowser.DocumentText = Merge(_tb.Text, CodeType.HTML);
+                }
+            }
         }
 
         private bool DocShortCut(KeyEventArgs e)
@@ -439,12 +484,9 @@ namespace CodeLibrary
                 return;
         }
 
-        private void UpdateHtmlPreview()
+        public string Merge()
         {
-            if (!_mainform.splitContainerCode.Panel2Collapsed)
-            {
-                _mainform.webBrowser.DocumentText = Merge(_tb.Text);
-            }
+            return Merge(Text, CodeType.HTML);
         }
     }
 }

@@ -2,7 +2,7 @@
 using FastColoredTextBoxNS;
 
 namespace CodeLibrary
-{
+{ 
     public class TextBoxHelper
     {
         private readonly FormCodeLibrary _mainform;
@@ -132,6 +132,9 @@ namespace CodeLibrary
 
         public void Save()
         {
+            if (_ActiveTextBoxHelper == null)
+                return;
+
             _ActiveTextBoxHelper.Save();
         }
 
@@ -166,6 +169,14 @@ namespace CodeLibrary
             return _ActiveTextBoxHelper.SwitchWordWrap();
         }
 
+        public void UpdateHtmlPreview()
+        {
+            if (_currentSnippet == null)
+                return;
+
+            _ActiveTextBoxHelper.UpdateHtmlPreview();
+        }
+
         private void SetEditorCodeType(CodeType type)
         {
             if (type == CodeType.RTF)
@@ -181,6 +192,11 @@ namespace CodeLibrary
 
             _FastColoredTextBoxHelper.SetEditorCodeType(type);
             _FastColoredTextBoxHelper.RefreshEditor();
+        }
+
+        public string Merge()
+        {
+            return _ActiveTextBoxHelper.Merge();
         }
     }
 }

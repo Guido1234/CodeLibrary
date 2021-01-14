@@ -7,7 +7,7 @@ using System.Windows.Forms;
 namespace CodeLibrary.Core
 {
     public class CodeLib
-    { 
+    {
         private static CodeLib _Instance;
         private int _CurrentHashCode = 0;
         private int _InitialHashCode = 0;
@@ -35,6 +35,9 @@ namespace CodeLibrary.Core
             }
         }
 
+        public DictionaryList<CodeSnippet, string> Library { get; } = new DictionaryList<CodeSnippet, string>(p => p.Id);
+
+        public DictionaryList<TreeNode, string> NodeIndexer { get; } = new DictionaryList<TreeNode, string>(p => p.Name);
 
         public CodeSnippet Trashcan
         {
@@ -43,10 +46,6 @@ namespace CodeLibrary.Core
                 return Library.Get(Constants.TRASHCAN);
             }
         }
-
-        public DictionaryList<CodeSnippet, string> Library { get; } = new DictionaryList<CodeSnippet, string>(p => p.Id);
-
-        public DictionaryList<TreeNode, string> NodeIndexer { get; } = new DictionaryList<TreeNode, string>(p => p.Name);
 
         public static void Import(CodeSnippetCollection collection, DictionaryList<CodeSnippet, string> target, bool resetGuid)
         {
@@ -75,7 +74,8 @@ namespace CodeLibrary.Core
         {
             Instance.Library.Add(CodeSnippet.TrashcanSnippet());
             Instance.Library.Add(CodeSnippet.ClipboardMonitorSnippet());
-            Instance.Library.Add(CodeSnippet.NewRoot("", CodeType.Folder, Constants.SNIPPETS));
+            var _root = CodeSnippet.NewRoot("", CodeType.Folder, Constants.SNIPPETS);
+            Instance.Library.Add(_root);
         }
 
         public IEnumerable<CodeSnippet> GetByAlarmActive() => Library.Lookup(Constants.LOOKUP_TIMERACTIVE, true);

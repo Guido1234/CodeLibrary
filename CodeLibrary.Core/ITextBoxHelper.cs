@@ -2,6 +2,8 @@
 {
     public interface ITextBoxHelper
     {
+        string Merge();
+
         string SelectedText { get; set; }
 
         string Text { get; set; }
@@ -39,5 +41,7 @@
         void ShowReplaceDialog();
 
         bool SwitchWordWrap();
+
+        void UpdateHtmlPreview();
     }
 }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace CodeLibrary
-{
+{ 
     public class RtfEditorHelper : ITextBoxHelper
     {
         private readonly FormCodeLibrary _mainform;
@@ -69,6 +69,7 @@ namespace CodeLibrary
             _supressTextChanged = true;
 
             _TextBoxHelper.CurrentSnippet = snippet;
+
             _mainform.rtfEditor.ClearUndo();
             _mainform.rtfEditor.ResetText();
 
@@ -150,7 +151,6 @@ namespace CodeLibrary
             {
                 snippet.RTFTheme = _mainform.rtfEditor.Theme;
             }
-
         }
 
         public void SelectAll() => _rtf.SelectAll();
@@ -167,6 +167,10 @@ namespace CodeLibrary
         public bool SwitchWordWrap()
         {
             return false;
+        }
+
+        public void UpdateHtmlPreview()
+        {
         }
 
         private void _rtf_KeyDown(object sender, KeyEventArgs e)
@@ -231,7 +235,7 @@ namespace CodeLibrary
                 _mainform.contextMenuStripPopup.Show(Cursor.Position.X, Cursor.Position.Y);
             }
         }
-         
+
         private bool DocShortCut(KeyEventArgs e)
         {
             var _snippet = CodeLib.Instance.GetByShortCut(e.KeyData).FirstOrDefault();
@@ -254,6 +258,11 @@ namespace CodeLibrary
                 return;
 
             //ScreenToCode(_TextBoxHelper.CurrentSnippet);
+        }
+
+        public string Merge()
+        {
+            return string.Empty;
         }
     }
 }

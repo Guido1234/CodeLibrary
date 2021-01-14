@@ -48,6 +48,7 @@ namespace CodeLibrary
             _mainform.setToClipboardToolStripMenuItem.Click += SetToClipboardToolStripMenuItem_Click;
             _mainform.saveImageToolStripMenuItem.Click += SaveImageToolStripMenuItem_Click;
             _mainform.copyAsBase64StringToolStripMenuItem.Click += CopyAsBase64StringToolStripMenuItem_Click;
+            _mainform.mnuCopyMarkDownImage.Click += MnuCopyMarkDownImage_Click;
             _mainform.copyAsHTMLIMGToolStripMenuItem.Click += CopyAsHTMLIMGToolStripMenuItem_Click;
 
             _mainform.mnuPasteFilelist.Click += PasteFilelistToolStripMenuItem_Click;
@@ -68,6 +69,15 @@ namespace CodeLibrary
             _timer.Interval = 1000;
             _timer.Tick += Timer_Tick;
             _timer.Start();
+        }
+
+        private void MnuCopyMarkDownImage_Click(object sender, EventArgs e)
+        {
+            
+
+            CodeSnippet _snippet = CodeLib.Instance.Library.Get(_SelectedId);
+            string _base64 = Convert.ToBase64String(_snippet.Blob);
+            Clipboard.SetText(string.Format(@"![{0}](data:image/png;base64,{1})", _snippet.Title(), _base64));
         }
 
         public string SelectedId
@@ -121,8 +131,10 @@ namespace CodeLibrary
                 case "inf":
                 case "info":
                 case "nfo":
-                case "md":
                     return CodeType.None;
+
+                case "md":
+                    return CodeType.MarkDown;
 
                 case "html":
                 case "htm":
@@ -153,6 +165,10 @@ namespace CodeLibrary
         public TreeNode CreateNewNode(TreeNodeCollection parent, CodeType codetype, string name, string text, string rtf)
         {
             CodeSnippet snippet = new CodeSnippet() { Code = text, CodeType = codetype, Locked = false, Name = name, RTF = rtf };
+            if (snippet.CodeType == CodeType.HTML || snippet.CodeType == CodeType.MarkDown)
+            {
+                snippet.HtmlPreview = true;
+            }
             CodeLib.Instance.Library.Add(snippet);
 
             int _imageIndex = 0;
@@ -206,6 +222,7 @@ namespace CodeLibrary
                 for (int ii = 0; ii < _repeat; ii++)
                 {
                     _newNode = CreateNewRootNode(_f.SelectedType, string.Format(_noteName, DateTime.Now, ii + 1), string.Empty);
+                    
                 }
 
                 return _newNode;
@@ -218,8 +235,9 @@ namespace CodeLibrary
                 _parentSNippet.DefaultChildCodeType = _f.SelectedType;
             }
             for (int ii = 0; ii < _repeat; ii++)
+            {
                 _newNode = CreateNewNode(parent.Nodes, _f.SelectedType, string.Format(_noteName, DateTime.Now, ii + 1), string.Empty, string.Empty);
-
+            }
             return _newNode;
         }
 
@@ -464,6 +482,23 @@ namespace CodeLibrary
             return (snippet.CodeType == CodeType.System && snippet.Id == Constants.TRASHCAN);
         }
 
+        public bool MergeAllowed(TreeNode node)
+        {
+            if (node == null)
+                return false;
+
+            CodeSnippet snippet = CodeLib.Instance.Library.Get(node.Name);
+            switch (snippet.CodeType)
+            {
+                case CodeType.Image:
+                case CodeType.System:
+                case CodeType.UnSuported:
+                case CodeType.RTF:
+                    return false;
+            }
+            return true;
+        }
+
         public void MarkImportant()
         {
             if (IsSystem(_treeViewLibrary.SelectedNode))
@@ -526,6 +561,10 @@ namespace CodeLibrary
                     break;
 
                 case CodeType.None:
+                    _mainform.pctType.Image = _mainform.mnuTypeNone.Image;
+                    break;
+
+                case CodeType.MarkDown:
                     _mainform.pctType.Image = _mainform.mnuTypeNone.Image;
                     break;
 
@@ -622,6 +661,7 @@ namespace CodeLibrary
                 case CodeType.Template:
                 case CodeType.VB:
                 case CodeType.XML:
+                case CodeType.MarkDown:
                     _mainform.containerCode.Visible = true;
                     _mainform.containerImage.Visible = false;
                     _mainform.containerRtfEditor.Visible = false;
@@ -660,6 +700,9 @@ namespace CodeLibrary
                 return;
             }
             CodeType _type = _snippet.CodeType;
+
+            _mainform.mnuMarkDown.Checked = (_type == CodeType.MarkDown);
+            _mainform.mnuMarkDown1.Checked = (_type == CodeType.MarkDown);
 
             _mainform.mnuType2CSharp.Checked = (_type == CodeType.CSharp);
             _mainform.mnuType2Folder.Checked = (_type == CodeType.Folder);
@@ -768,6 +811,7 @@ namespace CodeLibrary
 
                     case CodeType.CSharp:
                     case CodeType.HTML:
+                    case CodeType.MarkDown:
                     case CodeType.JS:
                     case CodeType.Lua:
                     case CodeType.PHP:
@@ -965,6 +1009,9 @@ namespace CodeLibrary
 
         private void SetLibraryMenuState()
         {
+            _mainform.mnuCopyContentsAndMerge.Enabled = MergeAllowed(_treeViewLibrary.SelectedNode);
+            _mainform.mnuCopyContentsAndMerge1.Enabled = MergeAllowed(_treeViewLibrary.SelectedNode);
+
             _mainform.mnuAdd.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode));
             _mainform.mnuAdd1.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode));
             _mainform.mnuAddDialog.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
@@ -1052,6 +1099,7 @@ namespace CodeLibrary
         private void TreeViewLibrary_AfterSelect(object sender, TreeViewEventArgs e)
         {
             SetSelectedNode(e.Node, true);
+            _mainform.SetZoom();
         }
 
         private void TreeViewLibrary_BeforeSelect(object sender, TreeViewCancelEventArgs e)

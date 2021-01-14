@@ -23,7 +23,10 @@ namespace CodeLibrary.Core
         public static string RtfStylesFile => Utils.PathCombine(AppFolder, "RtfStyles.json");
         public static int Zoom { get; set; } = 100;
 
-        public static VersionNumber CurrentVersion() => new VersionNumber(Assembly.GetExecutingAssembly().GetName().Version.ToString());
+        public static VersionNumber CurrentVersion()
+        {
+            return new VersionNumber(Assembly.GetEntryAssembly().GetName().Version.ToString());
+        }
 
         public static bool IsNewVersion()
         {

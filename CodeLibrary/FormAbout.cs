@@ -14,11 +14,18 @@ Version 2.0:
 NEW:
 -   Rtf document type + Rtf Editor
 
+-   MarkDowm document type
+    -   Html Preview will translate markdown script.
+
 -   Add New Dialog box
     -   Add New always shows dialog.
     -   Assign defaults in note properties to supress this behaviour.
 
 -   Backup Manager
+
+-   Plugin: Markdown to HTML
+
+-   [Copy Contents and Merge] option in clipboard context menu. (merges all #[Note Path]# tags)
 
 CHANGES:
 -   Clipboard monitor now has an own Note, clipboard monitor can be activated and deactivated in it's context menu.
@@ -68,6 +75,13 @@ BUG FIXES:
 -   Error, Default child name containing wrong format
 
 -   Error, Access Denied
+
+-   New Document did not clear the editor.
+
+-   Html Preview not shown on first open.
+
+-   Disabled Javascript errors in webbrowser.
+
 ----------------------------------------------------------------------
 Version 1.9:
 -   Added Clipboard menu to Note context menu item.
@@ -86,6 +100,7 @@ Version 1.9:
 
 -   Html Preview window for Html / Xml
 
+
 ----------------------------------------------------------------------
 Version 1.8:
 -   Paste in Treeviewer (Ctrl-V)
@@ -96,6 +111,7 @@ Version 1.8:
 -   Paste in Treeviewer (Ctrl-Shift-V): Splits text in lines and creates a note for every line.
 
 -   Drag / Drop into treeviewer supports images (jpg / png / bmp)
+
 
 ----------------------------------------------------------------------
 Version 1.7:
@@ -117,6 +133,7 @@ Version 1.7:
 -   Added KeepQuoted to C# plugins: remove all text except for text enclosed within double qoutes.
 
 -   Added a Template function KeepQouted.
+
 
 ----------------------------------------------------------------------
 Version 1.6:
@@ -143,6 +160,7 @@ Version 1.6:
 -   Remind Last line on note.
 
 -   New Plugin: Encoding\Import as base64
+
 
 ----------------------------------------------------------------------
 Version 1.5:
@@ -209,6 +227,21 @@ Version 1.5:
 
     0:MethodAsciiValue()
 
+
+
+
+----------------------------------------------------------------------
+General Public Licence
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. 
+
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+
+Programming: Guido Kleijer
 ";
 
         public FormAbout()
@@ -221,9 +254,30 @@ Version 1.5:
             Close();
         }
 
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://sourceforge.net/u/guidok915");
+        }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/PavelTorgashov/FastColoredTextBox");
+        }
+
+        private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/Guido1234/CodeLibrary");
+        }
+
+        private void linkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/StackExchange/MarkdownSharp");
+        }
+
         private void TbCode_Load(object sender, EventArgs e)
         {
-            lbTitle.Text = $"Code Library V{Config.CurrentVersion().ToString() }";
+            lbTitle.Text = $"Code Library";
+            lblVersion.Text = $"V{Config.CurrentVersion().ToString() }";
             tbCode.Language = FastColoredTextBoxNS.Language.Custom;
             tbCode.SelectedText = _Content;
             tbCode.IndentBackColor = Color.FromArgb(255, 35, 35, 35);
@@ -235,21 +289,6 @@ Version 1.5:
             tbCode.HighContrastStyle();
             tbCode.WordWrap = true;
             tbCode.GotoLine(0);
-        }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://sourceforge.net/u/guidok915");
-        }
-
-        private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://github.com/Guido1234/CodeLibrary");
-        }
-
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://github.com/PavelTorgashov/FastColoredTextBox");
         }
     }
 }

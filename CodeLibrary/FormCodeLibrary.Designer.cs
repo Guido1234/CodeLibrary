@@ -86,6 +86,7 @@
             this.mnuPasteTextPerLine = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem34 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuCopyPath1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCopyContentsAndMerge1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuChangeType = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuType2Folder = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem17 = new System.Windows.Forms.ToolStripSeparator();
@@ -99,6 +100,7 @@
             this.mnuType2JS = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuType2Php = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuType2Lua = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMarkDown1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem44 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuType2Template = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem27 = new System.Windows.Forms.ToolStripSeparator();
@@ -120,6 +122,7 @@
             this.setToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyAsBase64StringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyAsHTMLIMGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCopyMarkDownImage = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem19 = new System.Windows.Forms.ToolStripSeparator();
@@ -165,6 +168,7 @@
             this.mnuPasteTextPerLine1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuCopyPath = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCopyContentsAndMerge = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem32 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSearch = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem24 = new System.Windows.Forms.ToolStripSeparator();
@@ -181,6 +185,7 @@
             this.mnuTypeJs = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTypePhp = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTypeLua = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMarkDown = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem43 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuTypeTemplate = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem26 = new System.Windows.Forms.ToolStripSeparator();
@@ -216,6 +221,7 @@
             this.debugSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.mnuDebug = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuReadOnlyLibrary = new System.Windows.Forms.ToolStripMenuItem();
+            this.xToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem35 = new System.Windows.Forms.ToolStripSeparator();
@@ -282,7 +288,7 @@
             this.tbPath.Location = new System.Drawing.Point(1, 3);
             this.tbPath.Name = "tbPath";
             this.tbPath.ReadOnly = true;
-            this.tbPath.Size = new System.Drawing.Size(889, 20);
+            this.tbPath.Size = new System.Drawing.Size(896, 20);
             this.tbPath.TabIndex = 3;
             // 
             // contextMenuStripPopup
@@ -410,7 +416,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.containerCode);
             this.splitContainer1.Panel2.Controls.Add(this.tbPath);
             this.splitContainer1.Panel2.Controls.Add(this.pictureBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(1158, 857);
+            this.splitContainer1.Size = new System.Drawing.Size(1158, 624);
             this.splitContainer1.SplitterDistance = 380;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 8;
@@ -531,9 +537,9 @@
             this.containerInfoBar.Controls.Add(this.labelZoomPerc);
             this.containerInfoBar.Controls.Add(this.lblEnd);
             this.containerInfoBar.Controls.Add(this.hScrollBarZoom);
-            this.containerInfoBar.Location = new System.Drawing.Point(1, 833);
+            this.containerInfoBar.Location = new System.Drawing.Point(1, 600);
             this.containerInfoBar.Name = "containerInfoBar";
-            this.containerInfoBar.Size = new System.Drawing.Size(804, 21);
+            this.containerInfoBar.Size = new System.Drawing.Size(811, 21);
             this.containerInfoBar.TabIndex = 19;
             // 
             // label2
@@ -573,7 +579,7 @@
             // 
             this.labelZoomPerc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelZoomPerc.AutoSize = true;
-            this.labelZoomPerc.Location = new System.Drawing.Point(743, 7);
+            this.labelZoomPerc.Location = new System.Drawing.Point(750, 7);
             this.labelZoomPerc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelZoomPerc.Name = "labelZoomPerc";
             this.labelZoomPerc.Size = new System.Drawing.Size(13, 13);
@@ -594,7 +600,7 @@
             // hScrollBarZoom
             // 
             this.hScrollBarZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBarZoom.Location = new System.Drawing.Point(587, 6);
+            this.hScrollBarZoom.Location = new System.Drawing.Point(594, 6);
             this.hScrollBarZoom.Maximum = 250;
             this.hScrollBarZoom.Minimum = 50;
             this.hScrollBarZoom.Name = "hScrollBarZoom";
@@ -676,7 +682,6 @@
             this.tbCode.CharWidth = 8;
             this.tbCode.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.tbCode.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.tbCode.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.tbCode.Hotkeys = resources.GetString("tbCode.Hotkeys");
             this.tbCode.IsReplaceMode = false;
             this.tbCode.Language = FastColoredTextBoxNS.Language.CSharp;
@@ -716,7 +721,7 @@
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(895, 8);
+            this.pictureBox1.Location = new System.Drawing.Point(902, 8);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(16, 16);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -808,7 +813,8 @@
             this.mnuPasteText,
             this.mnuPasteTextPerLine,
             this.toolStripMenuItem34,
-            this.mnuCopyPath1});
+            this.mnuCopyPath1,
+            this.mnuCopyContentsAndMerge1});
             this.mnuClipboard.Name = "mnuClipboard";
             this.mnuClipboard.Size = new System.Drawing.Size(173, 38);
             this.mnuClipboard.Text = "Clipboard";
@@ -859,6 +865,13 @@
             this.mnuCopyPath1.Text = "Copy Path";
             this.mnuCopyPath1.Click += new System.EventHandler(this.copyPathToolStripMenuItem1_Click);
             // 
+            // mnuCopyContentsAndMerge1
+            // 
+            this.mnuCopyContentsAndMerge1.Name = "mnuCopyContentsAndMerge1";
+            this.mnuCopyContentsAndMerge1.Size = new System.Drawing.Size(238, 22);
+            this.mnuCopyContentsAndMerge1.Text = "Copy Contents and Merge";
+            this.mnuCopyContentsAndMerge1.Click += new System.EventHandler(this.munCopyContentsAndMerge1_Click);
+            // 
             // mnuChangeType
             // 
             this.mnuChangeType.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -874,6 +887,7 @@
             this.mnuType2JS,
             this.mnuType2Php,
             this.mnuType2Lua,
+            this.mnuMarkDown1,
             this.toolStripMenuItem44,
             this.mnuType2Template,
             this.toolStripMenuItem27,
@@ -889,35 +903,35 @@
             this.mnuType2Folder.Image = global::CodeLibrary.Properties.Resources.folder_32x32;
             this.mnuType2Folder.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2Folder.Name = "mnuType2Folder";
-            this.mnuType2Folder.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2Folder.Size = new System.Drawing.Size(147, 38);
             this.mnuType2Folder.Text = "Folder";
             this.mnuType2Folder.Click += new System.EventHandler(this.FolderToolStripMenuItem1_Click);
             // 
             // toolStripMenuItem17
             // 
             this.toolStripMenuItem17.Name = "toolStripMenuItem17";
-            this.toolStripMenuItem17.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem17.Size = new System.Drawing.Size(144, 6);
             // 
             // mnuType2None
             // 
             this.mnuType2None.Image = global::CodeLibrary.Properties.Resources.Txt_Black;
             this.mnuType2None.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2None.Name = "mnuType2None";
-            this.mnuType2None.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2None.Size = new System.Drawing.Size(147, 38);
             this.mnuType2None.Text = "None";
             this.mnuType2None.Click += new System.EventHandler(this.NoneToolStripMenuItem1_Click);
             // 
             // toolStripMenuItem18
             // 
             this.toolStripMenuItem18.Name = "toolStripMenuItem18";
-            this.toolStripMenuItem18.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem18.Size = new System.Drawing.Size(144, 6);
             // 
             // mnuType2CSharp
             // 
             this.mnuType2CSharp.Image = global::CodeLibrary.Properties.Resources.C__Black;
             this.mnuType2CSharp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2CSharp.Name = "mnuType2CSharp";
-            this.mnuType2CSharp.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2CSharp.Size = new System.Drawing.Size(147, 38);
             this.mnuType2CSharp.Text = "C#";
             this.mnuType2CSharp.Click += new System.EventHandler(this.CToolStripMenuItem1_Click);
             // 
@@ -926,7 +940,7 @@
             this.mnuType2Sql.Image = global::CodeLibrary.Properties.Resources.SQL_Black;
             this.mnuType2Sql.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2Sql.Name = "mnuType2Sql";
-            this.mnuType2Sql.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2Sql.Size = new System.Drawing.Size(147, 38);
             this.mnuType2Sql.Text = "SQL";
             this.mnuType2Sql.Click += new System.EventHandler(this.SQLToolStripMenuItem1_Click);
             // 
@@ -935,7 +949,7 @@
             this.mnuType2VB.Image = global::CodeLibrary.Properties.Resources.VB_Black;
             this.mnuType2VB.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2VB.Name = "mnuType2VB";
-            this.mnuType2VB.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2VB.Size = new System.Drawing.Size(147, 38);
             this.mnuType2VB.Text = "VB";
             this.mnuType2VB.Click += new System.EventHandler(this.VBToolStripMenuItemChangeType_Click);
             // 
@@ -944,7 +958,7 @@
             this.mnuType2Html.Image = global::CodeLibrary.Properties.Resources.Html_Black;
             this.mnuType2Html.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2Html.Name = "mnuType2Html";
-            this.mnuType2Html.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2Html.Size = new System.Drawing.Size(147, 38);
             this.mnuType2Html.Text = "HTML";
             this.mnuType2Html.Click += new System.EventHandler(this.HTMLToolStripMenuItem1_Click);
             // 
@@ -953,7 +967,7 @@
             this.mnuType2Xml.Image = global::CodeLibrary.Properties.Resources.XML_Black;
             this.mnuType2Xml.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2Xml.Name = "mnuType2Xml";
-            this.mnuType2Xml.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2Xml.Size = new System.Drawing.Size(147, 38);
             this.mnuType2Xml.Text = "XML";
             this.mnuType2Xml.Click += new System.EventHandler(this.xMLToolStripMenuItem1_Click);
             // 
@@ -962,7 +976,7 @@
             this.mnuType2JS.Image = global::CodeLibrary.Properties.Resources.JS_Black;
             this.mnuType2JS.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2JS.Name = "mnuType2JS";
-            this.mnuType2JS.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2JS.Size = new System.Drawing.Size(147, 38);
             this.mnuType2JS.Text = "JS";
             this.mnuType2JS.Click += new System.EventHandler(this.jSToolStripMenuItem1_Click);
             // 
@@ -971,7 +985,7 @@
             this.mnuType2Php.Image = global::CodeLibrary.Properties.Resources.PHP_Black;
             this.mnuType2Php.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2Php.Name = "mnuType2Php";
-            this.mnuType2Php.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2Php.Size = new System.Drawing.Size(147, 38);
             this.mnuType2Php.Text = "PHP";
             this.mnuType2Php.Click += new System.EventHandler(this.pHPToolStripMenuItem1_Click);
             // 
@@ -980,35 +994,44 @@
             this.mnuType2Lua.Image = global::CodeLibrary.Properties.Resources.Lua_Black;
             this.mnuType2Lua.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2Lua.Name = "mnuType2Lua";
-            this.mnuType2Lua.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2Lua.Size = new System.Drawing.Size(147, 38);
             this.mnuType2Lua.Text = "Lua";
             this.mnuType2Lua.Click += new System.EventHandler(this.luaToolStripMenuItem1_Click);
+            // 
+            // mnuMarkDown1
+            // 
+            this.mnuMarkDown1.Image = global::CodeLibrary.Properties.Resources.Txt_Black;
+            this.mnuMarkDown1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.mnuMarkDown1.Name = "mnuMarkDown1";
+            this.mnuMarkDown1.Size = new System.Drawing.Size(147, 38);
+            this.mnuMarkDown1.Text = "Markdown";
+            this.mnuMarkDown1.Click += new System.EventHandler(this.mnuMarkDown1_Click);
             // 
             // toolStripMenuItem44
             // 
             this.toolStripMenuItem44.Name = "toolStripMenuItem44";
-            this.toolStripMenuItem44.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem44.Size = new System.Drawing.Size(144, 6);
             // 
             // mnuType2Template
             // 
             this.mnuType2Template.Image = global::CodeLibrary.Properties.Resources.document_rename_32x32;
             this.mnuType2Template.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2Template.Name = "mnuType2Template";
-            this.mnuType2Template.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2Template.Size = new System.Drawing.Size(147, 38);
             this.mnuType2Template.Text = "Template";
             this.mnuType2Template.Click += new System.EventHandler(this.TemplateToolStripMenuItem1_Click);
             // 
             // toolStripMenuItem27
             // 
             this.toolStripMenuItem27.Name = "toolStripMenuItem27";
-            this.toolStripMenuItem27.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem27.Size = new System.Drawing.Size(144, 6);
             // 
             // mnuType2Rtf
             // 
             this.mnuType2Rtf.Image = global::CodeLibrary.Properties.Resources.RTF_black;
             this.mnuType2Rtf.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuType2Rtf.Name = "mnuType2Rtf";
-            this.mnuType2Rtf.Size = new System.Drawing.Size(138, 38);
+            this.mnuType2Rtf.Size = new System.Drawing.Size(147, 38);
             this.mnuType2Rtf.Text = "RTF";
             this.mnuType2Rtf.Click += new System.EventHandler(this.rTFToolStripMenuItem1_Click);
             // 
@@ -1117,16 +1140,17 @@
             this.saveImageToolStripMenuItem,
             this.setToClipboardToolStripMenuItem,
             this.copyAsBase64StringToolStripMenuItem,
-            this.copyAsHTMLIMGToolStripMenuItem});
+            this.copyAsHTMLIMGToolStripMenuItem,
+            this.mnuCopyMarkDownImage});
             this.contextMenuImage.Name = "contextMenuImage";
-            this.contextMenuImage.Size = new System.Drawing.Size(206, 156);
+            this.contextMenuImage.Size = new System.Drawing.Size(218, 194);
             // 
             // saveImageToolStripMenuItem
             // 
             this.saveImageToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.save_32x32;
             this.saveImageToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(205, 38);
+            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(217, 38);
             this.saveImageToolStripMenuItem.Text = "Save Image";
             // 
             // setToClipboardToolStripMenuItem
@@ -1134,20 +1158,26 @@
             this.setToClipboardToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.copy_32x32;
             this.setToClipboardToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.setToClipboardToolStripMenuItem.Name = "setToClipboardToolStripMenuItem";
-            this.setToClipboardToolStripMenuItem.Size = new System.Drawing.Size(205, 38);
+            this.setToClipboardToolStripMenuItem.Size = new System.Drawing.Size(217, 38);
             this.setToClipboardToolStripMenuItem.Text = "Copy";
             // 
             // copyAsBase64StringToolStripMenuItem
             // 
             this.copyAsBase64StringToolStripMenuItem.Name = "copyAsBase64StringToolStripMenuItem";
-            this.copyAsBase64StringToolStripMenuItem.Size = new System.Drawing.Size(205, 38);
+            this.copyAsBase64StringToolStripMenuItem.Size = new System.Drawing.Size(217, 38);
             this.copyAsBase64StringToolStripMenuItem.Text = "Copy as Base64 String";
             // 
             // copyAsHTMLIMGToolStripMenuItem
             // 
             this.copyAsHTMLIMGToolStripMenuItem.Name = "copyAsHTMLIMGToolStripMenuItem";
-            this.copyAsHTMLIMGToolStripMenuItem.Size = new System.Drawing.Size(205, 38);
+            this.copyAsHTMLIMGToolStripMenuItem.Size = new System.Drawing.Size(217, 38);
             this.copyAsHTMLIMGToolStripMenuItem.Text = "Copy as HTML IMG";
+            // 
+            // mnuCopyMarkDownImage
+            // 
+            this.mnuCopyMarkDownImage.Name = "mnuCopyMarkDownImage";
+            this.mnuCopyMarkDownImage.Size = new System.Drawing.Size(217, 38);
+            this.mnuCopyMarkDownImage.Text = "Copy as Markdown IMG";
             // 
             // mainToolStripMenuItem
             // 
@@ -1504,7 +1534,8 @@
             this.mnuPasteText1,
             this.mnuPasteTextPerLine1,
             this.toolStripMenuItem9,
-            this.mnuCopyPath});
+            this.mnuCopyPath,
+            this.mnuCopyContentsAndMerge});
             this.mnuClipboard1.Name = "mnuClipboard1";
             this.mnuClipboard1.Size = new System.Drawing.Size(248, 38);
             this.mnuClipboard1.Text = "Clipboard";
@@ -1551,6 +1582,13 @@
             this.mnuCopyPath.Text = "Copy Path";
             this.mnuCopyPath.Click += new System.EventHandler(this.copyPathToolStripMenuItem2_Click);
             // 
+            // mnuCopyContentsAndMerge
+            // 
+            this.mnuCopyContentsAndMerge.Name = "mnuCopyContentsAndMerge";
+            this.mnuCopyContentsAndMerge.Size = new System.Drawing.Size(238, 22);
+            this.mnuCopyContentsAndMerge.Text = "Copy Contents and Merge";
+            this.mnuCopyContentsAndMerge.Click += new System.EventHandler(this.munCopyContentsAndMerge_Click);
+            // 
             // toolStripMenuItem32
             // 
             this.toolStripMenuItem32.Name = "toolStripMenuItem32";
@@ -1587,6 +1625,7 @@
             this.mnuTypeJs,
             this.mnuTypePhp,
             this.mnuTypeLua,
+            this.mnuMarkDown,
             this.toolStripMenuItem43,
             this.mnuTypeTemplate,
             this.toolStripMenuItem26,
@@ -1602,35 +1641,35 @@
             this.mnuTypeFolder.Image = global::CodeLibrary.Properties.Resources.open_32x32;
             this.mnuTypeFolder.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeFolder.Name = "mnuTypeFolder";
-            this.mnuTypeFolder.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeFolder.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeFolder.Text = "Folder";
             this.mnuTypeFolder.Click += new System.EventHandler(this.FolderToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(144, 6);
             // 
             // mnuTypeNone
             // 
             this.mnuTypeNone.Image = global::CodeLibrary.Properties.Resources.Txt_Black;
             this.mnuTypeNone.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeNone.Name = "mnuTypeNone";
-            this.mnuTypeNone.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeNone.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeNone.Text = "None";
             this.mnuTypeNone.Click += new System.EventHandler(this.NoneToolStripMenuItem_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(144, 6);
             // 
             // mnuTypeCSharp
             // 
             this.mnuTypeCSharp.Image = global::CodeLibrary.Properties.Resources.C__Black;
             this.mnuTypeCSharp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeCSharp.Name = "mnuTypeCSharp";
-            this.mnuTypeCSharp.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeCSharp.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeCSharp.Text = "C#";
             this.mnuTypeCSharp.Click += new System.EventHandler(this.CToolStripMenuItem_Click);
             // 
@@ -1639,7 +1678,7 @@
             this.mnuTypeSql.Image = global::CodeLibrary.Properties.Resources.SQL_Black;
             this.mnuTypeSql.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeSql.Name = "mnuTypeSql";
-            this.mnuTypeSql.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeSql.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeSql.Text = "SQL";
             this.mnuTypeSql.Click += new System.EventHandler(this.SQLToolStripMenuItem_Click);
             // 
@@ -1648,7 +1687,7 @@
             this.mnuTypeVB.Image = global::CodeLibrary.Properties.Resources.VB_Black;
             this.mnuTypeVB.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeVB.Name = "mnuTypeVB";
-            this.mnuTypeVB.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeVB.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeVB.Text = "VB";
             this.mnuTypeVB.Click += new System.EventHandler(this.VBToolStripMenuItem_Click);
             // 
@@ -1657,7 +1696,7 @@
             this.mnuTypeHTML.Image = global::CodeLibrary.Properties.Resources.Html_Black;
             this.mnuTypeHTML.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeHTML.Name = "mnuTypeHTML";
-            this.mnuTypeHTML.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeHTML.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeHTML.Text = "HTML";
             this.mnuTypeHTML.Click += new System.EventHandler(this.HTMLToolStripMenuItem_Click);
             // 
@@ -1666,7 +1705,7 @@
             this.mnuTypeXML.Image = global::CodeLibrary.Properties.Resources.XML_Black;
             this.mnuTypeXML.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeXML.Name = "mnuTypeXML";
-            this.mnuTypeXML.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeXML.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeXML.Text = "XML";
             this.mnuTypeXML.Click += new System.EventHandler(this.xMLToolStripMenuItem_Click);
             // 
@@ -1675,7 +1714,7 @@
             this.mnuTypeJs.Image = global::CodeLibrary.Properties.Resources.JS_Black;
             this.mnuTypeJs.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeJs.Name = "mnuTypeJs";
-            this.mnuTypeJs.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeJs.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeJs.Text = "JS";
             this.mnuTypeJs.Click += new System.EventHandler(this.jSToolStripMenuItem_Click);
             // 
@@ -1684,7 +1723,7 @@
             this.mnuTypePhp.Image = global::CodeLibrary.Properties.Resources.PHP_Black;
             this.mnuTypePhp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypePhp.Name = "mnuTypePhp";
-            this.mnuTypePhp.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypePhp.Size = new System.Drawing.Size(147, 38);
             this.mnuTypePhp.Text = "PHP";
             this.mnuTypePhp.Click += new System.EventHandler(this.pHPToolStripMenuItem_Click);
             // 
@@ -1693,35 +1732,44 @@
             this.mnuTypeLua.Image = global::CodeLibrary.Properties.Resources.Lua_Black;
             this.mnuTypeLua.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeLua.Name = "mnuTypeLua";
-            this.mnuTypeLua.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeLua.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeLua.Text = "Lua";
             this.mnuTypeLua.Click += new System.EventHandler(this.luaToolStripMenuItem_Click);
+            // 
+            // mnuMarkDown
+            // 
+            this.mnuMarkDown.Image = global::CodeLibrary.Properties.Resources.Txt_Black;
+            this.mnuMarkDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.mnuMarkDown.Name = "mnuMarkDown";
+            this.mnuMarkDown.Size = new System.Drawing.Size(147, 38);
+            this.mnuMarkDown.Text = "Markdown";
+            this.mnuMarkDown.Click += new System.EventHandler(this.mnuMarkDown_Click);
             // 
             // toolStripMenuItem43
             // 
             this.toolStripMenuItem43.Name = "toolStripMenuItem43";
-            this.toolStripMenuItem43.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem43.Size = new System.Drawing.Size(144, 6);
             // 
             // mnuTypeTemplate
             // 
             this.mnuTypeTemplate.Image = global::CodeLibrary.Properties.Resources.document_rename_32x32;
             this.mnuTypeTemplate.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeTemplate.Name = "mnuTypeTemplate";
-            this.mnuTypeTemplate.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeTemplate.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeTemplate.Text = "Template";
             this.mnuTypeTemplate.Click += new System.EventHandler(this.TemplateToolStripMenuItem_Click);
             // 
             // toolStripMenuItem26
             // 
             this.toolStripMenuItem26.Name = "toolStripMenuItem26";
-            this.toolStripMenuItem26.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem26.Size = new System.Drawing.Size(144, 6);
             // 
             // mnuTypeRtf
             // 
             this.mnuTypeRtf.Image = global::CodeLibrary.Properties.Resources.RTF_black;
             this.mnuTypeRtf.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuTypeRtf.Name = "mnuTypeRtf";
-            this.mnuTypeRtf.Size = new System.Drawing.Size(138, 38);
+            this.mnuTypeRtf.Size = new System.Drawing.Size(147, 38);
             this.mnuTypeRtf.Text = "RTF";
             this.mnuTypeRtf.Click += new System.EventHandler(this.rTFToolStripMenuItem_Click);
             // 
@@ -1961,7 +2009,8 @@
             // mnuDebug
             // 
             this.mnuDebug.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuReadOnlyLibrary});
+            this.mnuReadOnlyLibrary,
+            this.xToolStripMenuItem});
             this.mnuDebug.Name = "mnuDebug";
             this.mnuDebug.Size = new System.Drawing.Size(246, 38);
             this.mnuDebug.Text = "Debug";
@@ -1971,6 +2020,13 @@
             this.mnuReadOnlyLibrary.Name = "mnuReadOnlyLibrary";
             this.mnuReadOnlyLibrary.Size = new System.Drawing.Size(186, 22);
             this.mnuReadOnlyLibrary.Text = "Set Library Read Only";
+            // 
+            // xToolStripMenuItem
+            // 
+            this.xToolStripMenuItem.Name = "xToolStripMenuItem";
+            this.xToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.xToolStripMenuItem.Text = "X";
+            this.xToolStripMenuItem.Click += new System.EventHandler(this.xToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -1986,26 +2042,26 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // toolStripMenuItem35
             // 
             this.toolStripMenuItem35.Name = "toolStripMenuItem35";
-            this.toolStripMenuItem35.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem35.Size = new System.Drawing.Size(155, 6);
             // 
             // demoProjectToolStripMenuItem
             // 
             this.demoProjectToolStripMenuItem.Name = "demoProjectToolStripMenuItem";
-            this.demoProjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.demoProjectToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.demoProjectToolStripMenuItem.Text = "Demo Library";
             this.demoProjectToolStripMenuItem.Click += new System.EventHandler(this.demoProjectToolStripMenuItem_Click);
             // 
             // exampleLibraryToolStripMenuItem
             // 
             this.exampleLibraryToolStripMenuItem.Name = "exampleLibraryToolStripMenuItem";
-            this.exampleLibraryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exampleLibraryToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.exampleLibraryToolStripMenuItem.Text = "Example Library";
             this.exampleLibraryToolStripMenuItem.Click += new System.EventHandler(this.exampleLibraryToolStripMenuItem_Click);
             // 
@@ -2066,7 +2122,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1158, 881);
+            this.ClientSize = new System.Drawing.Size(1158, 648);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.textBoxClipboard);
             this.Controls.Add(this.menuStrip1);
@@ -2074,6 +2130,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormCodeLibrary";
             this.Text = "Code Library";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormCodeLibrary_FormClosed);
             this.Load += new System.EventHandler(this.FormCodeLibrary_Load);
             this.contextMenuStripPopup.ResumeLayout(false);
@@ -2306,6 +2363,12 @@
         public System.Windows.Forms.ToolStripMenuItem mnuReadOnlyLibrary;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem36;
         private System.Windows.Forms.ToolStripMenuItem exampleLibraryToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem mnuMarkDown1;
+        public System.Windows.Forms.ToolStripMenuItem mnuMarkDown;
+        public System.Windows.Forms.ToolStripMenuItem mnuCopyMarkDownImage;
+        private System.Windows.Forms.ToolStripMenuItem xToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem mnuCopyContentsAndMerge;
+        public System.Windows.Forms.ToolStripMenuItem mnuCopyContentsAndMerge1;
     }
 }
 

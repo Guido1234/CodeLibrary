@@ -15,10 +15,10 @@ namespace CodeLibrary
     {
         private readonly int _AutoSaveMinutes = 1;
         private readonly Timer _autoSaveTimer = new Timer();
+        private readonly DebugHelper _DebugHelper;
         private readonly FormCodeLibrary _mainform;
         private readonly TreeView _treeview;
         private String _AutoSaveFileName = string.Empty;
-        private readonly DebugHelper _DebugHelper;
         private string _Find = string.Empty;
         private DateTime _lastAutoSavedDate = new DateTime();
         private DateTime _lastOpenedDate = DateTime.Now;
@@ -110,7 +110,7 @@ namespace CodeLibrary
                     _treeview.SelectedNode = node;
 
                 if (snippet.Expanded)
-                    _expandNodes.Add(node);                    
+                    _expandNodes.Add(node);
             }
             foreach (TreeNode node in _expandNodes)
             {
@@ -241,6 +241,7 @@ namespace CodeLibrary
                 case CodeType.None:
                 case CodeType.RTF:
                 case CodeType.SQL:
+                case CodeType.MarkDown:
                     return 1;
 
                 case CodeType.Folder:
@@ -290,7 +291,14 @@ namespace CodeLibrary
                         break;
 
                     case "txt":
+                    case "inf":
+                    case "info":
+                    case "nfo":
                         codetype = CodeType.None;
+                        break;
+
+                    case "md":
+                        codetype = CodeType.MarkDown;
                         break;
 
                     case "html":
@@ -303,12 +311,17 @@ namespace CodeLibrary
                         codetype = CodeType.SQL;
                         break;
 
+                    case "resx":
                     case "xml":
                     case "xmlt":
+                    case "xlt":
+                    case "xslt":
                         codetype = CodeType.XML;
                         break;
 
                     case "js":
+                    case "ts":
+                    case "json":
                         codetype = CodeType.JS;
                         break;
 
@@ -322,6 +335,13 @@ namespace CodeLibrary
 
                     case "rtf":
                         codetype = CodeType.RTF;
+                        break;
+
+                    case "jpg":
+                    case "jpeg":
+                    case "png":
+                    case "bmp":
+                        codetype = CodeType.Image;
                         break;
                 }
                 TreeHelper.CreateNewRootNode(codetype, fi.Name, text);
@@ -348,6 +368,7 @@ namespace CodeLibrary
             CurrentFile = null;
             CodeLib.Instance.New();
             CodeCollectionToForm(string.Empty);
+            TreeHelper.FindNodeByPath("Snippets");
         }
 
         public void OpenFile() => OpenFile(null);
@@ -516,7 +537,7 @@ namespace CodeLibrary
 
             Save(_collection, _selectedfile);
         }
- 
+
         private static CodeSnippetCollection ReadCollection(string filename, SecureString password)
         {
             string _data = File.ReadAllText(filename, Encoding.Default);
@@ -709,8 +730,6 @@ namespace CodeLibrary
             {
                 return;
             }
-
-            
         }
 
         private void SetTitle()

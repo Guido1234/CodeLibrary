@@ -65,6 +65,7 @@
     <Compile Include="EnumComboBoxHelper.cs" />
     <Compile Include="ITextBoxHelper.cs" />
     <Compile Include="ComboBoxHelper.cs" />
+    <Compile Include="MarkDown.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RtfControlStyle.cs" />
     <Compile Include="StringCypher.cs" />

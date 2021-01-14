@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
- 
+
 namespace CodeLibrary.Core
 {
     [DataContract()]
@@ -58,6 +57,9 @@ namespace CodeLibrary.Core
         [DataMember(Name = "DefaultChildRtf")]
         public string DefaultChildRtf { get; set; } = string.Empty;
 
+        [DataMember(Name = "Expanded")]
+        public bool Expanded { get; set; }
+
         [DataMember(Name = "HtmlPreview")]
         public bool HtmlPreview { get; set; } = false;
 
@@ -72,9 +74,6 @@ namespace CodeLibrary.Core
 
         [DataMember(Name = "Important")]
         public bool Important { get; set; }
-
-        [DataMember(Name = "Expanded")]
-        public bool Expanded { get; set; }
 
         public bool Locked { get; set; }
 
@@ -93,19 +92,17 @@ namespace CodeLibrary.Core
         [DataMember(Name = "RTFAlwaysWhite")]
         public bool RTFAlwaysWhite { get; set; } = false;
 
+        [DataMember(Name = "RTFLM")]
+        public bool RTFOwnTheme { get; set; } = false;
+
+        [DataMember(Name = "RtfTheme")]
+        public RtfTheme RTFTheme { get; set; } = RtfTheme.Light;
+
         [DataMember(Name = "ShortCutKeys")]
         public Keys ShortCutKeys { get; set; }
 
         [DataMember(Name = "Wordwrap")]
         public bool Wordwrap { get; set; }
-
-
-        [DataMember(Name = "RTFLM")]
-        public bool RTFOwnTheme { get; set; } = false;
-
-        [DataMember(Name = "RtfTheme")]
-        public RtfTheme RTFTheme { get; set; } =  RtfTheme.Light;
-
 
         public static CodeSnippet ClipboardMonitorSnippet() => new CodeSnippet() { Code = string.Empty, CodeType = CodeType.System, Name = Constants.CLIPBOARDMONITOR_TITLE, Path = Constants.CLIPBOARDMONITOR_TITLE, Id = Constants.CLIPBOARDMONITOR };
 
@@ -118,6 +115,11 @@ namespace CodeLibrary.Core
         public bool HasBookMarks() => (Bookmarks == null) ? false : Bookmarks.Count > 0;
 
         public string LabelName() => Utils.SplitPath(this.Path).Last();
+
+        public string Title()
+        {
+            return Path.Split(new char[] { '\\' }).LastOrDefault();
+        }
 
         public override string ToString() => string.Format("{0}", Path);
     }

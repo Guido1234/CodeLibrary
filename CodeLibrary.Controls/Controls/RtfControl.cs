@@ -50,8 +50,6 @@ namespace CodeLibrary.Controls.Controls
             rtf.TextChanged += Rtf_TextChanged;
             rtf.KeyDown += Rtf_KeyDown;
 
-            // rtf.SelectionBullet
-
             rtf.ZoomFactor = 1;
             toolStrip1.Resize += ToolStrip1_Resize;
 
@@ -84,7 +82,7 @@ namespace CodeLibrary.Controls.Controls
         }
 
 
-        public void UpdateStyles()
+        public new void UpdateStyles()
         {
             cbStyles.ComboBox.Items.Clear();
             _FontStyleComboBoxHelper = new ComboBoxHelper<RtfControlStyle>(cbStyles.ComboBox);
@@ -217,6 +215,7 @@ namespace CodeLibrary.Controls.Controls
             }
             set
             {
+                rtf.ZoomFactor = 1.0f;
                 float _zoom = (float)(((decimal)value) / 100);
                 rtf.ZoomFactor = _zoom;
             }

@@ -1,14 +1,7 @@
 ﻿using System.ComponentModel;
 
 namespace CodeLibrary.Core
-{ 
-    public enum RtfTheme
-    {
-        Dark,
-        Light,
-        HighContrast
-    }
-
+{
     public enum CodeType
     {
         Folder = 0,
@@ -23,6 +16,7 @@ namespace CodeLibrary.Core
         Lua = 9,
         JS = 11,
         RTF = 12,
+        MarkDown = 13,
 
         [Browsable(false)]
         Image = 100,
@@ -32,5 +26,12 @@ namespace CodeLibrary.Core
 
         [Browsable(false)]
         UnSuported = 9999
+    }
+
+    public enum RtfTheme
+    {
+        Dark,
+        Light,
+        HighContrast
     }
 }

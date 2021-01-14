@@ -37,6 +37,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TransformOnBuild>true</TransformOnBuild>
+    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>	
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,6 +49,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TransformOnBuild>true</TransformOnBuild>
+    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>	
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Note.ico</ApplicationIcon>
@@ -91,11 +97,11 @@
     <Compile Include="FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormProperties2.cs">
+    <Compile Include="FormProperties.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormProperties2.Designer.cs">
-      <DependentUpon>FormProperties2.cs</DependentUpon>
+    <Compile Include="FormProperties.Designer.cs">
+      <DependentUpon>FormProperties.cs</DependentUpon>
     </Compile>
     <Compile Include="FormOverwrite.cs">
       <SubType>Form</SubType>
@@ -134,6 +140,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Helpers\TreeviewHelper.cs" />
+    <Compile Include="T4\VersionInc.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VersionInc.tt</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="FormAddNote.resx">
       <DependentUpon>FormAddNote.cs</DependentUpon>
     </EmbeddedResource>
@@ -149,8 +160,8 @@
     <EmbeddedResource Include="FormCodeLibrary.resx">
       <DependentUpon>FormCodeLibrary.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormProperties2.resx">
-      <DependentUpon>FormProperties2.cs</DependentUpon>
+    <EmbeddedResource Include="FormProperties.resx">
+      <DependentUpon>FormProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormOverwrite.resx">
       <DependentUpon>FormOverwrite.cs</DependentUpon>
@@ -267,6 +278,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Note.ico" />
+    <Content Include="T4\VersionInc.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>VersionInc.cs</LastGenOutput>
+    </Content>
     <None Include="Resources\key_32x32.png" />
     <None Include="Resources\box_search_32x321.png" />
     <None Include="Resources\folder_search_32x32.png" />
@@ -418,7 +433,9 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -427,4 +444,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v16.0\TextTemplating\Microsoft.TextTemplating.targets" /> 
 </Project>

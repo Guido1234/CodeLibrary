@@ -61,7 +61,7 @@ namespace CodeLibrary
 
                 case CodeType.None:
                     tbCode.Language = FastColoredTextBoxNS.Language.Custom;
-                    break;
+                    break; 
 
                 case CodeType.RTF:
                     tbCode.Language = FastColoredTextBoxNS.Language.Custom;
@@ -69,6 +69,10 @@ namespace CodeLibrary
 
                 case CodeType.HTML:
                     tbCode.Language = FastColoredTextBoxNS.Language.HTML;
+                    break;
+
+                case CodeType.MarkDown:
+                    tbCode.Language = FastColoredTextBoxNS.Language.Custom;
                     break;
             }
         }

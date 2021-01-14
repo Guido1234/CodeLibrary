@@ -68,6 +68,10 @@ namespace CodeLibrary
                             SelectedType = CodeType.RTF;
                             break;
 
+                        case "Markdown":
+                            SelectedType = CodeType.MarkDown;
+                            break;
+
                         case "Template":
                             SelectedType = CodeType.Template;
                             break;
@@ -91,6 +95,7 @@ namespace CodeLibrary
             listViewTypes.Items.Add(new ListViewItem() { ImageKey = "xml", Name = "Xml", Text = "Xml", Selected = (Config.DefaultNoteType == "Xml") });
             listViewTypes.Items.Add(new ListViewItem() { ImageKey = "php", Name = "PHP", Text = "PHP", Selected = (Config.DefaultNoteType == "PHP") });
             listViewTypes.Items.Add(new ListViewItem() { ImageKey = "html", Name = "HTML", Text = "HTML", Selected = (Config.DefaultNoteType == "HTML") });
+            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "txt", Name = "Markdown", Text = "Markdown", Selected = (Config.DefaultNoteType == "Markdown") });
             listViewTypes.Items.Add(new ListViewItem() { ImageKey = "rtf", Name = "Rich Text", Text = "Rich Text", Selected = (Config.DefaultNoteType == "Rich Text") });
             listViewTypes.Items.Add(new ListViewItem() { ImageKey = "template", Name = "Template", Text = "Template", Selected = (Config.DefaultNoteType == "Template") });
         }
