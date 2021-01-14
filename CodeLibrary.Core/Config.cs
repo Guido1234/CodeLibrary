@@ -94,7 +94,7 @@ namespace CodeLibrary.Core
 
             try
             {
-                VersionNumber _version = new VersionNumber(Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                VersionNumber _version = new VersionNumber(Assembly.GetEntryAssembly().GetName().Version.ToString());
                 string _versionString = _version.ToString();
                 if (string.IsNullOrEmpty(_versionString))
                     _versionString = string.Empty;
