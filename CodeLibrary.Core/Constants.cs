@@ -1,7 +1,7 @@
 ﻿namespace CodeLibrary.Core
 {
     public class Constants
-    {
+    { 
         public const string CLIPBOARDMONITOR = "CLIPBOARDMONITOR";
         public const string CLIPBOARDMONITOR_TITLE = "Clipboard Monitor";
         public const string CODELIBRARY = "CodeLibrary";
@@ -16,6 +16,7 @@
         public const string LOOKUP_SHORTCUT = "Shorcut";
         public const string LOOKUP_TIMERACTIVE = "AlarmActive";
         public const string OPENDEFAULTONSTART = "OpenDefaultOnStart";
+        public const string SPLITTERDISTANCE = "SplitterDistance";        
         public const string PLUGINPATH = "PluginPath";
         public const string SNIPPETS = "Snippets";
         public const string TRASHCAN = "TRASHCAN";

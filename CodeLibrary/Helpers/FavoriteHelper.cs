@@ -6,13 +6,13 @@ using System.Windows.Forms;
 namespace CodeLibrary.Helpers
 {
     public class FavoriteHelper
-    {
-        private readonly ToolStripMenuItem _favoriteLibrariesToolStripMenuItem;
+    { 
+        private readonly ToolStripMenuItem _mnuFavoriteLibraries;
         private readonly FileHelper _fileHelper;
 
-        public FavoriteHelper(ToolStripMenuItem favoriteLibrariesToolStripMenuItem, FileHelper fileHelper)
+        public FavoriteHelper(FormCodeLibrary mainform, FileHelper fileHelper)
         {
-            _favoriteLibrariesToolStripMenuItem = favoriteLibrariesToolStripMenuItem;
+            _mnuFavoriteLibraries = mainform.mnuFavoriteLibraries;
             _fileHelper = fileHelper;
         }
 
@@ -33,7 +33,7 @@ namespace CodeLibrary.Helpers
 
             FileInfo _fileInfo = new FileInfo(_file);
 
-            ToolStripItem _item = _favoriteLibrariesToolStripMenuItem.DropDownItems.Add(_fileInfo.Name);
+            ToolStripItem _item = _mnuFavoriteLibraries.DropDownItems.Add(_fileInfo.Name);
             _item.Tag = _file;
             _item.Image = global::CodeLibrary.Properties.Resources.star_32x32;
             _item.ImageScaling = ToolStripItemImageScaling.None;
@@ -42,7 +42,7 @@ namespace CodeLibrary.Helpers
 
         public void BuildMenu()
         {
-            _favoriteLibrariesToolStripMenuItem.DropDownItems.Clear();
+            _mnuFavoriteLibraries.DropDownItems.Clear();
 
             int index = 1;
             foreach (string _file in Config.FavoriteLibs)
@@ -52,7 +52,7 @@ namespace CodeLibrary.Helpers
 
                 FileInfo _fileInfo = new FileInfo(_file);
 
-                ToolStripMenuItem _item = (ToolStripMenuItem)_favoriteLibrariesToolStripMenuItem.DropDownItems.Add(_fileInfo.Name);
+                ToolStripMenuItem _item = (ToolStripMenuItem)_mnuFavoriteLibraries.DropDownItems.Add(_fileInfo.Name);
                 _item.Tag = _file;
                 _item.Image = global::CodeLibrary.Properties.Resources.star_32x32;
                 _item.ImageScaling = ToolStripItemImageScaling.None;
@@ -74,7 +74,7 @@ namespace CodeLibrary.Helpers
             Config.FavoriteLibs.Remove(_file);
 
             ToolStripItem _removeItem = null;
-            foreach (ToolStripItem _item in _favoriteLibrariesToolStripMenuItem.DropDownItems)
+            foreach (ToolStripItem _item in _mnuFavoriteLibraries.DropDownItems)
             {
                 if (_item.Tag.Equals(_file))
                 {
@@ -85,7 +85,7 @@ namespace CodeLibrary.Helpers
             if (_removeItem == null)
                 return;
 
-            _favoriteLibrariesToolStripMenuItem.DropDownItems.Remove(_removeItem);
+            _mnuFavoriteLibraries.DropDownItems.Remove(_removeItem);
         }
 
         private Keys GetShortCutKey(int index)

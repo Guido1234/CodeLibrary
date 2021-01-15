@@ -10,9 +10,10 @@ namespace CodeLibrary.Controls.Controls
         private Point _Offset = new Point(0, 0);
 
         private bool _Pressed = false;
-
+         
         public ImageViewer()
         {
+            DoubleBuffered = true;
             InitializeComponent();
             picture.MouseWheel += Picture_MouseWheel;
             MouseWheel += Picture_MouseWheel;

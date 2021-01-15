@@ -13,6 +13,7 @@ namespace CodeLibrary
         private readonly FormCodeLibrary _mainform;
         private readonly RtfControl _rtf;
         private readonly TextBoxHelper _TextBoxHelper;
+        private Idle _Idle = new Idle(new TimeSpan(0, 0, 2));
         private bool _supressTextChanged = false;
 
         public RtfEditorHelper(FormCodeLibrary mainform, TextBoxHelper textboxHelper)
@@ -24,7 +25,10 @@ namespace CodeLibrary
             _rtf.TextChanged += RtfEditor_TextChanged;
             _rtf.MouseUp += _rtf_MouseUp;
             _rtf.KeyDown += _rtf_KeyDown;
+            _rtf.RichTextConrol.SelectionChanged += RichTextConrol_SelectionChanged;
         }
+
+        public bool IsIdle => _Idle.IsIdle;
 
         public ITextEditor Editor
         {
@@ -43,7 +47,7 @@ namespace CodeLibrary
             set
             {
                 _rtf.SelectedText = value;
-            }
+            } 
         }
 
         public string Text
@@ -232,7 +236,7 @@ namespace CodeLibrary
         {
             if (e.Button == MouseButtons.Right)
             {
-                _mainform.contextMenuStripPopup.Show(Cursor.Position.X, Cursor.Position.Y);
+                _mainform.mncEdit.Show(Cursor.Position.X, Cursor.Position.Y);
             }
         }
 
@@ -252,12 +256,25 @@ namespace CodeLibrary
             return false;
         }
 
+        private void RichTextConrol_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                _mainform.lblStart.Text = _rtf.RichTextConrol.SelectionStart.ToString();
+                _mainform.lblEnd.Text = (_rtf.RichTextConrol.SelectionStart + _rtf.RichTextConrol.SelectionLength).ToString();
+                _mainform.lblLength.Text = _rtf.RichTextConrol.SelectionLength.ToString();
+            }
+            catch
+            { }
+
+        }
+
         private void RtfEditor_TextChanged(object sender, EventArgs e)
         {
+            _Idle.Refresh();
+
             if (_supressTextChanged)
                 return;
-
-            //ScreenToCode(_TextBoxHelper.CurrentSnippet);
         }
 
         public string Merge()

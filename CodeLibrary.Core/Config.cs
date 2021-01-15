@@ -23,6 +23,8 @@ namespace CodeLibrary.Core
         public static string RtfStylesFile => Utils.PathCombine(AppFolder, "RtfStyles.json");
         public static int Zoom { get; set; } = 100;
 
+        public static int SplitterDistance { get; set; } = 380;
+
         public static VersionNumber CurrentVersion()
         {
             return new VersionNumber(Assembly.GetEntryAssembly().GetName().Version.ToString());
@@ -53,6 +55,8 @@ namespace CodeLibrary.Core
 
             AppFolder = Utils.PathCombine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Guido Utilities", "CodeLibrary");
 
+            SplitterDistance = ConvertUtility.ToInt32(Utils.GetCurrentUserRegisterKey(regpath, Constants.SPLITTERDISTANCE), 380);
+
             StyleCollection.Instance.Load(RtfStylesFile);
 
             if (File.Exists(FavoriteFile))
@@ -73,6 +77,9 @@ namespace CodeLibrary.Core
             Utils.SetCurrentUserRegisterKey(regpath, Constants.ZOOM, Zoom.ToString());
             Utils.SetCurrentUserRegisterKey(regpath, Constants.DARKMODE, DarkMode.ToString());
             Utils.SetCurrentUserRegisterKey(regpath, Constants.HIGHCONTRASTMODE, HighContrastMode.ToString());
+            Utils.SetCurrentUserRegisterKey(regpath, Constants.SPLITTERDISTANCE, SplitterDistance.ToString());
+             
+
             if (string.IsNullOrEmpty(DefaultNoteType))
             {
                 DefaultNoteType = string.Empty;

@@ -15,27 +15,22 @@ namespace CodeLibrary.Helpers
     {
         private readonly FormCodeLibrary _mainform;
         private bool _Debug;
-
+         
         public DebugHelper(FormCodeLibrary mainform)
         {
             _mainform = mainform;
 
 #if (DEBUG)
             _mainform.mnuDebug.Visible = true;
-            _mainform.debugSeparator.Visible = true;
-            _mainform.mnuReadOnlyLibrary.Click += MnuReadOnlyLibrary_Click;
+            _mainform.mnuDebugSeparator.Visible = true;
 #else
             _mainform.mnuDebug.Visible = false;
-            _mainform.debugSeparator.Visible = false;
+            _mainform.mnuDebugSeparator.Visible = false;
 #endif
 
         }
 
         public bool Debug => _Debug;
 
-        private void MnuReadOnlyLibrary_Click(object sender, EventArgs e)
-        {
-            
-        }
     }
 }

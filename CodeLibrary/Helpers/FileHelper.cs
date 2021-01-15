@@ -12,12 +12,13 @@ using System.Windows.Forms;
 namespace CodeLibrary
 {
     public class FileHelper
-    {
+    { 
         private readonly int _AutoSaveMinutes = 1;
         private readonly Timer _autoSaveTimer = new Timer();
         private readonly DebugHelper _DebugHelper;
         private readonly FormCodeLibrary _mainform;
-        private readonly TreeView _treeview;
+        private readonly TreeView _treeViewLibrary;
+        private readonly TextBoxHelper _textBoxHelper;
         private String _AutoSaveFileName = string.Empty;
         private string _Find = string.Empty;
         private DateTime _lastAutoSavedDate = new DateTime();
@@ -25,11 +26,13 @@ namespace CodeLibrary
         private Cursor _PrevCursor;
         private int _updating = 0;
 
-        public FileHelper(TreeView treeview, FormCodeLibrary mainform, DebugHelper debugHelper)
+        public FileHelper(FormCodeLibrary mainform, DebugHelper debugHelper, TextBoxHelper textBoxHelper)
         {
             _DebugHelper = debugHelper;
-            _treeview = treeview;
             _mainform = mainform;
+            _treeViewLibrary = _mainform.treeViewLibrary;
+            _textBoxHelper = textBoxHelper;
+
             _lastAutoSavedDate = DateTime.Now;
             _autoSaveTimer.Interval = 1000;
             _autoSaveTimer.Tick += AutoSaveTimer_Tick;
@@ -67,7 +70,7 @@ namespace CodeLibrary
 
             List<TreeNode> _expandNodes = new List<TreeNode>();
 
-            _treeview.BeginUpdate();
+            _treeViewLibrary.BeginUpdate();
 
             List<CodeSnippet> items = new List<CodeSnippet>();
 
@@ -81,18 +84,18 @@ namespace CodeLibrary
             }
             Dictionary<string, TreeNode> _foundNodes = new Dictionary<string, TreeNode>();
 
-            _treeview.Nodes.Clear();
+            _treeViewLibrary.Nodes.Clear();
 
             foreach (CodeSnippet snippet in items)
             {
                 if (string.IsNullOrEmpty(snippet.Id))
                     snippet.Id = Guid.NewGuid().ToString();
 
-                TreeNodeCollection parentCollection = _treeview.Nodes;
+                TreeNodeCollection parentCollection = _treeViewLibrary.Nodes;
                 string parentPath = Utils.ParentPath(snippet.Path, '\\');
                 string name = Utils.PathName(snippet.Path, '\\');
 
-                TreeNode parent = GetNodeByParentPath(_treeview.Nodes, parentPath);
+                TreeNode parent = GetNodeByParentPath(_treeViewLibrary.Nodes, parentPath);
                 if (parent != null)
                     parentCollection = parent.Nodes;
 
@@ -107,7 +110,7 @@ namespace CodeLibrary
                     TrashcanNode = node;
 
                 if (snippet.Important)
-                    _treeview.SelectedNode = node;
+                    _treeViewLibrary.SelectedNode = node;
 
                 if (snippet.Expanded)
                     _expandNodes.Add(node);
@@ -117,12 +120,12 @@ namespace CodeLibrary
                 node.Expand();
             }
 
-            CodeLib.Instance.BuildNodeIndexer(_treeview);
+            CodeLib.Instance.BuildNodeIndexer(_treeViewLibrary);
 
             if (!string.IsNullOrWhiteSpace(find))
-                _treeview.ExpandAll();
+                _treeViewLibrary.ExpandAll();
 
-            _treeview.EndUpdate();
+            _treeViewLibrary.EndUpdate();
 
             return _foundNodes;
         }
@@ -161,7 +164,7 @@ namespace CodeLibrary
                 parentCollection.Add(node);
             }
 
-            CodeLib.Instance.BuildNodeIndexer(_treeview);
+            CodeLib.Instance.BuildNodeIndexer(_treeViewLibrary);
         }
 
         public void EndUpdate()
@@ -199,9 +202,9 @@ namespace CodeLibrary
         {
             CodeSnippetCollection collection = new CodeSnippetCollection { LastSaved = _lastOpenedDate };
 
-            FormToCodeCollection(_treeview.Nodes);
-            if (_treeview.SelectedNode != null)
-                collection.LastSelected = _treeview.SelectedNode.FullPath;
+            FormToCodeCollection(_treeViewLibrary.Nodes);
+            if (_treeViewLibrary.SelectedNode != null)
+                collection.LastSelected = _treeViewLibrary.SelectedNode.FullPath;
 
             _mainform.SaveEditor();
             CodeLib.Instance.Save(collection);
@@ -269,86 +272,6 @@ namespace CodeLibrary
             return null;
         }
 
-        public void ImportFile()
-        {
-            BeginUpdate();
-
-            OpenFileDialog openFileDialog = new OpenFileDialog { Filter = "text Files (*.txt)|*.json|All Files (*.*)|*.*" };
-            if (openFileDialog.ShowDialog(_mainform) == DialogResult.OK)
-            {
-                string filename = openFileDialog.FileName;
-                string text = File.ReadAllText(filename);
-                FileInfo fi = new FileInfo(filename);
-                CodeType codetype = CodeType.None;
-                switch (fi.Extension.ToLower())
-                {
-                    case "cs":
-                        codetype = CodeType.CSharp;
-                        break;
-
-                    case "vb":
-                        codetype = CodeType.VB;
-                        break;
-
-                    case "txt":
-                    case "inf":
-                    case "info":
-                    case "nfo":
-                        codetype = CodeType.None;
-                        break;
-
-                    case "md":
-                        codetype = CodeType.MarkDown;
-                        break;
-
-                    case "html":
-                    case "htm":
-                        codetype = CodeType.HTML;
-                        break;
-
-                    case "tsql":
-                    case "sql":
-                        codetype = CodeType.SQL;
-                        break;
-
-                    case "resx":
-                    case "xml":
-                    case "xmlt":
-                    case "xlt":
-                    case "xslt":
-                        codetype = CodeType.XML;
-                        break;
-
-                    case "js":
-                    case "ts":
-                    case "json":
-                        codetype = CodeType.JS;
-                        break;
-
-                    case "php":
-                        codetype = CodeType.PHP;
-                        break;
-
-                    case "lua":
-                        codetype = CodeType.Lua;
-                        break;
-
-                    case "rtf":
-                        codetype = CodeType.RTF;
-                        break;
-
-                    case "jpg":
-                    case "jpeg":
-                    case "png":
-                    case "bmp":
-                        codetype = CodeType.Image;
-                        break;
-                }
-                TreeHelper.CreateNewRootNode(codetype, fi.Name, text);
-            }
-
-            EndUpdate();
-        }
 
         public bool IsOverwritingNewerFile(string filename)
         {
@@ -366,6 +289,8 @@ namespace CodeLibrary
         public void NewDoc()
         {
             CurrentFile = null;
+            _AutoSaveFileName = null;
+            
             CodeLib.Instance.New();
             CodeCollectionToForm(string.Empty);
             TreeHelper.FindNodeByPath("Snippets");
@@ -416,9 +341,6 @@ namespace CodeLibrary
 
             if (rootnode == null && !CodeLib.Instance.Library.ContainsKey(Constants.CLIPBOARDMONITOR))
                 CodeLib.Instance.Library.Add(CodeSnippet.ClipboardMonitorSnippet());
-
-            //var snippet = CodeLib.Instance.Library.Where(p => p.Name == "TEMP").FirstOrDefault();
-            //snippet.CodeType = CodeType.None;
 
             CodeCollectionToForm(string.Empty);
 
@@ -513,9 +435,9 @@ namespace CodeLibrary
 
             if (rootnode == null)
             {
-                FormToCodeCollection(_treeview.Nodes);
-                if (_treeview.SelectedNode != null)
-                    _collection.LastSelected = _treeview.SelectedNode.FullPath;
+                FormToCodeCollection(_treeViewLibrary.Nodes);
+                if (_treeViewLibrary.SelectedNode != null)
+                    _collection.LastSelected = _treeViewLibrary.SelectedNode.FullPath;
 
                 _mainform.SaveEditor();
                 CodeLib.Instance.Save(_collection);
@@ -561,9 +483,9 @@ namespace CodeLibrary
 
             CodeSnippetCollection _collection = new CodeSnippetCollection { LastSaved = _lastOpenedDate };
 
-            FormToCodeCollection(_treeview.Nodes);
-            if (_treeview.SelectedNode != null)
-                _collection.LastSelected = _treeview.SelectedNode.FullPath;
+            FormToCodeCollection(_treeViewLibrary.Nodes);
+            if (_treeViewLibrary.SelectedNode != null)
+                _collection.LastSelected = _treeViewLibrary.SelectedNode.FullPath;
 
             _mainform.SaveEditor();
             CodeLib.Instance.Save(_collection);
@@ -573,6 +495,11 @@ namespace CodeLibrary
 
         private void AutoSaveTimer_Tick(object sender, EventArgs e)
         {
+            if (!_textBoxHelper.IsIdle)
+            {
+                return;
+            }
+
             TimeSpan _elapsed = DateTime.Now - _lastAutoSavedDate;
             if (_elapsed.TotalMinutes > _AutoSaveMinutes)
             {

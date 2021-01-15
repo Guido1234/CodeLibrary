@@ -6,6 +6,7 @@ namespace CodeLibrary
 {
     internal static class Program
     {
+
         public static string AppDataPath
         {
             get
@@ -21,8 +22,9 @@ namespace CodeLibrary
         private static void Main()
         {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormCodeLibrary());
+            Application.SetCompatibleTextRenderingDefault(false); 
+            var MainForm = new FormCodeLibrary();
+            Application.Run(MainForm);
         }
     }
 }

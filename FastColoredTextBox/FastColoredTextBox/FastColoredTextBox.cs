@@ -2493,6 +2493,7 @@ namespace FastColoredTextBoxNS
             return sel;
         }
 
+
         /// <summary>
         /// Copy selected text into Clipboard
         /// </summary>

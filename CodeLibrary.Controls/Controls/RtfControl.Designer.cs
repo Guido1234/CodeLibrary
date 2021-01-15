@@ -61,14 +61,16 @@ namespace CodeLibrary.Controls.Controls
             // 
             // rtf
             // 
+            this.rtf.AcceptsTab = true;
             this.rtf.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtf.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtf.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtf.HideSelection = false;
             this.rtf.Location = new System.Drawing.Point(0, 28);
             this.rtf.Name = "rtf";
             this.rtf.ShowSelectionMargin = true;
             this.rtf.Size = new System.Drawing.Size(816, 436);
             this.rtf.TabIndex = 0;
+            this.rtf.TabStop = false;
             this.rtf.Text = "";
             // 
             // toolStrip1

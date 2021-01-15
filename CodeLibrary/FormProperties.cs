@@ -1,5 +1,6 @@
 ﻿using CodeLibrary.Controls;
 using CodeLibrary.Core;
+using CodeLibrary.Helpers;
 using System;
 using System.Windows.Forms;
 
@@ -10,9 +11,11 @@ namespace CodeLibrary
         private readonly EnumComboBoxModeHelper<CodeType> _defaultTypeComboBoxHelper;
         private readonly EnumComboBoxModeHelper<Keys> _shortCutKeysComboHelper;
         private readonly EnumComboBoxModeHelper<CodeType> _typeComboBoxHelper;
+        private readonly ThemeHelper _themeHelper;
 
-        public FormProperties()
+        public FormProperties(ThemeHelper themeHelper)
         {
+            _themeHelper = themeHelper;
             InitializeComponent();
             _typeComboBoxHelper = new EnumComboBoxModeHelper<CodeType>(cbType, CodeType.None);
             _typeComboBoxHelper.Fill();
@@ -89,11 +92,31 @@ namespace CodeLibrary
 
         private void DialogButton_DialogButtonClick(object sender, DialogButton.DialogButtonClickEventArgs e)
         {
-            this.DialogResult = e.Result;
+            RichTextBox _richTextBox = new RichTextBox();
+            _themeHelper.RichTextBoxTheme(_richTextBox);
+
+            CodeType _newType = (CodeType)_typeComboBoxHelper.GetValue();
+            CodeType _oldType = Snippet.CodeType;
+
+            DialogResult = e.Result;
             if (e.Result == DialogResult.OK)
             {
                 Snippet.DefaultChildCodeType = (CodeType)_defaultTypeComboBoxHelper.GetValue();
-                Snippet.CodeType = (CodeType)_typeComboBoxHelper.GetValue();
+                Snippet.CodeType = _newType;
+
+                
+
+                if (_newType == CodeType.RTF && _oldType != CodeType.RTF)
+                {
+                    _richTextBox.Text = Snippet.Code;
+                    Snippet.RTF = _richTextBox.Rtf;
+                }
+                else if (_oldType == CodeType.RTF && _newType != CodeType.RTF)
+                {
+                    _richTextBox.Rtf = Snippet.RTF;
+                    Snippet.Code = _richTextBox.Text;
+                }
+
 
                 Snippet.DefaultChildName = tbName.Text ?? string.Empty;
                 Snippet.DefaultChildCode = tbCode.Text ?? string.Empty;
@@ -135,7 +158,7 @@ namespace CodeLibrary
                 }
                 if (cbShift.Checked)
                 {
-                    _keys = _keys | Keys.Shift;
+                    _keys = _keys | Keys.Shift; 
                 }
                 if (cbAlt.Checked)
                 {
