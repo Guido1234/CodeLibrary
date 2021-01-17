@@ -448,11 +448,11 @@ namespace CodeLibrary
                 SetTitle();
             }
 
-            if (Password != null)
-            {
-                CurrentFile = null;
-                Config.LastOpenedFile = null;
-            }
+            //if (Password != null)
+            //{
+            //    CurrentFile = null;
+            //    Config.LastOpenedFile = null;
+            //}
 
             CodeSnippetCollection _collection = new CodeSnippetCollection { LastSaved = _lastOpenedDate };
 
