@@ -321,6 +321,7 @@ namespace CodeLibrary
             {
                 MessageBox.Show($"Could not open the file '{filename}'", "Error opening file", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 EndUpdate();
+                RestoreBackup(filename);
                 return;
             }
 
@@ -387,6 +388,22 @@ namespace CodeLibrary
             }
         }
 
+        public void RestoreBackup(string file)
+        {
+            if (string.IsNullOrEmpty(file))
+            {
+                return;
+            }
+
+            FormBackupRestore _f = new FormBackupRestore(file);
+            var _result = _f.ShowDialog();
+            if (_result == DialogResult.OK)
+            {
+                CurrentFile = file;
+                LoadBackup(_f.Selected.Path);
+            }
+        }
+
         public void SaveFile(bool saveas) => SaveFile(saveas, null);
 
         public void SaveFile(bool saveas, TreeNode rootnode)
@@ -425,10 +442,16 @@ namespace CodeLibrary
             }
 
             if (rootnode == null)
-            {
+            {                
                 CurrentFile = _selectedfile;
                 _lastOpenedDate = DateTime.Now;
                 SetTitle();
+            }
+
+            if (Password != null)
+            {
+                CurrentFile = null;
+                Config.LastOpenedFile = null;
             }
 
             CodeSnippetCollection _collection = new CodeSnippetCollection { LastSaved = _lastOpenedDate };
@@ -463,8 +486,16 @@ namespace CodeLibrary
         private static CodeSnippetCollection ReadCollection(string filename, SecureString password)
         {
             string _data = File.ReadAllText(filename, Encoding.Default);
-            if (password != null)
-                _data = StringCipher.Decrypt(_data, password);
+            try
+            {
+                if (password != null)
+                    _data = StringCipher.Decrypt(_data, password);
+            }
+            catch
+            {
+                MessageBox.Show($"Could not decrypt: '{filename}' with the current password! ", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) ;
+                return null;
+            }
             try
             {
                 CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(_data);

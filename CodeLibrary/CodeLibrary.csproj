@@ -283,6 +283,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Note.ico" />
+    <None Include="Resources\key_16x16.png" />
     <Content Include="T4\VersionInc.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>VersionInc.cs</LastGenOutput>

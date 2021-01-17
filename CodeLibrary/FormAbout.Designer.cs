@@ -74,7 +74,6 @@ namespace CodeLibrary
             this.tbCode.CharWidth = 8;
             this.tbCode.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.tbCode.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.tbCode.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.tbCode.Hotkeys = resources.GetString("tbCode.Hotkeys");
             this.tbCode.IsReplaceMode = false;
             this.tbCode.Language = FastColoredTextBoxNS.Language.CSharp;
@@ -241,6 +240,7 @@ namespace CodeLibrary
             this.Controls.Add(this.tbCode);
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormAbout";

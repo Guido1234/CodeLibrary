@@ -120,6 +120,7 @@ namespace CodeLibrary
         {
             _fileHelper.Password = null;
             tbPath.BackColor = SystemColors.ButtonFace;
+            pctKey.Visible = false;
         }
 
         private void EditNodeProperties()
@@ -484,7 +485,7 @@ namespace CodeLibrary
         private void SetPassWord(SecureString password)
         {
             _fileHelper.Password = password;
-            tbPath.BackColor = Color.DarkGray;
+            pctKey.Visible = true;
         }
 
         private void TextBoxFind_KeyUp(object sender, KeyEventArgs e)
