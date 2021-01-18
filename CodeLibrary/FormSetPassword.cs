@@ -12,6 +12,14 @@ namespace CodeLibrary
             InitializeComponent();
             DialogResult = DialogResult.Cancel;
             textBoxPassword.PasswordChar = '*';
+            AcceptButton = dialogButton.buttonOk;
+            Load += FormSetPassword_Load;
+        }
+
+        private void FormSetPassword_Load(object sender, System.EventArgs e)
+        {
+            textBoxPassword.SelectAll();
+            textBoxPassword.Focus();
         }
 
         public SecureString Password

@@ -92,7 +92,7 @@ namespace CodeLibrary
             this.tbName.Location = new System.Drawing.Point(68, 265);
             this.tbName.Name = "tbName";
             this.tbName.Size = new System.Drawing.Size(233, 20);
-            this.tbName.TabIndex = 5;
+            this.tbName.TabIndex = 0;
             this.tbName.Text = "New Note";
             // 
             // cbDefaultParent

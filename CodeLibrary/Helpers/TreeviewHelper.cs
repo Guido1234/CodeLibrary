@@ -68,15 +68,27 @@ namespace CodeLibrary
 
         public TreeNode SelectedNode => _treeViewLibrary.SelectedNode;
 
+        public void AddImageNode(TreeNode parentNode, Image image, string name)
+        {
+            byte[] _imageData = ConvertImageToByteArray(image, 33L);
+            AddImageNode(parentNode, _imageData, name);
+        }
+
+        public void AddImageNodeNoCompression(TreeNode parentNode, Image image, string name)
+        {
+            byte[] _imageData = ConvertImageToByteArray(image);
+            AddImageNode(parentNode, _imageData, name);
+        }
+
+
+
+
         public void ChangeType(TreeNode node, CodeType newType)
         {
             if (IsSystem(node))
                 return;
 
-           
             CodeSnippet snippet = CodeLib.Instance.Library.Get(node.Name);
-
-            _textBoxHelper.ScreenToCode(snippet);
 
             if (snippet != null)
             {
@@ -90,9 +102,7 @@ namespace CodeLibrary
                         _fb.Language = HelperUtils.CodeTypeToLanguage(_oldType);
                         _fb.Text = snippet.Code;
                         _fb.Refresh();
-                        
                     }
-
 
                     // Copy with Markup
 
@@ -109,81 +119,34 @@ namespace CodeLibrary
                     {
                         _richTextBox.Rtf = snippet.RTF;
                         snippet.Code = _richTextBox.Text;
+                        snippet.RTF = string.Empty;
                     }
                 }
-
                 _textBoxHelper.ChangeView(newType);
                 snippet.CodeType = newType;
-                _textBoxHelper.CodeToScreen(snippet, false);
+                _textBoxHelper.SetStateNoSave(snippet);
                 int imageIndex = _fileHelper.GetImageIndex(snippet);
                 node.ImageIndex = imageIndex;
                 node.SelectedImageIndex = imageIndex;
             }
         }
 
-        public CodeType CodeTypeByExtension(FileInfo file)
-        {
-            string _extension = file.Extension.Trim(new char[] { '.' }).ToLower();
-            switch (_extension)
-            {
-                case "vb":
-                    return CodeType.VB;
-
-                case "cs":
-                    return CodeType.CSharp;
-
-                case "js":
-                case "ts":
-                case "json":
-                    return CodeType.JS;
-
-                case "txt":
-                case "inf":
-                case "info":
-                case "nfo":
-                    return CodeType.None;
-
-                case "md":
-                    return CodeType.MarkDown;
-
-                case "html":
-                case "htm":
-                    return CodeType.HTML;
-
-                case "resx":
-                case "xml":
-                case "xmlt":
-                case "xlt":
-                case "xslt":
-                    return CodeType.XML;
-
-                case "sql":
-                    return CodeType.SQL;
-
-                case "rtf":
-                    return CodeType.RTF;
-
-                case "jpg":
-                case "jpeg":
-                case "png":
-                case "bmp":
-                    return CodeType.Image;
-            }
-            return CodeType.UnSuported;
-        }
 
         public TreeNode CreateNewNode(TreeNodeCollection parent, CodeType codetype, string name, string text, string rtf)
         {
+            _textBoxHelper.SaveState();
+
             CodeSnippet snippet = new CodeSnippet() { Code = text, CodeType = codetype, Locked = false, Name = name, RTF = rtf };
             if (snippet.CodeType == CodeType.HTML || snippet.CodeType == CodeType.MarkDown)
             {
                 snippet.HtmlPreview = true;
             }
             CodeLib.Instance.Library.Add(snippet);
-
+         
             int _imageIndex = 0;
             TreeNode _node = parent.Add(snippet.Name, snippet.Name, _imageIndex, _imageIndex);
             _node.Name = snippet.Id;
+            
             ChangeType(_node, codetype);
             return _node;
         }
@@ -206,14 +169,20 @@ namespace CodeLibrary
             }
         }
 
+        private CodeType DialogSelectedCodeType = CodeType.None;
+
         public TreeNode CreateNewNodeWindowedDialog(TreeNode parent)
         {
             FormAddNote _f = new FormAddNote();
+            _f.SelectedType = DialogSelectedCodeType;
+
             DialogResult _r = _f.ShowDialog();
             if (_r != DialogResult.OK)
             {
                 return null;
             }
+
+            DialogSelectedCodeType = _f.SelectedType;
 
             string _noteName = _f.NoteName;
 
@@ -586,6 +555,33 @@ namespace CodeLibrary
             }
         }
 
+        public void PasteClipBoardEachLine()
+        {
+            string _text = Clipboard.GetText();
+
+            string[] _lines = Utils.SplitLines(_text);
+            foreach (string line in _lines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    CreateNewNode(_treeViewLibrary.SelectedNode.Nodes, CodeType.None, line, "", "");
+                }
+            }
+        }
+
+        public void PasteClipBoardFileList()
+        {
+            List<string> items = new List<string>();
+            foreach (string s in Clipboard.GetFileDropList())
+            {
+                items.Add(s);
+            }
+            if (items.Count > 0)
+            {
+                AddFiles(_treeViewLibrary.SelectedNode, items.ToArray());
+            }
+        }
+
         public void RefreshCurrentTreeNode()
         {
             RefreshNode(_treeViewLibrary.SelectedNode);
@@ -603,7 +599,7 @@ namespace CodeLibrary
                 int imageIndex = _fileHelper.GetImageIndex(snippet);
                 node.ImageIndex = imageIndex;
                 node.SelectedImageIndex = imageIndex;
-                _textBoxHelper.CodeToScreen(snippet, false);
+                _textBoxHelper.SetStateNoSave(snippet);
                 _textBoxHelper.ChangeView(snippet.CodeType);
                 _textBoxHelper.ApplySettings();
             }
@@ -658,7 +654,7 @@ namespace CodeLibrary
                     _mainform.containerCode.Visible = true;
                     _mainform.containerImage.Visible = false;
                     _mainform.containerRtfEditor.Visible = false;
-                    _textBoxHelper.CodeToScreen(_snippet);
+                    _textBoxHelper.SetState(_snippet);
                     _treeViewLibrary.SelectedNode = node;
                     _mainform.containerInfoBar.Visible = true;
 
@@ -669,7 +665,7 @@ namespace CodeLibrary
                     _mainform.containerRtfEditor.Visible = true;
                     _mainform.containerCode.Visible = false;
                     _mainform.containerImage.Visible = false;
-                    _textBoxHelper.CodeToScreen(_snippet);
+                    _textBoxHelper.SetState(_snippet);
                     _treeViewLibrary.SelectedNode = node;
                     _mainform.containerInfoBar.Visible = true;
                     SetLibraryMenuState();
@@ -795,9 +791,9 @@ namespace CodeLibrary
             _filenames.Sort();
 
             foreach (string filename in _filenames)
-            {
+            {               
                 FileInfo _file = new FileInfo(filename);
-                var _type = CodeTypeByExtension(_file);
+                var _type = _fileHelper.CodeTypeByExtension(_file);
 
                 switch (_type)
                 {
@@ -819,7 +815,7 @@ namespace CodeLibrary
                     case CodeType.Template:
                     case CodeType.RTF:
                         string _text = File.ReadAllText(filename);
-                        CreateNewNode(targetNode.Nodes, _type, _file.Name, _text, _text);
+                        CreateNewNode(targetNode.Nodes, _type, _file.Name, _text, _text); // ## LET OP
                         break;
 
                     case CodeType.System:
@@ -827,12 +823,6 @@ namespace CodeLibrary
                         break;
                 }
             }
-        }
-
-        public void AddImageNode(TreeNode parentNode, Image image, string name)
-        {
-            byte[] _imageData = ConvertImageToByteArray(image, 33L);
-            AddImageNode(parentNode, _imageData, name);
         }
 
         private void AddImageNode(TreeNode parentNode, byte[] _imageData, string name)
@@ -844,12 +834,6 @@ namespace CodeLibrary
             TreeNode _node = parentNode.Nodes.Add(snippet.Name, snippet.Name, _imageIndex, _imageIndex);
             _node.Name = snippet.Id;
             ChangeType(_node, CodeType.Image);
-        }
-
-        public void AddImageNodeNoCompression(TreeNode parentNode, Image image, string name)
-        {
-            byte[] _imageData = ConvertImageToByteArray(image);
-            AddImageNode(parentNode, _imageData, name);
         }
 
         // Determine whether one node is a parent
@@ -909,8 +893,6 @@ namespace CodeLibrary
             }
         }
 
-
-
         private List<TreeNode> ParentPath(TreeNode node)
         {
             List<TreeNode> parents = new List<TreeNode>();
@@ -921,33 +903,6 @@ namespace CodeLibrary
                     parents.Add(node);
             }
             return parents;
-        }
-
-        public void PasteClipBoardEachLine()
-        {
-            string _text = Clipboard.GetText();
-
-            string[] _lines = Utils.SplitLines(_text);
-            foreach (string line in _lines)
-            {
-                if (!string.IsNullOrWhiteSpace(line))
-                {
-                    CreateNewNode(_treeViewLibrary.SelectedNode.Nodes, CodeType.None, line, "", "");
-                }
-            }
-        }
-
-        public void PasteClipBoardFileList()
-        {
-            List<string> items = new List<string>();
-            foreach (string s in Clipboard.GetFileDropList())
-            {
-                items.Add(s);
-            }
-            if (items.Count > 0)
-            {
-                AddFiles(_treeViewLibrary.SelectedNode, items.ToArray());
-            }
         }
 
         private void SetLibraryMenuState()

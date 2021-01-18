@@ -116,11 +116,11 @@
 
         #endregion
 
-        private System.Windows.Forms.Button buttonRetry;
-        private System.Windows.Forms.Button buttonOk;
-        private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.Button buttonYes;
-        private System.Windows.Forms.Button buttonNo;
-        private System.Windows.Forms.Button buttonIgnore;
+        public System.Windows.Forms.Button buttonRetry;
+        public System.Windows.Forms.Button buttonOk;
+        public System.Windows.Forms.Button buttonCancel;
+        public System.Windows.Forms.Button buttonYes;
+        public System.Windows.Forms.Button buttonNo;
+        public System.Windows.Forms.Button buttonIgnore;
     }
 }

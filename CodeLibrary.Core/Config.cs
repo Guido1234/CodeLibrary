@@ -71,6 +71,10 @@ namespace CodeLibrary.Core
         public static void Save()
         {
             string regpath = string.Format(Utils.REG_USRSETTING, Constants.CODELIBRARY);
+
+            LastOpenedDir = string.IsNullOrEmpty(LastOpenedDir) ? string.Empty : LastOpenedDir;
+            LastOpenedFile = string.IsNullOrEmpty(LastOpenedFile) ? string.Empty : LastOpenedFile;
+
             Utils.SetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDDIR, LastOpenedDir);
             Utils.SetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDFILE, LastOpenedFile);
             Utils.SetCurrentUserRegisterKey(regpath, Constants.OPENDEFAULTONSTART, OpenDefaultOnStart.ToString());

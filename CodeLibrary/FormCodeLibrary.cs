@@ -86,7 +86,7 @@ namespace CodeLibrary
             }
         }
 
-        public void SaveEditor() => _textboxHelper.Save();
+        public void SaveEditor() => _textboxHelper.SaveState();
 
         public void SetZoom()
         {

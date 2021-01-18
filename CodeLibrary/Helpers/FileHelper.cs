@@ -508,6 +508,58 @@ namespace CodeLibrary
             }
         }
 
+        public CodeType CodeTypeByExtension(FileInfo file)
+        {
+            string _extension = file.Extension.Trim(new char[] { '.' }).ToLower();
+            switch (_extension)
+            {
+                case "vb":
+                    return CodeType.VB;
+
+                case "cs":
+                    return CodeType.CSharp;
+
+                case "js":
+                case "ts":
+                case "json":
+                    return CodeType.JS;
+
+                case "txt":
+                case "inf":
+                case "info":
+                case "nfo":
+                    return CodeType.None;
+
+                case "md":
+                    return CodeType.MarkDown;
+
+                case "html":
+                case "htm":
+                    return CodeType.HTML;
+
+                case "resx":
+                case "xml":
+                case "xmlt":
+                case "xlt":
+                case "xslt":
+                    return CodeType.XML;
+
+                case "sql":
+                    return CodeType.SQL;
+
+                case "rtf":
+                    return CodeType.RTF;
+
+                case "jpg":
+                case "jpeg":
+                case "png":
+                case "bmp":
+                    return CodeType.Image;
+            }
+            return CodeType.UnSuported;
+        }
+
+
         private void AutoSaveFile()
         {
             string _fileName = GetAutoSaveFileName();

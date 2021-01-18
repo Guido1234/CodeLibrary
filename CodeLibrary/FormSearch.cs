@@ -15,6 +15,7 @@ namespace CodeLibrary
         {
             InitializeComponent();
             listViewSearch.SelectedIndexChanged += ListViewSearch_SelectedIndexChanged;
+            AcceptButton = buttonSearch;
         }
 
         public string SelectedPath { get; set; }

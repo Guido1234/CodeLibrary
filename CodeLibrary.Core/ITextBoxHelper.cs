@@ -2,6 +2,8 @@
 {
     public interface ITextBoxHelper
     {
+        CodeSnippet GetStateSnippet();
+
         string Merge();
 
         string SelectedText { get; set; }
@@ -12,7 +14,7 @@
 
         void BringToFront();
 
-        void CodeToScreen(CodeSnippet snippet);
+        void SetState(CodeSnippet snippet);
 
         void Copy();
 
@@ -27,10 +29,7 @@
         void GotoLine(int line);
 
         void Paste();
-
-        void Save();
-
-        void ScreenToCode(CodeSnippet snippet);
+        void SaveState();
 
         void SelectAll();
 

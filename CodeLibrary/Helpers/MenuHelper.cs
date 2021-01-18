@@ -87,9 +87,9 @@ namespace CodeLibrary.Helpers
         }
 
         private void mnuPasteText_Click(object sender, EventArgs e)
-        {
+        {            
             if (Clipboard.ContainsText())
-            {
+            {                
                 _treeviewHelper.CreateNewNode(_mainform.treeViewLibrary.SelectedNode.Nodes, CodeType.None, "New Note", Clipboard.GetText(), "");
             }
         }

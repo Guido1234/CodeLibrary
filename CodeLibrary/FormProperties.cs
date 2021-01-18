@@ -25,6 +25,7 @@ namespace CodeLibrary
 
             _shortCutKeysComboHelper = new EnumComboBoxModeHelper<Keys>(comboBoxShortCutKeys, Keys.None);
             _shortCutKeysComboHelper.Fill();
+            AcceptButton = dialogButton.buttonOk;
         }
 
         public CodeSnippet Snippet { get; set; }

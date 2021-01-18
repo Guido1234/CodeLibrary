@@ -10,12 +10,18 @@ namespace CodeLibrary
         {
             InitializeComponent();
             Load += FormAddNote_Load;
+            AcceptButton = dialogButton1.buttonOk;
+            this.GotFocus += FormAddNote_GotFocus;
         }
 
         public bool DefaultParent { get; set; }
+
         public string NoteName { get; set; }
+
         public int Repeat { get; set; } = 1;
+
         public bool Root { get; set; }
+
         public CodeType SelectedType { get; set; }
 
         private void dialogButton1_DialogButtonClick(object sender, Controls.DialogButton.DialogButtonClickEventArgs e)
@@ -38,6 +44,10 @@ namespace CodeLibrary
 
                         case "C#":
                             SelectedType = CodeType.CSharp;
+                            break;
+
+                        case "Sql":
+                            SelectedType = CodeType.SQL;
                             break;
 
                         case "Text":
@@ -83,21 +93,27 @@ namespace CodeLibrary
             Close();
         }
 
+        private void FormAddNote_GotFocus(object sender, EventArgs e)
+        {
+            tbName.SelectAll();
+            tbName.Focus();
+        }
+
         private void FormAddNote_Load(object sender, EventArgs e)
         {
             cbRoot.Checked = Root;
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "folder", Name = "Folder", Text = "Folder", Selected = (Config.DefaultNoteType == "Folder") });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "c#", Name = "C#", Text = "C#", Selected = (Config.DefaultNoteType == "C#") });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "txt", Name = "Text", Text = "Text", Selected = (Config.DefaultNoteType == "Text") || (string.IsNullOrEmpty(Config.DefaultNoteType)) });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "sql", Name = "Sql", Text = "Sql" });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "vb", Name = "Visual Basic", Text = "Visual Basic", Selected = (Config.DefaultNoteType == "Visual Basic") });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "lua", Name = "Lua", Text = "Lua", Selected = (Config.DefaultNoteType == "Lua") });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "xml", Name = "Xml", Text = "Xml", Selected = (Config.DefaultNoteType == "Xml") });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "php", Name = "PHP", Text = "PHP", Selected = (Config.DefaultNoteType == "PHP") });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "html", Name = "HTML", Text = "HTML", Selected = (Config.DefaultNoteType == "HTML") });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "txt", Name = "Markdown", Text = "Markdown", Selected = (Config.DefaultNoteType == "Markdown") });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "rtf", Name = "Rich Text", Text = "Rich Text", Selected = (Config.DefaultNoteType == "Rich Text") });
-            listViewTypes.Items.Add(new ListViewItem() { ImageKey = "template", Name = "Template", Text = "Template", Selected = (Config.DefaultNoteType == "Template") });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.Folder, ImageKey = "folder", Name = "Folder", Text = "Folder" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.CSharp, ImageKey = "c#", Name = "C#", Text = "C#" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.None, ImageKey = "txt", Name = "Text", Text = "Text" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.SQL, ImageKey = "sql", Name = "Sql", Text = "Sql" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.VB, ImageKey = "vb", Name = "Visual Basic", Text = "Visual Basic" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.Lua, ImageKey = "lua", Name = "Lua", Text = "Lua" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.XML, ImageKey = "xml", Name = "Xml", Text = "Xml" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.PHP, ImageKey = "php", Name = "PHP", Text = "PHP" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.HTML, ImageKey = "html", Name = "HTML", Text = "HTML" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.MarkDown, ImageKey = "txt", Name = "Markdown", Text = "Markdown" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.RTF, ImageKey = "rtf", Name = "Rich Text", Text = "Rich Text" });
+            listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.Template, ImageKey = "template", Name = "Template", Text = "Template" });
         }
     }
 }

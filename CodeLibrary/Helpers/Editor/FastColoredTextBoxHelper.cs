@@ -12,6 +12,8 @@ namespace CodeLibrary
 {
     public class FastColoredTextBoxHelper : ITextBoxHelper
     {
+        private CodeSnippet _StateSnippet;
+
         private readonly FormCodeLibrary _mainform;
         private readonly FastColoredTextBox _tb;
         private readonly TextBoxHelper _TextBoxHelper;
@@ -19,6 +21,8 @@ namespace CodeLibrary
 
         private Regex _regexWildCards = new Regex("(?<=#\\[)(.*?)(?=\\]#)");
         private bool _supressTextChanged = false;
+
+        public CodeSnippet GetStateSnippet() => _StateSnippet;
 
         public FastColoredTextBoxHelper(FormCodeLibrary mainform, TextBoxHelper textboxHelper)
         {
@@ -80,25 +84,28 @@ namespace CodeLibrary
 
         public void ApplySnippetSettings()
         {
-            if (_TextBoxHelper.CurrentSnippet == null)
+            if (_StateSnippet == null)
+            {
                 return;
+            }
 
-            _tb.WordWrap = _TextBoxHelper.CurrentSnippet.Wordwrap;
+            _tb.WordWrap = _StateSnippet.Wordwrap;
 
-            _mainform.mnuHTMLPreview.Checked = _TextBoxHelper.CurrentSnippet.HtmlPreview;
-            _mainform.splitContainerCode.Panel2Collapsed = !_TextBoxHelper.CurrentSnippet.HtmlPreview;
+            _mainform.mnuHTMLPreview.Checked = _StateSnippet.HtmlPreview;
+            _mainform.splitContainerCode.Panel2Collapsed = !_StateSnippet.HtmlPreview;
 
             UpdateHtmlPreview();
         }
 
         public void BringToFront() => _tb.BringToFront();
 
-        public void CodeToScreen(CodeSnippet snippet)
+        public void SetState(CodeSnippet snippet)
         {
+            _StateSnippet = snippet;
             _supressTextChanged = true;
             _tb.BeginUpdate();
 
-            _TextBoxHelper.SetEditorView(snippet.CodeType);
+            _TextBoxHelper.SetEditorView(snippet);
 
             _tb.Text = snippet.Code;
             _tb.ClearUndo();
@@ -121,8 +128,6 @@ namespace CodeLibrary
 
             _tb.EndUpdate();
 
-            _TextBoxHelper.CurrentSnippet = snippet;
-
             _supressTextChanged = false;
         }
 
@@ -135,7 +140,13 @@ namespace CodeLibrary
                 Clipboard.Clear();
         }
 
-        public void CopyWithMarkup() => _tb.Copy();
+        public void CopyWithMarkup()
+        {
+            if (_StateSnippet.CodeType != CodeType.RTF)
+            {
+                _tb.Copy();
+            }
+        }
 
         public string CurrentLine()
         {
@@ -145,6 +156,11 @@ namespace CodeLibrary
 
         public void Cut()
         {
+            if (_StateSnippet.CodeType != CodeType.RTF)
+            {
+                return;
+            }
+
             _mainform.textBoxClipboard.Text = SelectedText;
             SelectedText = string.Empty;
             if (!string.IsNullOrEmpty(_mainform.textBoxClipboard.Text))
@@ -201,19 +217,16 @@ namespace CodeLibrary
             _tb.Text = _text;
         }
 
-        public void Save()
+        public void SaveState()
         {
-            ScreenToCode(_TextBoxHelper.CurrentSnippet);
-        }
-
-        public void ScreenToCode(CodeSnippet snippet)
-        {
-            if (snippet == null)
+            if (_StateSnippet == null)
+            {
                 return;
+            }
 
-            snippet.Code = _tb.Text;
-            snippet.Wordwrap = _tb.WordWrap;
-            snippet.CurrentLine = _tb.CurrentLineNumber();
+            _StateSnippet.Code = _tb.Text;
+            _StateSnippet.Wordwrap = _tb.WordWrap;
+            _StateSnippet.CurrentLine = _tb.CurrentLineNumber();
         }
 
         public void SelectAll() => _tb.SelectAll();
@@ -232,14 +245,14 @@ namespace CodeLibrary
 
         public bool SwitchWordWrap()
         {
-            if (_TextBoxHelper.CurrentSnippet == null)
+            if (_StateSnippet == null)
                 return false;
 
-            _TextBoxHelper.CurrentSnippet.Wordwrap = !_TextBoxHelper.CurrentSnippet.Wordwrap;
-            _tb.WordWrap = _TextBoxHelper.CurrentSnippet.Wordwrap;
-            _mainform.mnuWordwrap.Checked = _TextBoxHelper.CurrentSnippet.Wordwrap;
+            _StateSnippet.Wordwrap = !_StateSnippet.Wordwrap;
+            _tb.WordWrap = _StateSnippet.Wordwrap;
+            _mainform.mnuWordwrap.Checked = _StateSnippet.Wordwrap;
 
-            return _TextBoxHelper.CurrentSnippet.Wordwrap;
+            return _StateSnippet.Wordwrap;
         }
 
         public void UpdateHtmlPreview()
@@ -248,7 +261,7 @@ namespace CodeLibrary
 
             if (!_mainform.splitContainerCode.Panel2Collapsed)
             {
-                if (_TextBoxHelper.CurrentSnippet.CodeType == CodeType.MarkDown)
+                if (_StateSnippet.CodeType == CodeType.MarkDown)
                 {
                     try
                     {

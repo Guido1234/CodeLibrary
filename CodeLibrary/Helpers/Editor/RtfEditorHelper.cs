@@ -10,11 +10,15 @@ namespace CodeLibrary
 { 
     public class RtfEditorHelper : ITextBoxHelper
     {
+        private CodeSnippet _StateSnippet;
+
         private readonly FormCodeLibrary _mainform;
         private readonly RtfControl _rtf;
         private readonly TextBoxHelper _TextBoxHelper;
         private Idle _Idle = new Idle(new TimeSpan(0, 0, 2));
         private bool _supressTextChanged = false;
+
+        public CodeSnippet GetStateSnippet() => _StateSnippet;
 
         public RtfEditorHelper(FormCodeLibrary mainform, TextBoxHelper textboxHelper)
         {
@@ -68,12 +72,12 @@ namespace CodeLibrary
 
         public void BringToFront() => _rtf.BringToFront();
 
-        public void CodeToScreen(CodeSnippet snippet)
+        public void SetState(CodeSnippet snippet)
         {
             _supressTextChanged = true;
 
-            _TextBoxHelper.CurrentSnippet = snippet;
-
+            _StateSnippet = snippet;
+            _mainform.tbPath.Text = snippet.Path;
             _mainform.rtfEditor.ClearUndo();
             _mainform.rtfEditor.ResetText();
 
@@ -135,25 +139,20 @@ namespace CodeLibrary
 
         public void Paste() => _rtf.Paste();
 
-        public void Save()
+        public void SaveState()
         {
-            ScreenToCode(_TextBoxHelper.CurrentSnippet);
-        }
-
-        public void ScreenToCode(CodeSnippet snippet)
-        {
-            if (snippet == null)
+            if (_StateSnippet == null)
             {
                 return;
             }
 
-            snippet.RTF = _rtf.Rtf;
-            snippet.Code = _rtf.Text;
+            _StateSnippet.RTF = _rtf.Rtf;
+            _StateSnippet.Code = _rtf.Text;
 
-            snippet.RTFOwnTheme = _mainform.rtfEditor.OwnTheme;
-            if (snippet.RTFOwnTheme)
+            _StateSnippet.RTFOwnTheme = _mainform.rtfEditor.OwnTheme;
+            if (_StateSnippet.RTFOwnTheme)
             {
-                snippet.RTFTheme = _mainform.rtfEditor.Theme;
+                _StateSnippet.RTFTheme = _mainform.rtfEditor.Theme;
             }
         }
 

@@ -57,7 +57,7 @@
             this.textBoxPassword.Location = new System.Drawing.Point(60, 43);
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.Size = new System.Drawing.Size(344, 20);
-            this.textBoxPassword.TabIndex = 1;
+            this.textBoxPassword.TabIndex = 0;
             // 
             // label1
             // 
@@ -91,6 +91,7 @@
             this.Controls.Add(this.textBoxPassword);
             this.Controls.Add(this.dialogButton);
             this.Name = "FormSetPassword";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Set Password";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

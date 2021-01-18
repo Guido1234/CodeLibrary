@@ -20,18 +20,6 @@ namespace CodeLibrary
 
         public bool IsIdle => _RtfEditorHelper.IsIdle && _FastColoredTextBoxHelper.IsIdle;
 
-        public CodeSnippet CurrentSnippet
-        {
-            get
-            {
-                return _currentSnippet;
-            }
-            set
-            {
-                _currentSnippet = value;
-            }
-        }
-
         public FastColoredTextBox FastColoredTextBox
         {
             get
@@ -86,12 +74,25 @@ namespace CodeLibrary
             SetEditorCodeType(newtype);
         }
 
-        public void CodeToScreen(CodeSnippet snippet, bool pingpong = true)
+        public void SetStateNoSave(CodeSnippet snippet)
         {
-            if (pingpong)
+            if (snippet.CodeType == CodeType.RTF)
             {
-                ScreenToCode(CurrentSnippet);
+                _ActiveTextBoxHelper = _RtfEditorHelper;
+                _mainform.CurrentEditor.Editor = _RtfEditorHelper.Editor;
             }
+            else
+            {
+                _ActiveTextBoxHelper = _FastColoredTextBoxHelper;
+                _mainform.CurrentEditor.Editor = _FastColoredTextBoxHelper.Editor;
+            }
+
+            _ActiveTextBoxHelper.SetState(snippet);
+        }
+
+        public void SetState(CodeSnippet snippet)
+        {
+            SaveState();
 
             if (snippet.CodeType == CodeType.RTF)
             {
@@ -104,28 +105,17 @@ namespace CodeLibrary
                 _mainform.CurrentEditor.Editor = _FastColoredTextBoxHelper.Editor;
             }
 
-            _ActiveTextBoxHelper.CodeToScreen(snippet);
+            _ActiveTextBoxHelper.SetState(snippet);
         }
 
         public void Copy() => _ActiveTextBoxHelper.Copy();
 
-        public void CopyWithMarkup()
-        {
-            if (CurrentSnippet.CodeType != CodeType.RTF)
-            {
-                _FastColoredTextBoxHelper.CopyWithMarkup();
-            }
-        }
+        public void CopyWithMarkup() => _FastColoredTextBoxHelper.CopyWithMarkup();
+
 
         public void Cut() => _ActiveTextBoxHelper.Cut();
 
-        public void CutWithMarkup()
-        {
-            if (CurrentSnippet.CodeType != CodeType.RTF)
-            {
-                _FastColoredTextBoxHelper.Cut();
-            }
-        }
+        public void CutWithMarkup() => _FastColoredTextBoxHelper.Cut();
 
         public void Focus() => _ActiveTextBoxHelper.Focus();
 
@@ -133,20 +123,14 @@ namespace CodeLibrary
 
         public void Paste() => _ActiveTextBoxHelper.Paste();
 
-        public void Save()
+
+
+        public void SaveState()
         {
             if (_ActiveTextBoxHelper == null)
                 return;
 
-            _ActiveTextBoxHelper.Save();
-        }
-
-        public void ScreenToCode(CodeSnippet snippet)
-        {
-            if (_ActiveTextBoxHelper == null)
-                return;
-
-            _ActiveTextBoxHelper.ScreenToCode(snippet);
+            _ActiveTextBoxHelper.SaveState();
         }
 
         public void SelectAll() => _ActiveTextBoxHelper.SelectAll();
@@ -195,21 +179,27 @@ namespace CodeLibrary
                 SetEditorView(type);
                 _FastColoredTextBoxHelper.RefreshEditor();
             }
-        } 
+        }
+
+        public void SetEditorView(CodeSnippet snippet)
+        {
+            bool _htmlpreview = false;
+            if (snippet != null)
+            {
+                _htmlpreview = snippet.HtmlPreview;
+            }
+            _mainform.splitContainerCode.Panel2Collapsed = (snippet.CodeType == CodeType.RTF) ? true : !_htmlpreview;
+            SetEditorView(snippet.CodeType);
+        }
 
         public void SetEditorView(CodeType type)
         {
-            bool _htmlpreview = false;
-            if (CurrentSnippet != null)
-            {
-                _htmlpreview = CurrentSnippet.HtmlPreview;
-            }
             switch (type)
             {
                 case CodeType.Template:
                     CodeInsight.Instance.SetInsightHandler(new TemplateCodeInsightHandler());
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.CSharp;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
+                    
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
                     break;
@@ -217,7 +207,6 @@ namespace CodeLibrary
                 case CodeType.CSharp:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.CSharp;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
 
@@ -226,7 +215,6 @@ namespace CodeLibrary
                 case CodeType.Folder:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.Custom;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
 
@@ -235,7 +223,6 @@ namespace CodeLibrary
                 case CodeType.SQL:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.SQL;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
 
@@ -244,7 +231,6 @@ namespace CodeLibrary
                 case CodeType.VB:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.VB;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
                     break;
@@ -252,7 +238,6 @@ namespace CodeLibrary
                 case CodeType.None:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.Custom;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
                     break;
@@ -260,7 +245,6 @@ namespace CodeLibrary
                 case CodeType.HTML:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.HTML;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
                     break;
@@ -268,7 +252,6 @@ namespace CodeLibrary
                 case CodeType.MarkDown:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.Custom;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
                     break;
@@ -284,7 +267,6 @@ namespace CodeLibrary
                 case CodeType.XML:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.XML;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
                     break;
@@ -292,7 +274,6 @@ namespace CodeLibrary
                 case CodeType.JS:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.JS;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
                     break;
@@ -300,7 +281,6 @@ namespace CodeLibrary
                 case CodeType.PHP:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.PHP;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
                     break;
@@ -308,7 +288,6 @@ namespace CodeLibrary
                 case CodeType.Lua:
                     CodeInsight.Instance.SetInsightHandler(null);
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.Lua;
-                    _mainform.splitContainerCode.Panel2Collapsed = !_htmlpreview;
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
                     break;

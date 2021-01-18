@@ -9,6 +9,9 @@ namespace CodeLibrary
     public partial class FormAbout : Form
     {
         private readonly string _Content = @"
+Version 2.1:
+-   Bugfixes
+
 Version 2.0:
 
 NEW:
@@ -81,6 +84,8 @@ BUG FIXES:
 -   Html Preview not shown on first open.
 
 -   Disabled Javascript errors in webbrowser.
+
+-   Default OK button for Properties window and Addnew dialog
 
 ----------------------------------------------------------------------
 Version 1.9:
