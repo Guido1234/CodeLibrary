@@ -408,6 +408,8 @@ namespace CodeLibrary
 
         public void SaveFile(bool saveas, TreeNode rootnode)
         {
+            _textBoxHelper.SaveState();
+
             string _selectedfile = CurrentFile;
 
             if (string.IsNullOrEmpty(_selectedfile))
