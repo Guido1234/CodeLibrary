@@ -35,6 +35,8 @@ namespace CodeLibrary.Core
             }
         }
 
+        public bool Changed { get; set; }
+
         public DictionaryList<CodeSnippet, string> Library { get; } = new DictionaryList<CodeSnippet, string>(p => p.Id);
 
         public DictionaryList<TreeNode, string> NodeIndexer { get; } = new DictionaryList<TreeNode, string>(p => p.Name);

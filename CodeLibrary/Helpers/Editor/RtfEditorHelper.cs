@@ -139,12 +139,15 @@ namespace CodeLibrary
 
         public void Paste() => _rtf.Paste();
 
-        public void SaveState()
+        public bool SaveState()
         {
+            bool _result = false;
             if (_StateSnippet == null)
             {
-                return;
+                return false;
             }
+
+            _result = _StateSnippet.RTF != _rtf.Rtf;
 
             _StateSnippet.RTF = _rtf.Rtf;
             _StateSnippet.Code = _rtf.Text;
@@ -154,6 +157,8 @@ namespace CodeLibrary
             {
                 _StateSnippet.RTFTheme = _mainform.rtfEditor.Theme;
             }
+
+            return _result;
         }
 
         public void SelectAll() => _rtf.SelectAll();

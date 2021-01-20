@@ -125,12 +125,17 @@ namespace CodeLibrary
 
 
 
-        public void SaveState()
+        public bool SaveState()
         {
             if (_ActiveTextBoxHelper == null)
-                return;
+                return false;
 
-            _ActiveTextBoxHelper.SaveState();
+            bool _changed = _ActiveTextBoxHelper.SaveState();
+            if (_changed == true)
+            {
+                CodeLib.Instance.Changed = true;
+            }
+            return _changed;
         }
 
         public void SelectAll() => _ActiveTextBoxHelper.SelectAll();

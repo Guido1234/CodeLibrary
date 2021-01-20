@@ -142,10 +142,7 @@ namespace CodeLibrary
 
         public void CopyWithMarkup()
         {
-            if (_StateSnippet.CodeType != CodeType.RTF)
-            {
-                _tb.Copy();
-            }
+            _tb.Copy();
         }
 
         public string CurrentLine()
@@ -156,11 +153,6 @@ namespace CodeLibrary
 
         public void Cut()
         {
-            if (_StateSnippet.CodeType != CodeType.RTF)
-            {
-                return;
-            }
-
             _mainform.textBoxClipboard.Text = SelectedText;
             SelectedText = string.Empty;
             if (!string.IsNullOrEmpty(_mainform.textBoxClipboard.Text))
@@ -217,16 +209,19 @@ namespace CodeLibrary
             _tb.Text = _text;
         }
 
-        public void SaveState()
+        public bool SaveState()
         {
+            bool _result = false;
+
             if (_StateSnippet == null)
             {
-                return;
+                return false;
             }
-
+            _result = _StateSnippet.Code != _tb.Text;
             _StateSnippet.Code = _tb.Text;
             _StateSnippet.Wordwrap = _tb.WordWrap;
             _StateSnippet.CurrentLine = _tb.CurrentLineNumber();
+            return _result;
         }
 
         public void SelectAll() => _tb.SelectAll();

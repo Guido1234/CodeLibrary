@@ -29,7 +29,7 @@
         void GotoLine(int line);
 
         void Paste();
-        void SaveState();
+        bool SaveState();
 
         void SelectAll();
 

@@ -337,10 +337,10 @@ namespace CodeLibrary
 
             CodeLib.Instance.Load(_collection);
 
-            if (rootnode == null && !CodeLib.Instance.Library.ContainsKey(Constants.TRASHCAN))
+            if (!CodeLib.Instance.Library.ContainsKey(Constants.TRASHCAN))
                 CodeLib.Instance.Library.Add(CodeSnippet.TrashcanSnippet());
 
-            if (rootnode == null && !CodeLib.Instance.Library.ContainsKey(Constants.CLIPBOARDMONITOR))
+            if (!CodeLib.Instance.Library.ContainsKey(Constants.CLIPBOARDMONITOR))
                 CodeLib.Instance.Library.Add(CodeSnippet.ClipboardMonitorSnippet());
 
             CodeCollectionToForm(string.Empty);
@@ -358,6 +358,7 @@ namespace CodeLibrary
                 Config.LastOpenedDir = fi.Directory.FullName;
 
             CurrentFile = filename;
+            CodeLib.Instance.Changed = false;
             _lastOpenedDate = DateTime.Now;
             SetTitle();
         }
@@ -708,6 +709,7 @@ namespace CodeLibrary
 
             Config.LastOpenedFile = _lastOpened;
             CurrentFile = _lastOpened;
+            CodeLib.Instance.Changed = false;
             SetTitle();
             EndUpdate();
         }
@@ -732,6 +734,7 @@ namespace CodeLibrary
             try
             {
                 File.WriteAllText(fileName, _json);
+                CodeLib.Instance.Changed = false;
             }
             catch (UnauthorizedAccessException ua)
             {
