@@ -63,6 +63,7 @@
     <Compile Include="DevToys\VersionNumber.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="EnumComboBoxHelper.cs" />
+    <Compile Include="FileContainer.cs" />
     <Compile Include="Idle.cs" />
     <Compile Include="ITextBoxHelper.cs" />
     <Compile Include="ComboBoxHelper.cs" />

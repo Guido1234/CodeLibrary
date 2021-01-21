@@ -135,14 +135,6 @@ namespace CodeLibrary.Helpers
         {
             ToolStripItem _item = (ToolStripItem)sender;
             string _filename = (string)_item.Tag;
-            if (_fileHelper.Password != null)
-            {
-                DialogResult _r = MessageBox.Show("A Password is set, do you want to open this library with the current password?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (_r == DialogResult.No)
-                {
-                    return;
-                }
-            }
 
             if (!File.Exists(_filename))
             {
@@ -150,7 +142,7 @@ namespace CodeLibrary.Helpers
                 return;
             }
 
-            _fileHelper.OpenFile(_filename, null);
+            _fileHelper.OpenFile(_filename);
         }
 
 
@@ -167,7 +159,7 @@ namespace CodeLibrary.Helpers
                 return;
             }
 
-            _fileHelper.OpenFile(_filename, null);
+            _fileHelper.OpenFile(_filename);
         }
 
         public void OpenCSharpLibrary()
@@ -183,7 +175,7 @@ namespace CodeLibrary.Helpers
                 return;
             }
 
-            _fileHelper.OpenFile(_filename, null);
+            _fileHelper.OpenFile(_filename);
         }
     }
 }

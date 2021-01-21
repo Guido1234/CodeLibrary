@@ -119,6 +119,8 @@
             this.mncMoveUp = new System.Windows.Forms.ToolStripMenuItem();
             this.mncMoveDown = new System.Windows.Forms.ToolStripMenuItem();
             this.mncProperties = new System.Windows.Forms.ToolStripMenuItem();
+            this.mncMoveToTop = new System.Windows.Forms.ToolStripMenuItem();
+            this.mncMoveToBottom = new System.Windows.Forms.ToolStripMenuItem();
             this.mncImage = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mncSaveImage = new System.Windows.Forms.ToolStripMenuItem();
             this.mncCopyImage = new System.Windows.Forms.ToolStripMenuItem();
@@ -204,6 +206,8 @@
             this.mnuSep9 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuMoveUp = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMoveDown = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMoveToTop = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMoveToBottom = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep10 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuProperties = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTools = new System.Windows.Forms.ToolStripMenuItem();
@@ -710,7 +714,6 @@
             this.fastColoredTextBox.CharWidth = 8;
             this.fastColoredTextBox.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.fastColoredTextBox.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.fastColoredTextBox.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.fastColoredTextBox.Hotkeys = resources.GetString("fastColoredTextBox.Hotkeys");
             this.fastColoredTextBox.IsReplaceMode = false;
             this.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.CSharp;
@@ -778,17 +781,17 @@
             // mncSep5
             // 
             this.mncSep5.Name = "mncSep5";
-            this.mncSep5.Size = new System.Drawing.Size(170, 6);
+            this.mncSep5.Size = new System.Drawing.Size(174, 6);
             // 
             // mncSep9
             // 
             this.mncSep9.Name = "mncSep9";
-            this.mncSep9.Size = new System.Drawing.Size(170, 6);
+            this.mncSep9.Size = new System.Drawing.Size(174, 6);
             // 
             // mncSep10
             // 
             this.mncSep10.Name = "mncSep10";
-            this.mncSep10.Size = new System.Drawing.Size(170, 6);
+            this.mncSep10.Size = new System.Drawing.Size(174, 6);
             // 
             // mncLibrary
             // 
@@ -803,19 +806,21 @@
             this.mncQuickRename,
             this.mncMarkImportant,
             this.mncSep9,
+            this.mncMoveToTop,
             this.mncMoveUp,
             this.mncMoveDown,
+            this.mncMoveToBottom,
             this.mncSep10,
             this.mncProperties});
             this.mncLibrary.Name = "contextMenuStripLibrary";
-            this.mncLibrary.Size = new System.Drawing.Size(174, 370);
+            this.mncLibrary.Size = new System.Drawing.Size(178, 446);
             // 
             // mncAdd
             // 
             this.mncAdd.Image = global::CodeLibrary.Properties.Resources.page_white_add_32x32;
             this.mncAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncAdd.Name = "mncAdd";
-            this.mncAdd.Size = new System.Drawing.Size(173, 38);
+            this.mncAdd.Size = new System.Drawing.Size(177, 38);
             this.mncAdd.Text = "Add";
             this.mncAdd.Click += new System.EventHandler(this.mncAdd_Click);
             // 
@@ -824,7 +829,7 @@
             this.mncDelete.Image = global::CodeLibrary.Properties.Resources.textfield_delete_32x32;
             this.mncDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncDelete.Name = "mncDelete";
-            this.mncDelete.Size = new System.Drawing.Size(173, 38);
+            this.mncDelete.Size = new System.Drawing.Size(177, 38);
             this.mncDelete.Text = "Delete";
             this.mncDelete.ToolTipText = "Use Shift-Delete for silent delete.";
             this.mncDelete.Click += new System.EventHandler(this.mncDelete_Click);
@@ -832,7 +837,7 @@
             // mncSep3
             // 
             this.mncSep3.Name = "mncSep3";
-            this.mncSep3.Size = new System.Drawing.Size(170, 6);
+            this.mncSep3.Size = new System.Drawing.Size(174, 6);
             // 
             // mncClipboard
             // 
@@ -846,7 +851,7 @@
             this.mncCopyPath,
             this.mncCopyContentsAndMerge});
             this.mncClipboard.Name = "mncClipboard";
-            this.mncClipboard.Size = new System.Drawing.Size(173, 38);
+            this.mncClipboard.Size = new System.Drawing.Size(177, 38);
             this.mncClipboard.Text = "Clipboard";
             // 
             // mncPasteImage
@@ -925,7 +930,7 @@
             this.mncChangeType.Image = global::CodeLibrary.Properties.Resources.document_rename_32x32;
             this.mncChangeType.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncChangeType.Name = "mncChangeType";
-            this.mncChangeType.Size = new System.Drawing.Size(173, 38);
+            this.mncChangeType.Size = new System.Drawing.Size(177, 38);
             this.mncChangeType.Text = "Change Type";
             // 
             // mncTypeFolder
@@ -1078,7 +1083,7 @@
             this.mncQuickRename.Image = global::CodeLibrary.Properties.Resources.textfield_rename_32x32;
             this.mncQuickRename.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncQuickRename.Name = "mncQuickRename";
-            this.mncQuickRename.Size = new System.Drawing.Size(173, 38);
+            this.mncQuickRename.Size = new System.Drawing.Size(177, 38);
             this.mncQuickRename.Text = "Quick Rename";
             // 
             // mncYYYYMMDD
@@ -1133,7 +1138,7 @@
             this.mncMarkImportant.Image = global::CodeLibrary.Properties.Resources.error_32x32;
             this.mncMarkImportant.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncMarkImportant.Name = "mncMarkImportant";
-            this.mncMarkImportant.Size = new System.Drawing.Size(173, 38);
+            this.mncMarkImportant.Size = new System.Drawing.Size(177, 38);
             this.mncMarkImportant.Text = "Mark Important";
             this.mncMarkImportant.Click += new System.EventHandler(this.mncMarkImportant_Click);
             // 
@@ -1142,7 +1147,7 @@
             this.mncMoveUp.Image = global::CodeLibrary.Properties.Resources.arrow_up_32x32;
             this.mncMoveUp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncMoveUp.Name = "mncMoveUp";
-            this.mncMoveUp.Size = new System.Drawing.Size(173, 38);
+            this.mncMoveUp.Size = new System.Drawing.Size(177, 38);
             this.mncMoveUp.Text = "Move Up";
             this.mncMoveUp.Click += new System.EventHandler(this.mncMoveUp_Click);
             // 
@@ -1151,7 +1156,7 @@
             this.mncMoveDown.Image = global::CodeLibrary.Properties.Resources.arrow_down_32x32;
             this.mncMoveDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncMoveDown.Name = "mncMoveDown";
-            this.mncMoveDown.Size = new System.Drawing.Size(173, 38);
+            this.mncMoveDown.Size = new System.Drawing.Size(177, 38);
             this.mncMoveDown.Text = "Move Down";
             this.mncMoveDown.Click += new System.EventHandler(this.mncMoveDown_Click);
             // 
@@ -1160,9 +1165,23 @@
             this.mncProperties.Image = global::CodeLibrary.Properties.Resources.cog_32x32;
             this.mncProperties.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncProperties.Name = "mncProperties";
-            this.mncProperties.Size = new System.Drawing.Size(173, 38);
+            this.mncProperties.Size = new System.Drawing.Size(177, 38);
             this.mncProperties.Text = "Properties";
             this.mncProperties.Click += new System.EventHandler(this.mncProperties_Click);
+            // 
+            // mncMoveToTop
+            // 
+            this.mncMoveToTop.Name = "mncMoveToTop";
+            this.mncMoveToTop.Size = new System.Drawing.Size(177, 38);
+            this.mncMoveToTop.Text = "Move to Top";
+            this.mncMoveToTop.Click += new System.EventHandler(this.mncMoveToTop_Click);
+            // 
+            // mncMoveToBottom
+            // 
+            this.mncMoveToBottom.Name = "mncMoveToBottom";
+            this.mncMoveToBottom.Size = new System.Drawing.Size(177, 38);
+            this.mncMoveToBottom.Text = "Move to Bottom";
+            this.mncMoveToBottom.Click += new System.EventHandler(this.mncMoveToBottom_Click);
             // 
             // mncImage
             // 
@@ -1511,8 +1530,10 @@
             this.mnuQuickRename,
             this.mnuMarkImportant,
             this.mnuSep9,
+            this.mnuMoveToTop,
             this.mnuMoveUp,
             this.mnuMoveDown,
+            this.mnuMoveToBottom,
             this.mnuSep10,
             this.mnuProperties});
             this.mnuLibrary.Name = "mnuLibrary";
@@ -1525,7 +1546,7 @@
             this.mnuAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuAdd.Name = "mnuAdd";
             this.mnuAdd.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.mnuAdd.Size = new System.Drawing.Size(248, 38);
+            this.mnuAdd.Size = new System.Drawing.Size(274, 38);
             this.mnuAdd.Text = "Add";
             this.mnuAdd.Click += new System.EventHandler(this.mnuAdd_Click);
             // 
@@ -1536,7 +1557,7 @@
             this.mnuAddDialog.Name = "mnuAddDialog";
             this.mnuAddDialog.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.Q)));
-            this.mnuAddDialog.Size = new System.Drawing.Size(248, 38);
+            this.mnuAddDialog.Size = new System.Drawing.Size(274, 38);
             this.mnuAddDialog.Text = "Add (By Dialog)";
             this.mnuAddDialog.Click += new System.EventHandler(this.mnuAddDialog_Click);
             // 
@@ -1545,7 +1566,7 @@
             this.mnuDelete.Image = global::CodeLibrary.Properties.Resources.textfield_delete_32x32;
             this.mnuDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuDelete.Name = "mnuDelete";
-            this.mnuDelete.Size = new System.Drawing.Size(248, 38);
+            this.mnuDelete.Size = new System.Drawing.Size(274, 38);
             this.mnuDelete.Text = "Delete";
             this.mnuDelete.ToolTipText = "Use Shift-Delete for silent delete.";
             this.mnuDelete.Click += new System.EventHandler(this.mnuDelete_Click);
@@ -1553,7 +1574,7 @@
             // mnuSep6
             // 
             this.mnuSep6.Name = "mnuSep6";
-            this.mnuSep6.Size = new System.Drawing.Size(245, 6);
+            this.mnuSep6.Size = new System.Drawing.Size(271, 6);
             // 
             // mnuClipboard
             // 
@@ -1567,7 +1588,7 @@
             this.mnuCopyPath,
             this.mnuCopyContentsAndMerge});
             this.mnuClipboard.Name = "mnuClipboard";
-            this.mnuClipboard.Size = new System.Drawing.Size(248, 38);
+            this.mnuClipboard.Size = new System.Drawing.Size(274, 38);
             this.mnuClipboard.Text = "Clipboard";
             // 
             // mnuPasteImage
@@ -1622,7 +1643,7 @@
             // mnuSep7
             // 
             this.mnuSep7.Name = "mnuSep7";
-            this.mnuSep7.Size = new System.Drawing.Size(245, 6);
+            this.mnuSep7.Size = new System.Drawing.Size(271, 6);
             // 
             // mnuSearch
             // 
@@ -1631,14 +1652,14 @@
             this.mnuSearch.Name = "mnuSearch";
             this.mnuSearch.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.mnuSearch.Size = new System.Drawing.Size(248, 38);
+            this.mnuSearch.Size = new System.Drawing.Size(274, 38);
             this.mnuSearch.Text = "Search";
             this.mnuSearch.Click += new System.EventHandler(this.mnuSearch_Click);
             // 
             // mnuSep8
             // 
             this.mnuSep8.Name = "mnuSep8";
-            this.mnuSep8.Size = new System.Drawing.Size(245, 6);
+            this.mnuSep8.Size = new System.Drawing.Size(271, 6);
             // 
             // mnuChangeType
             // 
@@ -1663,7 +1684,7 @@
             this.mnuChangeType.Image = global::CodeLibrary.Properties.Resources.document_rename_32x32;
             this.mnuChangeType.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuChangeType.Name = "mnuChangeType";
-            this.mnuChangeType.Size = new System.Drawing.Size(248, 38);
+            this.mnuChangeType.Size = new System.Drawing.Size(274, 38);
             this.mnuChangeType.Text = "Change Type";
             // 
             // mnuTypeFolder
@@ -1816,7 +1837,7 @@
             this.mnuQuickRename.Image = global::CodeLibrary.Properties.Resources.textfield_rename_32x32;
             this.mnuQuickRename.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuQuickRename.Name = "mnuQuickRename";
-            this.mnuQuickRename.Size = new System.Drawing.Size(248, 38);
+            this.mnuQuickRename.Size = new System.Drawing.Size(274, 38);
             this.mnuQuickRename.Text = "Quick Rename";
             // 
             // mnuRenameYYYYDDMM
@@ -1873,14 +1894,14 @@
             this.mnuMarkImportant.Image = global::CodeLibrary.Properties.Resources.error_32x32;
             this.mnuMarkImportant.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuMarkImportant.Name = "mnuMarkImportant";
-            this.mnuMarkImportant.Size = new System.Drawing.Size(248, 38);
+            this.mnuMarkImportant.Size = new System.Drawing.Size(274, 38);
             this.mnuMarkImportant.Text = "Mark Important";
             this.mnuMarkImportant.Click += new System.EventHandler(this.mnuMarkImportant_Click);
             // 
             // mnuSep9
             // 
             this.mnuSep9.Name = "mnuSep9";
-            this.mnuSep9.Size = new System.Drawing.Size(245, 6);
+            this.mnuSep9.Size = new System.Drawing.Size(271, 6);
             // 
             // mnuMoveUp
             // 
@@ -1888,7 +1909,7 @@
             this.mnuMoveUp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuMoveUp.Name = "mnuMoveUp";
             this.mnuMoveUp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Up)));
-            this.mnuMoveUp.Size = new System.Drawing.Size(248, 38);
+            this.mnuMoveUp.Size = new System.Drawing.Size(274, 38);
             this.mnuMoveUp.Text = "Move Up";
             this.mnuMoveUp.Click += new System.EventHandler(this.mnuMoveUp_Click);
             // 
@@ -1898,21 +1919,39 @@
             this.mnuMoveDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuMoveDown.Name = "mnuMoveDown";
             this.mnuMoveDown.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Down)));
-            this.mnuMoveDown.Size = new System.Drawing.Size(248, 38);
+            this.mnuMoveDown.Size = new System.Drawing.Size(274, 38);
             this.mnuMoveDown.Text = "Move Down";
             this.mnuMoveDown.Click += new System.EventHandler(this.mnuMoveDown_Click);
+            // 
+            // mnuMoveToTop
+            // 
+            this.mnuMoveToTop.Name = "mnuMoveToTop";
+            this.mnuMoveToTop.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.Up)));
+            this.mnuMoveToTop.Size = new System.Drawing.Size(274, 38);
+            this.mnuMoveToTop.Text = "Move to Top";
+            this.mnuMoveToTop.Click += new System.EventHandler(this.mnuMoveToTop_Click);
+            // 
+            // mnuMoveToBottom
+            // 
+            this.mnuMoveToBottom.Name = "mnuMoveToBottom";
+            this.mnuMoveToBottom.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.Down)));
+            this.mnuMoveToBottom.Size = new System.Drawing.Size(274, 38);
+            this.mnuMoveToBottom.Text = "Move to Bottom";
+            this.mnuMoveToBottom.Click += new System.EventHandler(this.mnuMoveToBottom_Click);
             // 
             // mnuSep10
             // 
             this.mnuSep10.Name = "mnuSep10";
-            this.mnuSep10.Size = new System.Drawing.Size(245, 6);
+            this.mnuSep10.Size = new System.Drawing.Size(271, 6);
             // 
             // mnuProperties
             // 
             this.mnuProperties.Image = global::CodeLibrary.Properties.Resources.cog_32x32;
             this.mnuProperties.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuProperties.Name = "mnuProperties";
-            this.mnuProperties.Size = new System.Drawing.Size(248, 38);
+            this.mnuProperties.Size = new System.Drawing.Size(274, 38);
             this.mnuProperties.Text = "Properties";
             this.mnuProperties.Click += new System.EventHandler(this.mnuProperties_Click);
             // 
@@ -2404,6 +2443,10 @@
         internal System.Windows.Forms.Label lblLengthText;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.PictureBox pctKey;
+        internal System.Windows.Forms.ToolStripMenuItem mnuMoveToTop;
+        internal System.Windows.Forms.ToolStripMenuItem mnuMoveToBottom;
+        internal System.Windows.Forms.ToolStripMenuItem mncMoveToTop;
+        internal System.Windows.Forms.ToolStripMenuItem mncMoveToBottom;
     }
 }
 

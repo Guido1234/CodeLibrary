@@ -10,7 +10,17 @@ namespace CodeLibrary
     {
         private readonly string _Content = @"
 Version 2.1:
+-   New file container.
+
+-   Ask for password on encrypted file container. (only for new container or saved container).
+    When a file without password is opened, the password will be reset.
+
+-   Encrypted files are reminded as well, password dialog will show on opening.
+
+-   Move to Top / Move to Bottom
+
 -   Bugfixes
+
 
 Version 2.0:
 

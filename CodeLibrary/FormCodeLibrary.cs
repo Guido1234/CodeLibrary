@@ -120,7 +120,12 @@ namespace CodeLibrary
         {
             _fileHelper.Password = null;
             tbPath.BackColor = SystemColors.ButtonFace;
-            pctKey.Visible = false;
+            ShowKey();
+        }
+
+        internal void ShowKey()
+        {
+            pctKey.Visible = _fileHelper.Password != null;
         }
 
         private void EditNodeProperties()
@@ -159,11 +164,10 @@ namespace CodeLibrary
             if (_exitWithoutSaving)
                 return;
 
-            if (_fileHelper.Password == null)
-            {
-                if (!string.IsNullOrEmpty(_fileHelper.CurrentFile))
-                    Config.LastOpenedFile = _fileHelper.CurrentFile;
-            }
+
+            if (!string.IsNullOrEmpty(_fileHelper.CurrentFile))
+                Config.LastOpenedFile = _fileHelper.CurrentFile;
+ 
 
             _fileHelper.SaveFile(false);
 
@@ -485,7 +489,7 @@ namespace CodeLibrary
         private void SetPassWord(SecureString password)
         {
             _fileHelper.Password = password;
-            pctKey.Visible = true;
+            ShowKey();
         }
 
         private void TextBoxFind_KeyUp(object sender, KeyEventArgs e)
@@ -504,5 +508,12 @@ namespace CodeLibrary
             }
         }
 
+        private void mnuMoveToTop_Click(object sender, EventArgs e) => _treeHelper.MoveToTop();
+
+        private void mnuMoveToBottom_Click(object sender, EventArgs e) => _treeHelper.MoveToBottom();
+
+        private void mncMoveToTop_Click(object sender, EventArgs e) => _treeHelper.MoveToTop();
+
+        private void mncMoveToBottom_Click(object sender, EventArgs e) => _treeHelper.MoveToBottom();
     }
 }

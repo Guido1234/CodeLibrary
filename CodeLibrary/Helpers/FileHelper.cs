@@ -296,9 +296,7 @@ namespace CodeLibrary
             TreeHelper.FindNodeByPath("Snippets");
         }
 
-        public void OpenFile() => OpenFile(null);
-
-        public void OpenFile(TreeNode rootnode)
+        public void OpenFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -308,29 +306,24 @@ namespace CodeLibrary
             if (openFileDialog.ShowDialog(_mainform) == DialogResult.OK)
             {
                 string filename = openFileDialog.FileName;
-                OpenFile(filename, rootnode);
+                OpenFile(filename);
             }
         }
 
-        public void OpenFile(string filename, TreeNode rootnode)
+        public void OpenFile(string filename)
         {
             BeginUpdate();
-            CodeSnippetCollection _collection = ReadCollection(filename, Password);
-
-            if (_collection == null)
+            bool _succes = false;
+            CodeSnippetCollection _collection = ReadCollection(filename, Password, ref _succes);
+            if (_succes == false)
             {
-                MessageBox.Show($"Could not open the file '{filename}'", "Error opening file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                EndUpdate();
-                RestoreBackup(filename);
-                return;
+                _collection = ReadCollectionOld(filename, Password, ref _succes);
             }
 
-            if (rootnode != null)
+            if (_succes == false)
             {
-                DictionaryList<CodeSnippet, string> library = new DictionaryList<CodeSnippet, string>(p => p.Id);
-                CodeLib.Import(_collection, library, true);
-                CodeCollectionToForm(rootnode, library);
-                CodeLib.Instance.Import(_collection);
+                MessageBox.Show($"Could not open the file '{filename}'", "Error opening file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                NewDoc();
                 EndUpdate();
                 return;
             }
@@ -338,10 +331,14 @@ namespace CodeLibrary
             CodeLib.Instance.Load(_collection);
 
             if (!CodeLib.Instance.Library.ContainsKey(Constants.TRASHCAN))
+            {
                 CodeLib.Instance.Library.Add(CodeSnippet.TrashcanSnippet());
+            }
 
             if (!CodeLib.Instance.Library.ContainsKey(Constants.CLIPBOARDMONITOR))
+            {
                 CodeLib.Instance.Library.Add(CodeSnippet.ClipboardMonitorSnippet());
+            }
 
             CodeCollectionToForm(string.Empty);
 
@@ -349,13 +346,9 @@ namespace CodeLibrary
 
             TreeHelper.FindNodeByPath(_collection.LastSelected);
 
-            if (Password == null)
-                Config.LastOpenedFile = filename;
-
+            Config.LastOpenedFile = filename;
             FileInfo fi = new FileInfo(filename);
-
-            if (Password == null)
-                Config.LastOpenedDir = fi.Directory.FullName;
+            Config.LastOpenedDir = fi.Directory.FullName;
 
             CurrentFile = filename;
             CodeLib.Instance.Changed = false;
@@ -369,7 +362,7 @@ namespace CodeLibrary
 
             if (Config.LastOpenedFile != null)
                 if (Utils.IsFileOrDirectory(Config.LastOpenedFile) == Utils.FileOrDirectory.File)
-                    OpenFile(Config.LastOpenedFile, null);
+                    OpenFile(Config.LastOpenedFile);
 
             EndUpdate();
         }
@@ -405,16 +398,16 @@ namespace CodeLibrary
             }
         }
 
-        public void SaveFile(bool saveas) => SaveFile(saveas, null);
-
-        public void SaveFile(bool saveas, TreeNode rootnode)
+        public void SaveFile(bool saveas)
         {
             _textBoxHelper.SaveState();
 
             string _selectedfile = CurrentFile;
 
             if (string.IsNullOrEmpty(_selectedfile))
-                saveas = true || rootnode != null;
+            {
+                saveas = true;
+            }
 
             if (saveas == true)
             {
@@ -444,72 +437,154 @@ namespace CodeLibrary
                 }
             }
 
-            if (rootnode == null)
-            {                
-                CurrentFile = _selectedfile;
-                _lastOpenedDate = DateTime.Now;
-                SetTitle();
-            }
-
-            //if (Password != null)
-            //{
-            //    CurrentFile = null;
-            //    Config.LastOpenedFile = null;
-            //}
-
+            
+            CurrentFile = _selectedfile;
+            _lastOpenedDate = DateTime.Now;
+            SetTitle();
+            
             CodeSnippetCollection _collection = new CodeSnippetCollection { LastSaved = _lastOpenedDate };
 
-            if (rootnode == null)
+            FormToCodeCollection(_treeViewLibrary.Nodes);
+            if (_treeViewLibrary.SelectedNode != null)
             {
-                FormToCodeCollection(_treeViewLibrary.Nodes);
-                if (_treeViewLibrary.SelectedNode != null)
-                    _collection.LastSelected = _treeViewLibrary.SelectedNode.FullPath;
-
-                _mainform.SaveEditor();
-                CodeLib.Instance.Save(_collection);
-            }
-            else
-            {
-                FormToCodeCollection(rootnode.Nodes, rootnode);
-                List<string> ids = new List<string>();
-                GetIds(rootnode.Nodes, rootnode, ref ids);
-                IEnumerable<CodeSnippet> _snippets = CodeLib.Instance.Library.GetRange(ids);
-                _collection.Items.AddRange(_snippets);
+                _collection.LastSelected = _treeViewLibrary.SelectedNode.FullPath;
             }
 
-            if (rootnode == null)
-            {
-                BackupHelper backupHelper = new BackupHelper(CurrentFile);
-                backupHelper.Backup();
-            }
+            _mainform.SaveEditor();
+            CodeLib.Instance.Save(_collection);
+
+
+            BackupHelper backupHelper = new BackupHelper(CurrentFile);
+            backupHelper.Backup();
+
 
             Save(_collection, _selectedfile);
         }
 
-        private static CodeSnippetCollection ReadCollection(string filename, SecureString password)
+        private static CodeSnippetCollection ReadCollectionOld(string filename, SecureString password, ref bool succes)
         {
+            succes = true;
             string _data = File.ReadAllText(filename, Encoding.Default);
             try
             {
                 if (password != null)
+                {
                     _data = StringCipher.Decrypt(_data, password);
+                }
             }
             catch
             {
                 MessageBox.Show($"Could not decrypt: '{filename}' with the current password! ", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error) ;
+                succes = false;
                 return null;
             }
             try
             {
                 CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(_data);
                 _collection.FromBase64();
+                if (_collection.Items == null)
+                {
+                    succes = false;
+                    return null;
+                }
+                succes = true;
                 return _collection;
             }
             catch
             {
+                succes = false;
                 return null;
             }
         }
+
+        private static CodeSnippetCollection TryDecrypt(string data, SecureString password, ref bool succes)
+        {
+            try
+            {
+                data = Utils.FromBase64(data);
+                data = StringCipher.Decrypt(data, password);
+                CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(data);
+                _collection.FromBase64();
+                succes = true;
+                return _collection;
+            }
+            catch 
+            { 
+            }
+            succes = false;
+            return null;
+        }
+
+
+        private CodeSnippetCollection ReadCollection(string filename, SecureString password, ref bool succes)
+        {
+            succes = true;
+            string _fileData = string.Empty;
+            FileContainer _container = new FileContainer();
+
+            try
+            {
+                _fileData = File.ReadAllText(filename, Encoding.Default);
+                _container = Utils.FromJson<FileContainer>(_fileData);
+            }
+            catch
+            {
+                succes = false;
+                return null;
+            }
+
+            if (_container.Encrypted)
+            {
+                // Decrypt with given password.
+                if (password == null)
+                {
+                    goto setPassword;
+                }
+
+            retryPassword:
+                CodeSnippetCollection _result = TryDecrypt(_container.Data, password, ref succes);
+                if (succes)
+                {
+                    Password = password;
+                    _mainform.ShowKey();
+                    return _result;
+                }
+
+                setPassword:
+                FormSetPassword _formSet = new FormSetPassword();
+                DialogResult _dg = _formSet.ShowDialog();
+                if (_dg == DialogResult.OK)
+                {
+                    password = _formSet.Password;
+                    goto retryPassword;
+                }     
+                else
+                {
+                    succes = false;
+                    return null;
+                }
+            }
+            else
+            {
+                try
+                {
+                    CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(Utils.FromBase64(_container.Data));
+                    _collection.FromBase64();
+                    Password = null;
+                    _mainform.ShowKey();
+                    succes = true;
+                    return _collection;
+                }
+                catch
+                {
+                    succes = false;
+                    return null;
+                }
+            }
+
+            return null;
+        }
+
 
         public CodeType CodeTypeByExtension(FileInfo file)
         {
@@ -705,7 +780,7 @@ namespace CodeLibrary
 
             if (file != null)
                 if (Utils.IsFileOrDirectory(file) == Utils.FileOrDirectory.File)
-                    OpenFile(file, null);
+                    OpenFile(file);
 
             Config.LastOpenedFile = _lastOpened;
             CurrentFile = _lastOpened;
@@ -726,14 +801,14 @@ namespace CodeLibrary
 
             collection.FromBase64();
 
-            //string _base64Json = Utils.ToBase64(_json);
+            string _base64Json = Utils.ToBase64(_json);
 
-            //FileContainer _fileContainer = new FileContainer() { Version = Program.VersionNumber.ToString(), IsEncrypted = _encrypted, Data = _base64Json };
-            //string _json2 = Utils.ToJson(_fileContainer);
+            FileContainer _fileContainer = new FileContainer() { Version = Config.CurrentVersion().ToString(), Encrypted = (Password != null), Data = _base64Json };
+            string _json2 = Utils.ToJson(_fileContainer);
 
             try
             {
-                File.WriteAllText(fileName, _json);
+                File.WriteAllText(fileName, _json2);
                 CodeLib.Instance.Changed = false;
             }
             catch (UnauthorizedAccessException ua)

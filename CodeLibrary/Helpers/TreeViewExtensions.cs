@@ -1,57 +1,148 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace CodeLibrary
 {
     public static class TreeViewExtensions
     {
+        public static void GetAllChildNames(this TreeNode node, ref List<string> name)
+        {
+            foreach (TreeNode child in node.Nodes)
+            {
+                name.Add(child.Name);
+                GetAllChildNames(child, ref name);
+            }
+        }
+
+        public static TreeNode GetRootNode(this TreeNode node)
+        {
+            TreeNode root = node;
+            if (root == null)
+                return node;
+
+            while (root.Parent != null)
+            {
+                if (root.Parent == null)
+                    return root;
+
+                root = root.Parent;
+            }
+
+            return root;
+        }
+
         public static void MoveDown(this TreeNode node)
         {
-            TreeNode parent = node.Parent;
-            TreeView view = node.TreeView;
-            if (parent != null)
+            var view = node.TreeView;
+            var _parentNodes = ParentNodes(node);
+
+            int index = _parentNodes.IndexOf(node);
+            if (index < _parentNodes.Count)
             {
-                int index = parent.Nodes.IndexOf(node);
-                if (index < parent.Nodes.Count - 1)
-                {
-                    parent.Nodes.RemoveAt(index);
-                    parent.Nodes.Insert(index + 1, node);
-                }
+                _parentNodes.RemoveAt(index);
+                _parentNodes.Insert(index + 1, node);
             }
-            else if (view != null && view.Nodes.Contains(node)) //root node
+
+            view.SelectedNode = node;
+        }
+
+        public static void MoveToBottom(this TreeNode node)
+        {
+            var view = node.TreeView;
+            var _parentNodes = ParentNodes(node);
+
+            int index = _parentNodes.IndexOf(node);
+            if (index > -1)
             {
-                int index = view.Nodes.IndexOf(node);
-                if (index < view.Nodes.Count - 1)
-                {
-                    view.Nodes.RemoveAt(index);
-                    view.Nodes.Insert(index + 1, node);
-                }
+                _parentNodes.RemoveAt(index);
+                _parentNodes.Insert(_parentNodes.Count, node);
             }
+
+            view.SelectedNode = node;
+        }
+
+        public static void MoveToTop(this TreeNode node)
+        {
+            var view = node.TreeView;
+            var _parentNodes = ParentNodes(node);
+
+            int index = _parentNodes.IndexOf(node);
+            if (index < _parentNodes.Count)
+            {
+                _parentNodes.RemoveAt(index);
+                _parentNodes.Insert(0, node);
+            }
+
             view.SelectedNode = node;
         }
 
         public static void MoveUp(this TreeNode node)
         {
-            TreeNode parent = node.Parent;
-            TreeView view = node.TreeView;
-            if (parent != null)
+            var view = node.TreeView;
+            var _parentNodes = ParentNodes(node);
+
+            int index = _parentNodes.IndexOf(node);
+            if (index > -1)
             {
-                int index = parent.Nodes.IndexOf(node);
-                if (index > 0)
-                {
-                    parent.Nodes.RemoveAt(index);
-                    parent.Nodes.Insert(index - 1, node);
-                }
+                _parentNodes.RemoveAt(index);
+                _parentNodes.Insert(index - 1, node);
             }
-            else if (node.TreeView.Nodes.Contains(node)) //root node
-            {
-                int index = view.Nodes.IndexOf(node);
-                if (index > 0)
-                {
-                    view.Nodes.RemoveAt(index);
-                    view.Nodes.Insert(index - 1, node);
-                }
-            }
+
             view.SelectedNode = node;
         }
+
+        public static int ParentCount(this TreeNode node)
+        {
+            if (node == null)
+            {
+                return 0;
+            }
+            return ParentNodes(node).Count;
+        }
+
+        public static TreeNodeCollection ParentNodes(this TreeNode node)
+        {
+            var parent = node.Parent;
+            var view = node.TreeView;
+            if (parent != null)
+            {
+                return parent.Nodes;
+            }
+            return view.Nodes;
+        }
+
+        public static List<TreeNode> ParentPath(this TreeNode node)
+        {
+            List<TreeNode> parents = new List<TreeNode>();
+            while (node.Parent != null)
+            {
+                node = node.Parent;
+                if (node != null)
+                    parents.Add(node);
+            }
+            return parents;
+        }
+
+
+
+        public static TreeNode FindNodeByPath(this TreeNode parent, string fullpath)
+        {
+            foreach (TreeNode node in parent.Nodes)
+            {
+                if (node.FullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return node;
+                }
+                var _newNode = node.FindNodeByPath(fullpath);
+                if (_newNode != null)
+                {
+                    return _newNode;
+                }
+            }
+            return null;
+        }
+
+
     }
 }
