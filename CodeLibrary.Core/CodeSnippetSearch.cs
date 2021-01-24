@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace CodeLibrary.Core
@@ -11,7 +13,7 @@ namespace CodeLibrary.Core
         [DataMember(Name = "Type", Order = 2)]
         public CodeType CodeType { get; set; }
 
-        [Browsable(false)]
+        //[Browsable(false)]
         [DataMember(Name = "Created", Order = 1)]
         public string CreationDate { get; set; }
 
@@ -25,5 +27,13 @@ namespace CodeLibrary.Core
 
         [DataMember(Name = "Document", Order = 0)]
         public string Path { get; set; } = string.Empty;
+
+        [Browsable(true)]
+        [DataMember(Name = "CodeLastModificationDate", Order = 1)]
+        [DisplayFormatAttribute(  DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
+        public DateTime? CodeLastModificationDate { get; set; }
     }
+
+
+
 }

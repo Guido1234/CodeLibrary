@@ -62,6 +62,7 @@ namespace CodeLibrary
             this.cbExpand = new System.Windows.Forms.CheckBox();
             this.rtf = new CodeLibrary.Controls.Controls.RtfControl();
             this.dialogButton = new CodeLibrary.Controls.DialogButton();
+            this.lblModifiedOn = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.tbCode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -370,13 +371,13 @@ namespace CodeLibrary
             this.rtf.BackColor = System.Drawing.SystemColors.Window;
             this.rtf.Location = new System.Drawing.Point(351, 191);
             this.rtf.Name = "rtf";
-            this.rtf.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
-    "d\\f0\\fs17\\par\r\n}\r\n";
+            this.rtf.OwnTheme = false;
+            this.rtf.Rtf = resources.GetString("rtf.Rtf");
             this.rtf.SelectedRtf = "";
             this.rtf.SelectedText = "";
             this.rtf.Size = new System.Drawing.Size(132, 163);
             this.rtf.TabIndex = 30;
+            this.rtf.Theme = CodeLibrary.Core.RtfTheme.Dark;
             this.rtf.Visible = false;
             this.rtf.Zoom = 100;
             // 
@@ -396,12 +397,23 @@ namespace CodeLibrary
             this.dialogButton.TextYes = "Yes";
             this.dialogButton.DialogButtonClick += new CodeLibrary.Controls.DialogButton.DialogButtonClickEventHandler(this.DialogButton_DialogButtonClick);
             // 
-            // FormProperties2
+            // lblModifiedOn
+            // 
+            this.lblModifiedOn.AutoSize = true;
+            this.lblModifiedOn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblModifiedOn.Location = new System.Drawing.Point(12, 396);
+            this.lblModifiedOn.Name = "lblModifiedOn";
+            this.lblModifiedOn.Size = new System.Drawing.Size(65, 13);
+            this.lblModifiedOn.TabIndex = 33;
+            this.lblModifiedOn.Text = "Modified on:";
+            // 
+            // FormProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size(760, 421);
+            this.Controls.Add(this.lblModifiedOn);
             this.Controls.Add(this.cbExpand);
             this.Controls.Add(this.lbName);
             this.Controls.Add(this.rtf);
@@ -434,7 +446,7 @@ namespace CodeLibrary
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormProperties2";
+            this.Name = "FormProperties";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Properties";
             this.Load += new System.EventHandler(this.Defaults_Load);
@@ -479,5 +491,6 @@ namespace CodeLibrary
         private Controls.Controls.RtfControl rtf;
         private System.Windows.Forms.Label lbName;
         private System.Windows.Forms.CheckBox cbExpand;
+        private System.Windows.Forms.Label lblModifiedOn;
     }
 }

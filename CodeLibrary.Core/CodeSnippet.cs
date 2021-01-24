@@ -11,7 +11,7 @@ namespace CodeLibrary.Core
     {
         public CodeSnippet()
         {
-            CreationDate = DateTime.Now.ToString("yyyyMMdd hh:nn");
+            CreationDate = DateTime.Now.ToString("yyyyMMdd HH:mm:ss");
             Id = Guid.NewGuid().ToString();
         }
 
@@ -20,6 +20,9 @@ namespace CodeLibrary.Core
 
         [DataMember(Name = "AlarmDate")]
         public DateTime? AlarmDate { get; set; }
+
+        [DataMember(Name = "CodeLastModificationDate")]
+        public DateTime? CodeLastModificationDate { get; set; }
 
         [DataMember(Name = "Blob")]
         public byte[] Blob { get; set; }
@@ -34,7 +37,33 @@ namespace CodeLibrary.Core
         public CodeType CodeType { get; set; }
 
         [DataMember(Name = "CreationDate")]
-        public string CreationDate { get; set; }
+        private string _CreationDate;
+
+        public string CreationDate
+        {
+            get
+            {
+                //fix incorrect creation date format
+                if (_CreationDate != null && _CreationDate.Contains(":nn"))
+                {
+                    _CreationDate = _CreationDate.Replace(":nn", ":00:00");
+                }
+                else if (_CreationDate != null && _CreationDate.Length == "yyyyMMdd HH:mm".Length)
+                {
+                    _CreationDate = _CreationDate + ":00";
+                }
+                return _CreationDate;
+            }
+            set
+            {
+                if (value != null && value.Contains(":nn"))
+                {
+                    value = value.Replace(".nn", ".00.00");
+                }
+                _CreationDate = value;
+            }
+        }
+
 
         [DataMember(Name = "CurrentLine")]
         public int CurrentLine { get; set; }

@@ -151,6 +151,10 @@ namespace CodeLibrary
 
             _StateSnippet.RTF = _rtf.Rtf;
             _StateSnippet.Code = _rtf.Text;
+            if (_result)
+            {
+                _StateSnippet.CodeLastModificationDate = DateTime.Now;
+            }
 
             _StateSnippet.RTFOwnTheme = _mainform.rtfEditor.OwnTheme;
             if (_StateSnippet.RTFOwnTheme)

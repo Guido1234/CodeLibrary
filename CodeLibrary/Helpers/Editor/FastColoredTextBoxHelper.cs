@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
- 
+
 namespace CodeLibrary
 {
     public class FastColoredTextBoxHelper : ITextBoxHelper
@@ -27,7 +27,7 @@ namespace CodeLibrary
         public FastColoredTextBoxHelper(FormCodeLibrary mainform, TextBoxHelper textboxHelper)
         {
             _mainform = mainform;
-            _tb = _mainform.fastColoredTextBox;            
+            _tb = _mainform.fastColoredTextBox;
             _TextBoxHelper = textboxHelper;
 
             CodeInsight.Instance.Init(_mainform.listBoxInsight, _tb);
@@ -109,7 +109,7 @@ namespace CodeLibrary
 
             _tb.Text = snippet.Code;
             _tb.ClearUndo();
-            _mainform.tbPath.Text = snippet.Path;
+            _mainform.tbPath.Text = snippet.Path;// + $"    [C: {snippet.CreationDate},M:{snippet.CodeLastModificationDate:yyyy-MM-dd HH:mm:ss}]";
             _tb.WordWrap = snippet.Wordwrap;
             _tb.SelectionStart = 0;
             _tb.SelectionLength = 0;
@@ -221,6 +221,10 @@ namespace CodeLibrary
             _StateSnippet.Code = _tb.Text;
             _StateSnippet.Wordwrap = _tb.WordWrap;
             _StateSnippet.CurrentLine = _tb.CurrentLineNumber();
+            if (_result)
+            {
+                _StateSnippet.CodeLastModificationDate = DateTime.Now;
+            }
             return _result;
         }
 
@@ -378,7 +382,7 @@ namespace CodeLibrary
 
             if (_supressTextChanged)
                 return;
-        } 
+        }
 
         public string Merge()
         {

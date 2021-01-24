@@ -452,6 +452,85 @@ namespace CodeLibrary
             return true;
         }
 
+        
+        public void SortChildrenAscending()
+        {
+            if (IsSystem(_treeViewLibrary.SelectedNode))
+                return;
+
+            var _node = _treeViewLibrary.SelectedNode;
+            if (_node!= null)
+            {
+                _treeViewLibrary.BeginUpdate();
+                SortedList<string, TreeNode> _sorted = new SortedList<string, TreeNode>();
+                TreeNode _temp = new TreeNode();
+
+                foreach (TreeNode item in _node.Nodes)
+                {
+                    _sorted.Add(item.Text,item);
+                }
+                foreach (var item in _sorted)
+                {
+                    item.Value.MoveToBottom();
+                }
+                _treeViewLibrary.SelectedNode = _node;
+                _treeViewLibrary.EndUpdate();
+            }
+            
+        }
+
+        public void MoveToLeft()
+        {
+            if (IsSystem(_treeViewLibrary.SelectedNode))
+                return;
+
+            if (_treeViewLibrary.SelectedNode!= null)
+                _treeViewLibrary.SelectedNode.MoveLeft();
+            //{
+            //    _treeViewLibrary.BeginUpdate();
+            //    if (_node.Parent !=null )
+            //    {
+            //        var _parent = _node.Parent;
+            //        if (_parent.Parent == null)
+            //        {
+            //            _node.Remove();
+            //            _treeViewLibrary.Nodes.Insert(_parent.Index+1,_node) ;
+            //        }
+            //        else
+            //        {
+            //            _node.Remove();
+            //            _parent.Parent.Nodes.Insert(_parent.Index+1, _node);
+            //        }
+            //    }
+            //    _treeViewLibrary.SelectedNode = _node;
+            //    _treeViewLibrary.EndUpdate();
+            //}
+
+        }
+
+        public void MoveToRight()
+        {
+            if (IsSystem(_treeViewLibrary.SelectedNode))
+                return;
+
+            if (_treeViewLibrary.SelectedNode != null)
+                _treeViewLibrary.SelectedNode.MoveRight(); 
+            //var _node = _treeViewLibrary.SelectedNode;
+            //if (_node != null)
+            //{
+            //    _treeViewLibrary.BeginUpdate();
+            //    if (_node.PrevNode!=null)
+            //    {
+            //        var _newParent = _node.PrevNode;
+            //        _node.Remove();
+            //        _newParent.Nodes.Add(_node);
+            //    }
+            //    _treeViewLibrary.SelectedNode = _node;
+            //    _treeViewLibrary.EndUpdate();
+            //}
+
+        }
+
         public void MoveDown()
         {
             if (IsSystem(_treeViewLibrary.SelectedNode))
@@ -919,6 +998,16 @@ namespace CodeLibrary
 
             _mainform.mnuCopyPath.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
             _mainform.mncCopyPath.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+
+
+            _mainform.mncSortChildrenAscending.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && TreeViewExtensions.ParentCount(_treeViewLibrary.SelectedNode) > 1 && _treeViewLibrary.SelectedNode.Nodes.Count>1;
+            _mainform.mnuSortChildrenAscending.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && TreeViewExtensions.ParentCount(_treeViewLibrary.SelectedNode) > 1 && _treeViewLibrary.SelectedNode.Nodes.Count > 1;
+
+            _mainform.mncMoveLeft.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) &&  _treeViewLibrary.SelectedNode.Parent!=null;
+            _mainform.mnuMoveLeft.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && _treeViewLibrary.SelectedNode.Parent != null;
+
+            _mainform.mncMoveRight.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) &&  _treeViewLibrary.SelectedNode.PrevNode != null; 
+            _mainform.mnuMoveRight.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) &&  _treeViewLibrary.SelectedNode.PrevNode!= null;
 
             _mainform.mncMoveUp.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && TreeViewExtensions.ParentCount(_treeViewLibrary.SelectedNode) > 1;
             _mainform.mnuMoveUp.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && TreeViewExtensions.ParentCount(_treeViewLibrary.SelectedNode) > 1;

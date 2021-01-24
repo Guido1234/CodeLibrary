@@ -13,6 +13,7 @@ namespace CodeLibrary
             DialogResult = DialogResult.Cancel;
             textBoxPassword.PasswordChar = '*';
             AcceptButton = dialogButton.buttonOk;
+            CancelButton = dialogButton.buttonCancel;
             Load += FormSetPassword_Load;
         }
 

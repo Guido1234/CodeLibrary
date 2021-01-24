@@ -37,7 +37,7 @@
             this.listViewSearch = new CodeLibrary.Controls.MyListView();
             this.chkMatchCase = new System.Windows.Forms.CheckBox();
             this.chkPattern = new System.Windows.Forms.CheckBox();
-            this.dialogButton1 = new CodeLibrary.Controls.DialogButton();
+            this.dialogButton = new CodeLibrary.Controls.DialogButton();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.tbCode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -71,6 +71,7 @@
             this.tbCode.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.tbCode.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.tbCode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbCode.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.tbCode.Hotkeys = resources.GetString("tbCode.Hotkeys");
             this.tbCode.IsReplaceMode = false;
             this.tbCode.Language = FastColoredTextBoxNS.Language.CSharp;
@@ -173,22 +174,22 @@
             this.chkPattern.UseVisualStyleBackColor = true;
             this.chkPattern.CheckedChanged += new System.EventHandler(this.ChkPattern_CheckedChanged);
             // 
-            // dialogButton1
+            // cancelButton
             // 
-            this.dialogButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.dialogButton1.ButtonMode = CodeLibrary.Controls.DialogButton.DialogButtonMode.OkCancel;
-            this.dialogButton1.ForeColor = System.Drawing.Color.Black;
-            this.dialogButton1.Location = new System.Drawing.Point(713, 408);
-            this.dialogButton1.Name = "dialogButton1";
-            this.dialogButton1.Size = new System.Drawing.Size(156, 23);
-            this.dialogButton1.TabIndex = 3;
-            this.dialogButton1.TextCancel = "Cancel";
-            this.dialogButton1.TextIgnore = "Ignore";
-            this.dialogButton1.TextNo = "No";
-            this.dialogButton1.TextOk = "Ok";
-            this.dialogButton1.TextRetry = "Retry";
-            this.dialogButton1.TextYes = "Yes";
-            this.dialogButton1.DialogButtonClick += new CodeLibrary.Controls.DialogButton.DialogButtonClickEventHandler(this.DialogButton1_DialogButtonClick);
+            this.dialogButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.dialogButton.ButtonMode = CodeLibrary.Controls.DialogButton.DialogButtonMode.OkCancel;
+            this.dialogButton.ForeColor = System.Drawing.Color.Black;
+            this.dialogButton.Location = new System.Drawing.Point(713, 408);
+            this.dialogButton.Name = "cancelButton";
+            this.dialogButton.Size = new System.Drawing.Size(156, 23);
+            this.dialogButton.TabIndex = 3;
+            this.dialogButton.TextCancel = "Cancel";
+            this.dialogButton.TextIgnore = "Ignore";
+            this.dialogButton.TextNo = "No";
+            this.dialogButton.TextOk = "Ok";
+            this.dialogButton.TextRetry = "Retry";
+            this.dialogButton.TextYes = "Yes";
+            this.dialogButton.DialogButtonClick += new CodeLibrary.Controls.DialogButton.DialogButtonClickEventHandler(this.DialogButton1_DialogButtonClick);
             // 
             // pictureBox1
             // 
@@ -212,7 +213,7 @@
             this.Controls.Add(this.chkPattern);
             this.Controls.Add(this.chkMatchCase);
             this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.dialogButton1);
+            this.Controls.Add(this.dialogButton);
             this.Controls.Add(this.buttonSearch);
             this.Controls.Add(this.tbSearch);
             this.DoubleBuffered = true;
@@ -239,7 +240,7 @@
         private Controls.MyListView listViewSearch;
         private System.Windows.Forms.TextBox tbSearch;
         private System.Windows.Forms.Button buttonSearch;
-        private Controls.DialogButton dialogButton1;
+        private Controls.DialogButton dialogButton;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.CheckBox chkMatchCase;
         private System.Windows.Forms.CheckBox chkPattern;

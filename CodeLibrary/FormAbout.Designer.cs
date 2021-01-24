@@ -74,6 +74,7 @@ namespace CodeLibrary
             this.tbCode.CharWidth = 8;
             this.tbCode.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.tbCode.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.tbCode.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.tbCode.Hotkeys = resources.GetString("tbCode.Hotkeys");
             this.tbCode.IsReplaceMode = false;
             this.tbCode.Language = FastColoredTextBoxNS.Language.CSharp;
@@ -82,6 +83,7 @@ namespace CodeLibrary
             this.tbCode.Location = new System.Drawing.Point(3, 223);
             this.tbCode.Name = "tbCode";
             this.tbCode.Paddings = new System.Windows.Forms.Padding(0);
+            this.tbCode.ReadOnly = true;
             this.tbCode.RightBracket = ')';
             this.tbCode.RightBracket2 = '}';
             this.tbCode.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));

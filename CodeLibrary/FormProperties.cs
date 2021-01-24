@@ -26,6 +26,7 @@ namespace CodeLibrary
             _shortCutKeysComboHelper = new EnumComboBoxModeHelper<Keys>(comboBoxShortCutKeys, Keys.None);
             _shortCutKeysComboHelper.Fill();
             AcceptButton = dialogButton.buttonOk;
+            CancelButton = dialogButton.buttonCancel;
         }
 
         public CodeSnippet Snippet { get; set; }
@@ -61,7 +62,7 @@ namespace CodeLibrary
             tbName.Text = Snippet.DefaultChildName ?? string.Empty;
             tbCode.Text = Snippet.DefaultChildCode ?? string.Empty;
             rtf.Rtf = Snippet.DefaultChildRtf ?? string.Empty;
-
+            lblModifiedOn.Text = $"Modified on: {Snippet.CodeLastModificationDate:yyyy-MM-dd HH:mm:ss}";
             cbExpand.Checked = Snippet.Expanded;
             checkBoxCodeType.Checked = Snippet.DefaultChildCodeTypeEnabled;
             _defaultTypeComboBoxHelper.SetSelectedIndex(Snippet.DefaultChildCodeType);

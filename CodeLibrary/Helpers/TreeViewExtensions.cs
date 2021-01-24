@@ -91,6 +91,47 @@ namespace CodeLibrary
 
             view.SelectedNode = node;
         }
+        public static void MoveLeft(this TreeNode node)
+        {
+            var view = node.TreeView;
+            if (node != null)
+            {
+                view.BeginUpdate();
+                if (node.Parent != null)
+                {
+                    var _parent = node.Parent;
+                    if (_parent.Parent == null)
+                    {
+                        node.Remove();
+                        view.Nodes.Insert(_parent.Index + 1, node);
+                    }
+                    else
+                    {
+                        node.Remove();
+                        _parent.Parent.Nodes.Insert(_parent.Index + 1, node);
+                    }
+                }
+                view.SelectedNode = node;
+                view.EndUpdate();
+            }
+        }
+
+        public static void MoveRight(this TreeNode node)
+        {
+            var view = node.TreeView;
+            if (node != null)
+            {
+                view.BeginUpdate();
+                if (node.PrevNode != null)
+                {
+                    var _newParent = node.PrevNode;
+                    node.Remove();
+                    _newParent.Nodes.Add(node);
+                }
+                view.SelectedNode = node;
+                view.EndUpdate();
+            }
+        }
 
         public static int ParentCount(this TreeNode node)
         {

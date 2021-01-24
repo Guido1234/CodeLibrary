@@ -9,7 +9,45 @@ namespace CodeLibrary
     public partial class FormAbout : Form
     {
         private readonly string _Content = @"
+
+Upcoming:
+
+NEW:
+-   New database field 'CodeLastModificationDate'.
+    This field is set when the 'Code' field changes.
+    This field is currently only shown in the search results.
+
+-   Added new commands to Library management (treeview): 
+
+        - Sort children ascending (A-Z).
+            This command sorts the children of the selected node in ascending order.
+
+        - MoveLeft
+            This moves the selected item to the left.
+            This meaning it will be decoupled from to parent and it will be put just after parent (as a Next node)
+
+        - MoveRight
+            This moves the selected item to the right.
+            This meains it will be put as a child under the previous node and the last item.
+
+-   Added some shortcuts to Library management (in treeview) and dialogs
+        - Ctrl + Enter in TreeView
+            This will open the properties dialog for the selected node 
+        - Esc key in Property dialog
+            This will close the form
+
+
+FIXED:
+-   CreationDate contained incorrect formatting for seconds containing ':nn'.
+    The is changed in the getter changed to ':00:00'.
+    Please note that the field is still incorrect in the contents of file (Json) 
+    until the the Code Snippet is changed and saved again.
+
+    
+
+----------------------------------------------------------------------
 Version 2.1:
+
 -   New file container.
 
 -   Ask for password on encrypted file container. (only for new container or saved container).
@@ -262,6 +300,8 @@ Programming: Guido Kleijer
         public FormAbout()
         {
             InitializeComponent();
+            CancelButton = dialogButton.buttonOk;
+            AcceptButton = dialogButton.buttonOk;
         }
 
         private void DialogButton_DialogButtonClick(object sender, DialogButton.DialogButtonClickEventArgs e)
