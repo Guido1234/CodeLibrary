@@ -1247,13 +1247,13 @@ namespace CodeLibrary
                 return;
             }
 
-            if (e.KeyCode == Keys.Left)
+            if (e.KeyCode == Keys.Left && e.Control)
             {
                 MoveToLeft();
                 return;
             }
 
-            if (e.KeyCode == Keys.Right)
+            if (e.KeyCode == Keys.Right && e.Control)
             {
                 MoveToRight();
                 return;
