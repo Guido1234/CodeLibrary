@@ -1223,6 +1223,18 @@ namespace CodeLibrary
         {
             SetLibraryMenuState();
 
+            if (e.KeyCode == Keys.Up && e.Control && e.Shift)
+            {
+                MoveToTop();
+                return;
+            }
+
+            if (e.KeyCode == Keys.Down && e.Control && e.Shift)
+            {
+                MoveToBottom();
+                return;
+            }
+
             if (e.KeyCode == Keys.Up && e.Control)
             {
                 MoveUp();
@@ -1235,17 +1247,6 @@ namespace CodeLibrary
                 return;
             }
 
-            if (e.KeyCode == Keys.Up && e.Control && e.Shift)
-            {
-                MoveToTop();
-                return;
-            }
-
-            if (e.KeyCode == Keys.Down && e.Control && e.Shift)
-            {
-                MoveToBottom();
-                return;
-            }
 
             if (e.KeyCode == Keys.Left && e.Control)
             {
