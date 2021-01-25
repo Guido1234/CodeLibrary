@@ -43,7 +43,15 @@ FIXED:
     Please note that the field is still incorrect in the contents of file (Json) 
     until the the Code Snippet is changed and saved again.
 
-    
+-   Removed Shortcut keys from Library Ordering Menu.
+
+-   In treeview shortcutkeys:
+    -   Ctrl-Up         Move up
+    -   Ctrl-Down       Move Down
+    -   Ctrl-Shft-Up    Move to Top
+    -   Ctrl-Shft-Down  Move to Bottom
+    -   Ctrl-Left       Move left
+    -   Ctrl-Right      Move right
 
 ----------------------------------------------------------------------
 Version 2.1:
