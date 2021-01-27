@@ -8,7 +8,7 @@ namespace CodeLibrary.Core
 {
     internal class UsbDriveInfo
     {
-        private const string KEY_DIR_NAME = "EncrKeys";
+        private const string KEY_DIR_NAME = "_USBKey";
 
         public string CreateKey(out UsbKeyDriveErrorEnum error)
         {
