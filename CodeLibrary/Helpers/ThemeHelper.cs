@@ -9,30 +9,9 @@ namespace CodeLibrary.Helpers
         private readonly FormCodeLibrary _mainform;
         private RtfTheme _CurrentTheme;
 
-
         public ThemeHelper(FormCodeLibrary mainform)
         {
             _mainform = mainform;
-        }
-
-
-        public void RichTextBoxTheme(RichTextBox rtb)
-        {
-            switch (_CurrentTheme)
-            {
-                case RtfTheme.Dark:
-                    rtb.BackColor = Color.FromArgb(255, 40, 40, 40);
-                    rtb.ForeColor = Color.FromArgb(255, 255, 255, 255);
-                    break;
-                case RtfTheme.Light:
-                    rtb.BackColor = Color.FromArgb(255, 255, 255, 255);
-                    rtb.ForeColor = Color.FromArgb(255, 0, 0, 0);
-                    break;
-                case RtfTheme.HighContrast:
-                    rtb.BackColor = Color.FromArgb(255, 10, 10, 10);
-                    rtb.ForeColor = Color.FromArgb(255, 255, 255, 255);
-                    break;
-            }
         }
 
         public void DarkTheme()
@@ -92,7 +71,6 @@ namespace CodeLibrary.Helpers
             _mainform.lblEnd.ForeColor = Color.Yellow;
             _mainform.lblLength.ForeColor = Color.Yellow;
             _mainform.lblLengthText.ForeColor = Color.Yellow;
-
 
             _mainform.fastColoredTextBox.DarkStyle();
             _mainform.fastColoredTextBox.Refresh();
@@ -156,7 +134,6 @@ namespace CodeLibrary.Helpers
             _mainform.lblEnd.ForeColor = Color.Yellow;
             _mainform.lblLength.ForeColor = Color.Yellow;
             _mainform.lblLengthText.ForeColor = Color.Yellow;
-
 
             _mainform.fastColoredTextBox.HighContrastStyle();
             _mainform.fastColoredTextBox.Refresh();
@@ -222,9 +199,29 @@ namespace CodeLibrary.Helpers
             _mainform.lblLength.ForeColor = Color.Black;
             _mainform.lblLengthText.ForeColor = Color.Black;
 
-
             _mainform.fastColoredTextBox.LightStyle();
             _mainform.fastColoredTextBox.Refresh();
+        }
+
+        public void RichTextBoxTheme(RichTextBox rtb)
+        {
+            switch (_CurrentTheme)
+            {
+                case RtfTheme.Dark:
+                    rtb.BackColor = Color.FromArgb(255, 40, 40, 40);
+                    rtb.ForeColor = Color.FromArgb(255, 255, 255, 255);
+                    break;
+
+                case RtfTheme.Light:
+                    rtb.BackColor = Color.FromArgb(255, 255, 255, 255);
+                    rtb.ForeColor = Color.FromArgb(255, 0, 0, 0);
+                    break;
+
+                case RtfTheme.HighContrast:
+                    rtb.BackColor = Color.FromArgb(255, 10, 10, 10);
+                    rtb.ForeColor = Color.FromArgb(255, 255, 255, 255);
+                    break;
+            }
         }
     }
 }

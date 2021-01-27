@@ -762,16 +762,48 @@ namespace CodeLibrary
             {
                 BeginUpdate();
 
-                List<TreeNode> _sort = new List<TreeNode>();
+                List<TreeNode> _sort1 = new List<TreeNode>();
+                List<TreeNode> _sort2 = new List<TreeNode>();
+                List<TreeNode> _sort3 = new List<TreeNode>();
 
                 foreach (TreeNode item in _node.Nodes)
                 {
-                    _sort.Add(item);
+                    CodeSnippet snippet = CodeLib.Instance.Library.Get(item.Name);
+                    if (snippet.Important)
+                    {
+                        _sort1.Add(item);
+                    }
+                }
+
+                foreach (TreeNode item in _node.Nodes)
+                {
+                    CodeSnippet snippet = CodeLib.Instance.Library.Get(item.Name);
+                    if (snippet.CodeType == CodeType.Folder && !snippet.Important)
+                    {
+                        _sort2.Add(item);
+                    }
+                }
+
+                foreach (TreeNode item in _node.Nodes)
+                {
+                    CodeSnippet snippet = CodeLib.Instance.Library.Get(item.Name);
+                    if (snippet.CodeType != CodeType.Folder && !snippet.Important)
+                    {
+                        _sort3.Add(item);
+                    }
                 }
 
                 _node.Nodes.Clear();
 
-                foreach (var item in _sort.OrderBy(p => p.Text))
+                foreach (var item in _sort1.OrderBy(p => p.Text))
+                {
+                    _node.Nodes.Add(item);
+                }
+                foreach (var item in _sort2.OrderBy(p => p.Text))
+                {
+                    _node.Nodes.Add(item);
+                }
+                foreach (var item in _sort3.OrderBy(p => p.Text))
                 {
                     _node.Nodes.Add(item);
                 }
@@ -856,7 +888,7 @@ namespace CodeLibrary
             foreach (string filename in _filenames)
             {
                 FileInfo _file = new FileInfo(filename);
-                var _type = _fileHelper.CodeTypeByExtension(_file);
+                var _type = HelperUtils.CodeTypeByExtension(_file);
 
                 switch (_type)
                 {
@@ -899,7 +931,7 @@ namespace CodeLibrary
             ChangeType(_node, CodeType.Image);
         }
 
-        private void BeginUpdate()
+        public void BeginUpdate()
         {
             _treeViewLibrary.BeginUpdate();
             _upodating++;
@@ -920,7 +952,7 @@ namespace CodeLibrary
             return ContainsNode(node1, node2.Parent);
         }
 
-        private void EndUpdate()
+        public void EndUpdate()
         {
             _treeViewLibrary.EndUpdate();
             _upodating--;

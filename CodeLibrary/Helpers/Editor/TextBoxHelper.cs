@@ -2,13 +2,12 @@
 using FastColoredTextBoxNS;
 
 namespace CodeLibrary
-{ 
+{
     public class TextBoxHelper
     {
         private readonly FormCodeLibrary _mainform;
         private ITextBoxHelper _ActiveTextBoxHelper;
-        private CodeSnippet _currentSnippet = null;
-        private FastColoredTextBoxHelper _FastColoredTextBoxHelper;        
+        private FastColoredTextBoxHelper _FastColoredTextBoxHelper;
         private RtfEditorHelper _RtfEditorHelper;
 
         public TextBoxHelper(FormCodeLibrary mainform)
@@ -18,8 +17,6 @@ namespace CodeLibrary
             _FastColoredTextBoxHelper = new FastColoredTextBoxHelper(_mainform, this);
         }
 
-        public bool IsIdle => _RtfEditorHelper.IsIdle && _FastColoredTextBoxHelper.IsIdle;
-
         public FastColoredTextBox FastColoredTextBox
         {
             get
@@ -27,6 +24,8 @@ namespace CodeLibrary
                 return _FastColoredTextBoxHelper.FastColoredTextBox;
             }
         }
+
+        public bool IsIdle => _RtfEditorHelper.IsIdle && _FastColoredTextBoxHelper.IsIdle;
 
         public string SelectedText
         {
@@ -52,10 +51,7 @@ namespace CodeLibrary
             }
         }
 
-        public void ApplySettings()
-        {
-            _ActiveTextBoxHelper.ApplySnippetSettings();
-        }
+        public void ApplySettings() => _ActiveTextBoxHelper.ApplySnippetSettings();
 
         public void BringToFront() => _ActiveTextBoxHelper.BringToFront();
 
@@ -74,44 +70,9 @@ namespace CodeLibrary
             SetEditorCodeType(newtype);
         }
 
-        public void SetStateNoSave(CodeSnippet snippet)
-        {
-            if (snippet.CodeType == CodeType.RTF)
-            {
-                _ActiveTextBoxHelper = _RtfEditorHelper;
-                _mainform.CurrentEditor.Editor = _RtfEditorHelper.Editor;
-            }
-            else
-            {
-                _ActiveTextBoxHelper = _FastColoredTextBoxHelper;
-                _mainform.CurrentEditor.Editor = _FastColoredTextBoxHelper.Editor;
-            }
-
-            _ActiveTextBoxHelper.SetState(snippet);
-        }
-
-        public void SetState(CodeSnippet snippet)
-        {
-            SaveState();
-
-            if (snippet.CodeType == CodeType.RTF)
-            {
-                _ActiveTextBoxHelper = _RtfEditorHelper;
-                _mainform.CurrentEditor.Editor = _RtfEditorHelper.Editor;
-            }
-            else
-            {
-                _ActiveTextBoxHelper = _FastColoredTextBoxHelper;
-                _mainform.CurrentEditor.Editor = _FastColoredTextBoxHelper.Editor;
-            }
-
-            _ActiveTextBoxHelper.SetState(snippet);
-        }
-
         public void Copy() => _ActiveTextBoxHelper.Copy();
 
         public void CopyWithMarkup() => _FastColoredTextBoxHelper.CopyWithMarkup();
-
 
         public void Cut() => _ActiveTextBoxHelper.Cut();
 
@@ -121,9 +82,9 @@ namespace CodeLibrary
 
         public void GotoLine(int line) => _ActiveTextBoxHelper.GotoLine(line);
 
+        public string Merge() => _ActiveTextBoxHelper.Merge();
+
         public void Paste() => _ActiveTextBoxHelper.Paste();
-
-
 
         public bool SaveState()
         {
@@ -141,50 +102,6 @@ namespace CodeLibrary
         public void SelectAll() => _ActiveTextBoxHelper.SelectAll();
 
         public void SelectLine() => _ActiveTextBoxHelper.SelectLine();
-
-        public void ShowFindDialog() => _ActiveTextBoxHelper.ShowFindDialog();
-
-        public void ShowReplaceDialog() => _ActiveTextBoxHelper.ShowReplaceDialog();
-
-        public void SwitchHtmlPreview()
-        {
-            if (_currentSnippet == null)
-                return;
-
-            _currentSnippet.HtmlPreview = !_currentSnippet.HtmlPreview;
-            _mainform.mnuHTMLPreview.Checked = _currentSnippet.HtmlPreview;
-            _mainform.splitContainerCode.Panel2Collapsed = !_currentSnippet.HtmlPreview;
-        }
-
-        public bool SwitchWordWrap()
-        {
-            return _ActiveTextBoxHelper.SwitchWordWrap();
-        }
-
-        public void UpdateHtmlPreview()
-        {
-            if (_currentSnippet == null)
-                return;
-
-            _ActiveTextBoxHelper.UpdateHtmlPreview();
-        }
-
-        private void SetEditorCodeType(CodeType type)
-        {
-            if (type == CodeType.RTF)
-            {
-                _ActiveTextBoxHelper = _RtfEditorHelper;
-                _mainform.CurrentEditor.Editor = _RtfEditorHelper.Editor;
-                SetEditorView(type);
-            }
-            else
-            {
-                _ActiveTextBoxHelper = _FastColoredTextBoxHelper;
-                _mainform.CurrentEditor.Editor = _FastColoredTextBoxHelper.Editor;
-                SetEditorView(type);
-                _FastColoredTextBoxHelper.RefreshEditor();
-            }
-        }
 
         public void SetEditorView(CodeSnippet snippet)
         {
@@ -204,7 +121,7 @@ namespace CodeLibrary
                 case CodeType.Template:
                     CodeInsight.Instance.SetInsightHandler(new TemplateCodeInsightHandler());
                     _mainform.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.CSharp;
-                    
+
                     _mainform.containerCode.Visible = true;
                     _mainform.containerRtfEditor.Visible = false;
                     break;
@@ -297,12 +214,68 @@ namespace CodeLibrary
                     _mainform.containerRtfEditor.Visible = false;
                     break;
             }
+            UpdateHtmlPreview();
         }
 
-
-        public string Merge()
+        public void SetState(CodeSnippet snippet)
         {
-            return _ActiveTextBoxHelper.Merge();
+            SaveState();
+
+            if (snippet.CodeType == CodeType.RTF)
+            {
+                _ActiveTextBoxHelper = _RtfEditorHelper;
+                _mainform.CurrentEditor.Editor = _RtfEditorHelper.Editor;
+            }
+            else
+            {
+                _ActiveTextBoxHelper = _FastColoredTextBoxHelper;
+                _mainform.CurrentEditor.Editor = _FastColoredTextBoxHelper.Editor;
+            }
+
+            _ActiveTextBoxHelper.SetState(snippet);
+        }
+
+        public void SetStateNoSave(CodeSnippet snippet)
+        {
+            if (snippet.CodeType == CodeType.RTF)
+            {
+                _ActiveTextBoxHelper = _RtfEditorHelper;
+                _mainform.CurrentEditor.Editor = _RtfEditorHelper.Editor;
+            }
+            else
+            {
+                _ActiveTextBoxHelper = _FastColoredTextBoxHelper;
+                _mainform.CurrentEditor.Editor = _FastColoredTextBoxHelper.Editor;
+            }
+
+            _ActiveTextBoxHelper.SetState(snippet);
+        }
+
+        public void ShowFindDialog() => _ActiveTextBoxHelper.ShowFindDialog();
+
+        public void ShowReplaceDialog() => _ActiveTextBoxHelper.ShowReplaceDialog();
+
+        public void SwitchHtmlPreview() => _ActiveTextBoxHelper.SwitchHtmlPreview();
+
+        public bool SwitchWordWrap() => _ActiveTextBoxHelper.SwitchWordWrap();
+
+        public void UpdateHtmlPreview() => _ActiveTextBoxHelper.UpdateHtmlPreview();
+
+        private void SetEditorCodeType(CodeType type)
+        {
+            if (type == CodeType.RTF)
+            {
+                _ActiveTextBoxHelper = _RtfEditorHelper;
+                _mainform.CurrentEditor.Editor = _RtfEditorHelper.Editor;
+                SetEditorView(type);
+            }
+            else
+            {
+                _ActiveTextBoxHelper = _FastColoredTextBoxHelper;
+                _mainform.CurrentEditor.Editor = _FastColoredTextBoxHelper.Editor;
+                SetEditorView(type);
+                _FastColoredTextBoxHelper.RefreshEditor();
+            }
         }
     }
 }

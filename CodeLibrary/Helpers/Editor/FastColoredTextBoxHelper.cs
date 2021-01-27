@@ -131,6 +131,16 @@ namespace CodeLibrary
             _supressTextChanged = false;
         }
 
+        public void SwitchHtmlPreview()
+        {            
+            if (_StateSnippet == null)
+                return;
+
+            _StateSnippet.HtmlPreview = !_StateSnippet.HtmlPreview;
+            _mainform.mnuHTMLPreview.Checked = _StateSnippet.HtmlPreview;
+            _mainform.splitContainerCode.Panel2Collapsed = !_StateSnippet.HtmlPreview;
+        }
+
         public void Copy()
         {
             _mainform.textBoxClipboard.Text = SelectedText;

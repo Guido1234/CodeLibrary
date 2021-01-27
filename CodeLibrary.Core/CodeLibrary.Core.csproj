@@ -73,7 +73,10 @@
     <Compile Include="RtfControlStyle.cs" />
     <Compile Include="StringCypher.cs" />
     <Compile Include="StyleCollection.cs" />
-    <Compile Include="TimedBool.cs" />
+    <Compile Include="UsbKeyDrive\UsbDriveInfo.cs" />
+    <Compile Include="UsbKeyDrive\UsbKey.cs" />
+    <Compile Include="UsbKeyDrive\UsbKeyDriveErrorEnum.cs" />
+    <Compile Include="UsbKeyDrive\UsbKeyDriveMessages.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

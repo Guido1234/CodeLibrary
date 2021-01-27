@@ -13,6 +13,20 @@ namespace CodeLibrary
 Upcoming:
 
 NEW:
+-   USBKey.
+    Use a usb flash drive as a passkey container instead of using a password.
+    -   There can be only one usb flash drive marked as a USBKey inserted in the usb ports. 
+    -   When creating an usb key drive, there can only be one usb drive in the ports.
+    -   When an USBKey is created multiple files can be created using this usb flash drive.
+    -   Each new file protected with a USBKey has an unique identifier which matches the keyfiles in: [Drive]:\EncrKeys
+    -   You will never be prompted for a password, only to insert the USBKey flash drive when it's not presents or the required key does not exist.
+    -   The USBKey is required for Saving and for loading, keys are not kept in memory and are read from the drive when needed.
+
+
+-   Improved TreeView Load.
+
+-   Improved Sort ASC, Important sorted first, Folders sorted second then other notes.
+
 -   New database field 'CodeLastModificationDate'.
     This field is set when the 'Code' field changes.
     This field is currently only shown in the search results.
@@ -38,6 +52,8 @@ NEW:
 
 
 FIXED:
+-   HTML Preview
+
 -   CreationDate contained incorrect formatting for seconds containing ':nn'.
     The is changed in the getter changed to ':00:00'.
     Please note that the field is still incorrect in the contents of file (Json) 

@@ -21,6 +21,7 @@ namespace CodeLibrary
         private readonly TreeviewHelper _treeHelper;
         private readonly ThemeHelper _themeHelper;
         private readonly MenuHelper _menuHelper;
+        private readonly PasswordHelper _passwordHelper;
         private TextEditorContainer _CurrentEditor = new TextEditorContainer();
         private bool _exitWithoutSaving = false;
         private MainPluginHelper _PluginHelper;
@@ -33,7 +34,8 @@ namespace CodeLibrary
             _debugHelper = new DebugHelper(this);
             _textboxHelper = new TextBoxHelper(this);
             _themeHelper = new ThemeHelper(this);
-            _fileHelper = new FileHelper(this, _debugHelper, _textboxHelper);
+            _passwordHelper = new PasswordHelper(this);
+            _fileHelper = new FileHelper(this, _debugHelper, _textboxHelper, _passwordHelper);
             _treeHelper = new TreeviewHelper(this, _textboxHelper, _fileHelper, _themeHelper);
             _fileHelper.TreeHelper = _treeHelper;
             _FavoriteHelper = new FavoriteHelper(this, _fileHelper);
@@ -116,17 +118,7 @@ namespace CodeLibrary
 
         private void ButtonFind_Click(object sender, EventArgs e) => FindNode();
 
-        private void ClearPassWord()
-        {
-            _fileHelper.Password = null;
-            tbPath.BackColor = SystemColors.ButtonFace;
-            ShowKey();
-        }
 
-        internal void ShowKey()
-        {
-            pctKey.Visible = _fileHelper.Password != null;
-        }
 
         private void EditNodeProperties(bool keepFocus = false)
         {
@@ -149,7 +141,7 @@ namespace CodeLibrary
             {
                 fastColoredTextBox.Focus();
             }
-            
+
         }
 
         private void FindNode()
@@ -336,7 +328,6 @@ namespace CodeLibrary
 
         private void mnuChangeType_DropDownOpening(object sender, EventArgs e) => _treeHelper.SetTypeMenuState();
 
-        private void mnuClearPassword_Click(object sender, EventArgs e) => ClearPassWord();
 
         private void mnuConfigurePlugins_Click(object sender, EventArgs e)
         {
@@ -455,15 +446,6 @@ namespace CodeLibrary
 
         private void mnuSelectLine_Click(object sender, EventArgs e) => _textboxHelper.SelectLine();
 
-        private void mnuSetPassword_Click(object sender, EventArgs e)
-        {
-            FormSetPassword f = new FormSetPassword();
-            DialogResult result = f.ShowDialog();
-
-            if (result == DialogResult.OK)
-                SetPassWord(f.Password);
-        }
-
         private void mnuSwitchLast2Documents_Click(object sender, EventArgs e) => _treeHelper.SwitchLastTwo();
 
         private void mnuTypeCSharp_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.CSharp);
@@ -494,11 +476,7 @@ namespace CodeLibrary
 
         private void PluginsToolStripContextMenu_DropDownOpening(object sender, EventArgs e) => _PluginHelper.SetMenuState(mncPlugins);
 
-        private void SetPassWord(SecureString password)
-        {
-            _fileHelper.Password = password;
-            ShowKey();
-        }
+
 
         private void TextBoxFind_KeyUp(object sender, KeyEventArgs e)
         {
@@ -518,7 +496,7 @@ namespace CodeLibrary
 
 
         private void mnuSortChildrenAscending_Click(object sender, EventArgs e) => _treeHelper.SortChildrenAscending();
-        
+
         private void mnuMoveToTop_Click(object sender, EventArgs e) => _treeHelper.MoveToTop();
         private void mncMoveToTop_Click(object sender, EventArgs e) => _treeHelper.MoveToTop();
 
@@ -532,15 +510,17 @@ namespace CodeLibrary
 
         private void treeViewLibrary_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Control && e.KeyCode== Keys.Enter)
+            if (e.Control && e.KeyCode == Keys.Enter)
             {
                 EditNodeProperties(true);
             }
-            
+
         }
 
-        
+        private void mnuSetPassword_Click(object sender, EventArgs e) => _passwordHelper.SetPassWord();
+        private void mnuSetUsbKey_Click(object sender, EventArgs e) => _passwordHelper.SetUsbKey();
+        private void mnuClearPassword_Click(object sender, EventArgs e) => _passwordHelper.ClearPassWord();
+
 
     }
-
 }

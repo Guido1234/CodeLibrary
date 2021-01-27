@@ -181,7 +181,11 @@ namespace CodeLibrary
             return false;
         }
 
-        public void UpdateHtmlPreview()
+        public void UpdateHtmlPreview() 
+        { 
+        }
+
+        public void SwitchHtmlPreview()
         {
         }
 

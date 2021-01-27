@@ -127,7 +127,6 @@
             this.mncMoveLeft = new System.Windows.Forms.ToolStripMenuItem();
             this.mncMoveRight = new System.Windows.Forms.ToolStripMenuItem();
             this.mncProperties = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuMoveLeft = new System.Windows.Forms.ToolStripMenuItem();
             this.mncImage = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mncSaveImage = new System.Windows.Forms.ToolStripMenuItem();
             this.mncCopyImage = new System.Windows.Forms.ToolStripMenuItem();
@@ -148,6 +147,7 @@
             this.mnuRestoreBackup = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep4 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSetPassword = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSetUsbKey = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuClearPassword = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
@@ -219,6 +219,7 @@
             this.mnuMoveDown = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMoveToBottom = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep51 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuMoveLeft = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMoveRight = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep10 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuProperties = new System.Windows.Forms.ToolStripMenuItem();
@@ -1248,15 +1249,6 @@
             this.mncProperties.Text = "Properties";
             this.mncProperties.Click += new System.EventHandler(this.mncProperties_Click);
             // 
-            // mnuMoveLeft
-            // 
-            this.mnuMoveLeft.Image = global::CodeLibrary.Properties.Resources.arrow_left_32x32;
-            this.mnuMoveLeft.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.mnuMoveLeft.Name = "mnuMoveLeft";
-            this.mnuMoveLeft.Size = new System.Drawing.Size(247, 38);
-            this.mnuMoveLeft.Text = "Move to Left";
-            this.mnuMoveLeft.Click += new System.EventHandler(this.mnuMoveLeft_Click);
-            // 
             // mncImage
             // 
             this.mncImage.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1318,6 +1310,7 @@
             this.mnuRestoreBackup,
             this.mnuSep4,
             this.mnuSetPassword,
+            this.mnuSetUsbKey,
             this.mnuClearPassword,
             this.mnuSep5,
             this.mnuExit,
@@ -1427,6 +1420,15 @@
             this.mnuSetPassword.ToolTipText = "Password remains persistant in memory, until application is closed. All documents" +
     " saved are encrypted with specified password.";
             this.mnuSetPassword.Click += new System.EventHandler(this.mnuSetPassword_Click);
+            // 
+            // mnuSetUsbKey
+            // 
+            this.mnuSetUsbKey.Image = global::CodeLibrary.Properties.Resources.usb_3_32x32;
+            this.mnuSetUsbKey.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.mnuSetUsbKey.Name = "mnuSetUsbKey";
+            this.mnuSetUsbKey.Size = new System.Drawing.Size(250, 38);
+            this.mnuSetUsbKey.Text = "Set USBKey";
+            this.mnuSetUsbKey.Click += new System.EventHandler(this.mnuSetUsbKey_Click);
             // 
             // mnuClearPassword
             // 
@@ -2041,6 +2043,15 @@
             this.mnuSep51.Name = "mnuSep51";
             this.mnuSep51.Size = new System.Drawing.Size(244, 6);
             // 
+            // mnuMoveLeft
+            // 
+            this.mnuMoveLeft.Image = global::CodeLibrary.Properties.Resources.arrow_left_32x32;
+            this.mnuMoveLeft.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.mnuMoveLeft.Name = "mnuMoveLeft";
+            this.mnuMoveLeft.Size = new System.Drawing.Size(247, 38);
+            this.mnuMoveLeft.Text = "Move to Left";
+            this.mnuMoveLeft.Click += new System.EventHandler(this.mnuMoveLeft_Click);
+            // 
             // mnuMoveRight
             // 
             this.mnuMoveRight.Image = global::CodeLibrary.Properties.Resources.arrow_right_32x32;
@@ -2306,6 +2317,7 @@
             this.Controls.Add(this.splitContainerMain);
             this.Controls.Add(this.textBoxClipboard);
             this.Controls.Add(this.mnuMainStrip);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.mnuMainStrip;
             this.Name = "FormCodeLibrary";
@@ -2552,7 +2564,6 @@
         internal System.Windows.Forms.Label lblLength;
         internal System.Windows.Forms.Label lblLengthText;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.PictureBox pctKey;
         internal System.Windows.Forms.ToolStripMenuItem mnuSortChildrenAscending;
         internal System.Windows.Forms.ToolStripMenuItem mnuMoveLeft;
         internal System.Windows.Forms.ToolStripMenuItem mnuMoveRight;
@@ -2568,6 +2579,8 @@
         private System.Windows.Forms.ToolStripSeparator mncSep54;
         private System.Windows.Forms.ToolStripSeparator mnuSep50;
         private System.Windows.Forms.ToolStripSeparator mnuSep51;
+        internal System.Windows.Forms.ToolStripMenuItem mnuSetUsbKey;
+        internal System.Windows.Forms.PictureBox pctKey;
     }
 }
 

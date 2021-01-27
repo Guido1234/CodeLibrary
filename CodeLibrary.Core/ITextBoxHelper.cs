@@ -42,5 +42,7 @@
         bool SwitchWordWrap();
 
         void UpdateHtmlPreview();
+
+        void SwitchHtmlPreview();
     }
 }

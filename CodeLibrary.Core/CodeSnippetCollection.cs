@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace CodeLibrary.Core
-{ 
+{
     [DataContract()]
     public class CodeSnippetCollection
     {
@@ -11,9 +11,6 @@ namespace CodeLibrary.Core
         {
             Items = new List<CodeSnippet> { CodeSnippet.TrashcanSnippet() };
         }
-
-        [DataMember(Name = "Locked")]
-        public bool Locked { get; set; }
 
         [DataMember(Name = "AutoBackup")]
         public bool AutoBackup { get; set; }
@@ -26,6 +23,9 @@ namespace CodeLibrary.Core
 
         [DataMember(Name = "LastSelected")]
         public string LastSelected { get; set; }
+
+        [DataMember(Name = "Locked")]
+        public bool Locked { get; set; }
 
         [DataMember(Name = "Converted")]
         public int Version { get; set; }

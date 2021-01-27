@@ -13,5 +13,8 @@ namespace CodeLibrary.Core
         public bool Encrypted { get; set; }
 
         public string Data { get; set; }
+
+        public string UsbKeyId { get; set; }
+
     }
 }
