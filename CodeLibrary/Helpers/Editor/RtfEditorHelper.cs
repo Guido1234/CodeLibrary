@@ -32,7 +32,7 @@ namespace CodeLibrary
             _rtf.RichTextConrol.SelectionChanged += RichTextConrol_SelectionChanged;
         }
 
-        public bool IsIdle => _Idle.IsIdle;
+        public bool IsIdle => _Idle;
 
         public ITextEditor Editor
         {
@@ -88,21 +88,7 @@ namespace CodeLibrary
             }
             else
             {
-                if (Config.HighContrastMode)
-                {
-                    _mainform.rtfEditor.Theme = RtfTheme.HighContrast;
-                }
-                else
-                {
-                    if (Config.DarkMode)
-                    {
-                        _mainform.rtfEditor.Theme = RtfTheme.Dark;
-                    }
-                    else
-                    {
-                        _mainform.rtfEditor.Theme = RtfTheme.Light;
-                    }
-                }
+                _mainform.rtfEditor.Theme = Config.Theme;
             }
 
             _mainform.rtfEditor.Rtf = snippet.RTF;

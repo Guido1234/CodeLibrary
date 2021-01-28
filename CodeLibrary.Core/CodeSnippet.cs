@@ -125,7 +125,7 @@ namespace CodeLibrary.Core
         public bool RTFOwnTheme { get; set; } = false;
 
         [DataMember(Name = "RtfTheme")]
-        public RtfTheme RTFTheme { get; set; } = RtfTheme.Light;
+        public ETheme RTFTheme { get; set; } = ETheme.Light;
 
         [DataMember(Name = "ShortCutKeys")]
         public Keys ShortCutKeys { get; set; }

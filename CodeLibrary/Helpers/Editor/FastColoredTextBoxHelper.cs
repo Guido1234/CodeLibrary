@@ -30,6 +30,7 @@ namespace CodeLibrary
             _tb = _mainform.fastColoredTextBox;
             _TextBoxHelper = textboxHelper;
 
+
             CodeInsight.Instance.Init(_mainform.listBoxInsight, _tb);
             _tb.AllowDrop = true;
             _tb.DragDrop += FastColoredTextBox_DragDrop;
@@ -40,7 +41,7 @@ namespace CodeLibrary
             _tb.MouseUp += new MouseEventHandler(TbCode_MouseUp);
         }
 
-        public bool IsIdle => _Idle.IsIdle;
+        public bool IsIdle => _Idle;
 
         public ITextEditor Editor
         {

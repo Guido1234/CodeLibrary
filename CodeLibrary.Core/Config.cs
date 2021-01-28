@@ -9,13 +9,20 @@ namespace CodeLibrary.Core
     public static class Config
     {
         public static string AppFolder { get; set; }
-        public static bool DarkMode { get; set; } = true;
+       
+        // public static bool DarkMode { get; set; } = true;
+
+        // public static bool HighContrastMode { get; set; } = true;
+
+        public static ETheme Theme { get; set; } = ETheme.Dark;
+
+        public static ESortMode SortMode { get; set; } = ESortMode.Alphabetic;
 
         public static string DefaultNoteType { get; set; }
         public static string FavoriteFile => Utils.PathCombine(AppFolder, "Favorite.json");
 
         public static List<string> FavoriteLibs { get; set; } = new List<string>();
-        public static bool HighContrastMode { get; set; } = true;
+
         public static string LastOpenedDir { get; set; }
         public static string LastOpenedFile { get; set; }
         public static bool OpenDefaultOnStart { get; set; }
@@ -45,9 +52,24 @@ namespace CodeLibrary.Core
             LastOpenedFile = Utils.GetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDFILE);
             OpenDefaultOnStart = ConvertUtility.ToBoolean(Utils.GetCurrentUserRegisterKey(regpath, Constants.OPENDEFAULTONSTART), false);
             Zoom = ConvertUtility.ToInt32(Utils.GetCurrentUserRegisterKey(regpath, Constants.ZOOM), 100);
-            DarkMode = ConvertUtility.ToBoolean(Utils.GetCurrentUserRegisterKey(regpath, Constants.DARKMODE), true);
 
-            HighContrastMode = ConvertUtility.ToBoolean(Utils.GetCurrentUserRegisterKey(regpath, Constants.HIGHCONTRASTMODE), false);
+            try
+            {
+                SortMode = (ESortMode)Enum.Parse(typeof(ESortMode), Utils.GetCurrentUserRegisterKey(regpath, Constants.SORTMODE));
+            }
+            catch
+            {
+
+            }
+
+            try
+            {
+                Theme = (ETheme)Enum.Parse(typeof(ETheme), Utils.GetCurrentUserRegisterKey(regpath, Constants.THEME));
+            }
+            catch
+            {
+
+            }
 
             DefaultNoteType = Utils.GetCurrentUserRegisterKey(regpath, Constants.DEFAULT_NOTE_TYPE);
 
@@ -75,15 +97,16 @@ namespace CodeLibrary.Core
             LastOpenedDir = string.IsNullOrEmpty(LastOpenedDir) ? string.Empty : LastOpenedDir;
             LastOpenedFile = string.IsNullOrEmpty(LastOpenedFile) ? string.Empty : LastOpenedFile;
 
+
+            Utils.SetCurrentUserRegisterKey(regpath, Constants.THEME, Theme.ToString());
+            Utils.SetCurrentUserRegisterKey(regpath, Constants.SORTMODE, SortMode.ToString());
+
             Utils.SetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDDIR, LastOpenedDir);
             Utils.SetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDFILE, LastOpenedFile);
             Utils.SetCurrentUserRegisterKey(regpath, Constants.OPENDEFAULTONSTART, OpenDefaultOnStart.ToString());
             Utils.SetCurrentUserRegisterKey(regpath, Constants.ZOOM, Zoom.ToString());
-            Utils.SetCurrentUserRegisterKey(regpath, Constants.DARKMODE, DarkMode.ToString());
-            Utils.SetCurrentUserRegisterKey(regpath, Constants.HIGHCONTRASTMODE, HighContrastMode.ToString());
             Utils.SetCurrentUserRegisterKey(regpath, Constants.SPLITTERDISTANCE, SplitterDistance.ToString());
              
-
             if (string.IsNullOrEmpty(DefaultNoteType))
             {
                 DefaultNoteType = string.Empty;

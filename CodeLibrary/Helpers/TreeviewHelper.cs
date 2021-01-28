@@ -752,7 +752,49 @@ namespace CodeLibrary
             _mainform.mnuTypeXML.Checked = (_type == CodeType.XML);
         }
 
+        public void SortChildren()
+        {
+            switch (Config.SortMode)
+            {
+                case ESortMode.Alphabetic:
+                    SortChildrenAscending();
+                    break;
+                case ESortMode.AlphabeticGrouped:
+                    SortChildrenAscendingGrouped();
+                    break;
+            }
+        }
+
         public void SortChildrenAscending()
+        {
+            if (IsSystem(_treeViewLibrary.SelectedNode))
+                return;
+
+            var _node = _treeViewLibrary.SelectedNode;
+            if (_node != null)
+            {
+                BeginUpdate();
+
+                List<TreeNode> _sort = new List<TreeNode>();
+
+                foreach (TreeNode item in _node.Nodes)
+                {
+                    _sort.Add(item);
+                }
+
+                _node.Nodes.Clear();
+
+                foreach (var item in _sort.OrderBy(p => p.Text))
+                {
+                    _node.Nodes.Add(item);
+                }
+
+                _treeViewLibrary.SelectedNode = _node;
+                EndUpdate();
+            }
+        }
+
+        public void SortChildrenAscendingGrouped()
         {
             if (IsSystem(_treeViewLibrary.SelectedNode))
                 return;
@@ -811,6 +853,7 @@ namespace CodeLibrary
                 EndUpdate();
             }
         }
+
 
         public void SwitchLastTwo()
         {

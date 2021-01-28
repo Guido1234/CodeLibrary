@@ -224,12 +224,6 @@
             this.mnuSep10 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuProperties = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTools = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuMode = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuModeDark = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuModeLight = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSep25 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuModeHighContrast = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSep18 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuWordwrap = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHTMLPreview = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep19 = new System.Windows.Forms.ToolStripSeparator();
@@ -240,6 +234,8 @@
             this.mnuDebug = new System.Windows.Forms.ToolStripMenuItem();
             this.xToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep21 = new System.Windows.Forms.ToolStripSeparator();
@@ -545,7 +541,7 @@
             this.rtfEditor.Size = new System.Drawing.Size(433, 74);
             this.rtfEditor.TabIndex = 0;
             this.rtfEditor.TabStop = false;
-            this.rtfEditor.Theme = CodeLibrary.Core.RtfTheme.Dark;
+            this.rtfEditor.Theme = CodeLibrary.Core.ETheme.Dark;
             this.rtfEditor.Zoom = 100;
             // 
             // containerInfoBar
@@ -2078,8 +2074,6 @@
             // mnuTools
             // 
             this.mnuTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuMode,
-            this.mnuSep18,
             this.mnuWordwrap,
             this.mnuHTMLPreview,
             this.mnuSep19,
@@ -2087,55 +2081,13 @@
             this.mnuSep20,
             this.mnuConfigurePlugins,
             this.mnuDebugSeparator,
-            this.mnuDebug});
+            this.mnuDebug,
+            this.toolStripMenuItem2,
+            this.settingsToolStripMenuItem});
             this.mnuTools.MergeAction = System.Windows.Forms.MergeAction.Replace;
             this.mnuTools.Name = "mnuTools";
             this.mnuTools.Size = new System.Drawing.Size(46, 22);
             this.mnuTools.Text = "Tools";
-            // 
-            // mnuMode
-            // 
-            this.mnuMode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuModeDark,
-            this.mnuModeLight,
-            this.mnuSep25,
-            this.mnuModeHighContrast});
-            this.mnuMode.Image = global::CodeLibrary.Properties.Resources.lightbulb_32x32;
-            this.mnuMode.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.mnuMode.Name = "mnuMode";
-            this.mnuMode.Size = new System.Drawing.Size(246, 38);
-            this.mnuMode.Text = "Mode";
-            // 
-            // mnuModeDark
-            // 
-            this.mnuModeDark.Name = "mnuModeDark";
-            this.mnuModeDark.Size = new System.Drawing.Size(148, 22);
-            this.mnuModeDark.Text = "Dark";
-            this.mnuModeDark.Click += new System.EventHandler(this.mnuModeDark_Click);
-            // 
-            // mnuModeLight
-            // 
-            this.mnuModeLight.Name = "mnuModeLight";
-            this.mnuModeLight.Size = new System.Drawing.Size(148, 22);
-            this.mnuModeLight.Text = "Light";
-            this.mnuModeLight.Click += new System.EventHandler(this.mnuModeLight_Click);
-            // 
-            // mnuSep25
-            // 
-            this.mnuSep25.Name = "mnuSep25";
-            this.mnuSep25.Size = new System.Drawing.Size(145, 6);
-            // 
-            // mnuModeHighContrast
-            // 
-            this.mnuModeHighContrast.Name = "mnuModeHighContrast";
-            this.mnuModeHighContrast.Size = new System.Drawing.Size(148, 22);
-            this.mnuModeHighContrast.Text = "High Contrast";
-            this.mnuModeHighContrast.Click += new System.EventHandler(this.mnuModeHighContrast_Click);
-            // 
-            // mnuSep18
-            // 
-            this.mnuSep18.Name = "mnuSep18";
-            this.mnuSep18.Size = new System.Drawing.Size(243, 6);
             // 
             // mnuWordwrap
             // 
@@ -2206,6 +2158,20 @@
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(81, 22);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(243, 6);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Image = global::CodeLibrary.Properties.Resources.cog_32x32;
+            this.settingsToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(246, 38);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // mnuHelp
             // 
@@ -2476,12 +2442,6 @@
         internal System.Windows.Forms.ToolStripSeparator mnuSep10;
         internal System.Windows.Forms.ToolStripMenuItem mnuProperties;
         internal System.Windows.Forms.ToolStripMenuItem mnuTools;
-        internal System.Windows.Forms.ToolStripMenuItem mnuMode;
-        internal System.Windows.Forms.ToolStripMenuItem mnuModeDark;
-        internal System.Windows.Forms.ToolStripMenuItem mnuModeLight;
-        internal System.Windows.Forms.ToolStripSeparator mnuSep25;
-        internal System.Windows.Forms.ToolStripMenuItem mnuModeHighContrast;
-        internal System.Windows.Forms.ToolStripSeparator mnuSep18;
         internal System.Windows.Forms.ToolStripMenuItem mnuWordwrap;
         internal System.Windows.Forms.ToolStripMenuItem mnuHTMLPreview;
         internal System.Windows.Forms.ToolStripMenuItem mnuSwitchLast2Documents;
@@ -2581,6 +2541,8 @@
         private System.Windows.Forms.ToolStripSeparator mnuSep51;
         internal System.Windows.Forms.ToolStripMenuItem mnuSetUsbKey;
         internal System.Windows.Forms.PictureBox pctKey;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
     }
 }
 

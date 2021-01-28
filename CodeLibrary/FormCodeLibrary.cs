@@ -183,12 +183,7 @@ namespace CodeLibrary
 
             splitContainerMain.SplitterDistance = Config.SplitterDistance;
 
-            if (Config.HighContrastMode)
-                _themeHelper.HighContrastTheme();
-            else if (Config.DarkMode)
-                _themeHelper.DarkTheme();
-            else
-                _themeHelper.LightTheme();
+            _themeHelper.SetTheme(Config.Theme);
 
             Application.DoEvents();
 
@@ -211,8 +206,6 @@ namespace CodeLibrary
             Application.DoEvents();
             _fileHelper.Reload();
             _FavoriteHelper.BuildMenu();
-
-
 
             SetZoom();
             Enabled = true;
@@ -255,7 +248,7 @@ namespace CodeLibrary
         private void mncEmptyTrashcan_Click(object sender, EventArgs e) => _treeHelper.EmptyTrashcan();
 
         private void mncMarkImportant_Click(object sender, EventArgs e) => _treeHelper.MarkImportant();
-        private void mncSortChildrenAscending_Click(object sender, EventArgs e) => _treeHelper.SortChildrenAscending();
+        private void mncSortChildrenAscending_Click(object sender, EventArgs e) => _treeHelper.SortChildren();
 
         private void mncMoveDown_Click(object sender, EventArgs e) => _treeHelper.MoveDown();
 
@@ -495,7 +488,7 @@ namespace CodeLibrary
         }
 
 
-        private void mnuSortChildrenAscending_Click(object sender, EventArgs e) => _treeHelper.SortChildrenAscending();
+        private void mnuSortChildrenAscending_Click(object sender, EventArgs e) => _treeHelper.SortChildren();
 
         private void mnuMoveToTop_Click(object sender, EventArgs e) => _treeHelper.MoveToTop();
         private void mncMoveToTop_Click(object sender, EventArgs e) => _treeHelper.MoveToTop();
@@ -521,6 +514,14 @@ namespace CodeLibrary
         private void mnuSetUsbKey_Click(object sender, EventArgs e) => _passwordHelper.SetUsbKey();
         private void mnuClearPassword_Click(object sender, EventArgs e) => _passwordHelper.ClearPassWord();
 
-
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormSettings f = new FormSettings();
+            DialogResult _r = f.ShowDialog();
+            if (_r == DialogResult.OK)
+            {
+                _themeHelper.SetTheme(Config.Theme);
+            }
+        }
     }
 }

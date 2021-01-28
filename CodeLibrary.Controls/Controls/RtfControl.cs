@@ -91,9 +91,9 @@ namespace CodeLibrary.Controls.Controls
 
         public RichTextBox RichTextConrol => rtf; 
 
-        private RtfTheme _theme;
+        private ETheme _theme;
 
-        public RtfTheme Theme
+        public ETheme Theme
         {
             get
             {
@@ -110,7 +110,7 @@ namespace CodeLibrary.Controls.Controls
             }
         }
 
-        public void SetOwnTheme(RtfTheme theme)
+        public void SetOwnTheme(ETheme theme)
         {
             _theme = theme;
             SwitchTheme(_theme);
@@ -125,32 +125,32 @@ namespace CodeLibrary.Controls.Controls
             OwnTheme = true;
             switch (_theme)
             {
-                case RtfTheme.Dark:
-                    _theme = RtfTheme.HighContrast;
+                case ETheme.Dark:
+                    _theme = ETheme.HighContrast;
                     break;
-                case RtfTheme.HighContrast:
-                    _theme = RtfTheme.Light;
+                case ETheme.HighContrast:
+                    _theme = ETheme.Light;
                     break;
-                case RtfTheme.Light:
-                    _theme = RtfTheme.Dark;
+                case ETheme.Light:
+                    _theme = ETheme.Dark;
                     break;
             }
             SwitchTheme(_theme);
         }
 
-        private void SwitchTheme(RtfTheme theme)
+        private void SwitchTheme(ETheme theme)
         {
             switch (theme)
             {
-                case RtfTheme.Dark:
+                case ETheme.Dark:
                     rtf.BackColor = Color.FromArgb(255, 40, 40, 40);
                     rtf.ForeColor = Color.FromArgb(255, 255, 255, 255);
                     break;
-                case RtfTheme.Light:
+                case ETheme.Light:
                     rtf.BackColor = Color.FromArgb(255, 255, 255, 255);
                     rtf.ForeColor = Color.FromArgb(255, 0, 0, 0);
                     break;
-                case RtfTheme.HighContrast:
+                case ETheme.HighContrast:
                     rtf.BackColor = Color.FromArgb(255, 10, 10, 10);
                     rtf.ForeColor = Color.FromArgb(255, 255, 255, 255);
                     break;

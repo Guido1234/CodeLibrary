@@ -377,7 +377,7 @@ namespace CodeLibrary
             this.rtf.SelectedText = "";
             this.rtf.Size = new System.Drawing.Size(132, 163);
             this.rtf.TabIndex = 30;
-            this.rtf.Theme = CodeLibrary.Core.RtfTheme.Dark;
+            this.rtf.Theme = CodeLibrary.Core.ETheme.Dark;
             this.rtf.Visible = false;
             this.rtf.Zoom = 100;
             // 

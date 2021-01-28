@@ -28,10 +28,16 @@ namespace CodeLibrary.Core
         UnSuported = 9999
     }
 
-    public enum RtfTheme
+    public enum ETheme
     {
         Dark,
         Light,
         HighContrast
+    }
+
+    public enum ESortMode
+    {
+        Alphabetic = 0,
+        AlphabeticGrouped = 1
     }
 }

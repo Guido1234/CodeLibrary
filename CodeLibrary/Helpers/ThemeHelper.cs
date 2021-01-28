@@ -7,22 +7,31 @@ namespace CodeLibrary.Helpers
     public class ThemeHelper
     {
         private readonly FormCodeLibrary _mainform;
-        private RtfTheme _CurrentTheme;
 
         public ThemeHelper(FormCodeLibrary mainform)
         {
             _mainform = mainform;
         }
 
-        public void DarkTheme()
+        public void SetTheme(ETheme theme)
         {
-            _CurrentTheme = RtfTheme.Dark;
+            switch (theme)
+            {
+                case ETheme.Dark:
+                    DarkTheme();
+                    break;
+                case ETheme.HighContrast:
+                    HighContrastTheme();
+                    break;
+                case ETheme.Light:
+                    LightTheme();
+                    break;
+            }
+        }
 
-            Config.DarkMode = true;
-            Config.HighContrastMode = false;
-            _mainform.mnuModeDark.Checked = true;
-            _mainform.mnuModeLight.Checked = false;
-            _mainform.mnuModeHighContrast.Checked = false;
+        public void DarkTheme()
+        {            
+            Config.Theme = ETheme.Dark;
 
             _mainform.textBoxFind.BackColor = Color.FromArgb(255, 40, 40, 40);
             _mainform.textBoxFind.ForeColor = Color.LightYellow;
@@ -37,7 +46,7 @@ namespace CodeLibrary.Helpers
             _mainform.BackColor = Color.FromArgb(255, 100, 100, 100);
             _mainform.treeViewLibrary.ForeColor = Color.White;
             _mainform.treeViewLibrary.BackColor = Color.FromArgb(255, 75, 75, 75);
-            _mainform.rtfEditor.Theme = RtfTheme.Dark;
+            _mainform.rtfEditor.Theme = ETheme.Dark;
 
             _mainform.fastColoredTextBox.IndentBackColor = Color.FromArgb(255, 75, 75, 75);
             _mainform.fastColoredTextBox.BackColor = Color.FromArgb(255, 40, 40, 40);
@@ -78,13 +87,7 @@ namespace CodeLibrary.Helpers
 
         public void HighContrastTheme()
         {
-            _CurrentTheme = RtfTheme.HighContrast;
-
-            Config.DarkMode = true;
-            Config.HighContrastMode = true;
-            _mainform.mnuModeDark.Checked = false;
-            _mainform.mnuModeLight.Checked = false;
-            _mainform.mnuModeHighContrast.Checked = true;
+            Config.Theme = ETheme.HighContrast;
 
             _mainform.textBoxFind.BackColor = Color.FromArgb(255, 10, 10, 10);
             _mainform.textBoxFind.ForeColor = Color.LightYellow;
@@ -100,7 +103,7 @@ namespace CodeLibrary.Helpers
             _mainform.treeViewLibrary.ForeColor = Color.White;
             _mainform.treeViewLibrary.BackColor = Color.FromArgb(255, 35, 35, 35);
             _mainform.fastColoredTextBox.IndentBackColor = Color.FromArgb(255, 35, 35, 35);
-            _mainform.rtfEditor.Theme = RtfTheme.HighContrast;
+            _mainform.rtfEditor.Theme = ETheme.HighContrast;
 
             _mainform.fastColoredTextBox.BackColor = Color.FromArgb(255, 10, 10, 10);
             _mainform.fastColoredTextBox.CaretColor = Color.White;
@@ -141,14 +144,8 @@ namespace CodeLibrary.Helpers
 
         public void LightTheme()
         {
-            _CurrentTheme = RtfTheme.Light;
-
-            Config.DarkMode = false;
-            Config.HighContrastMode = false;
-            _mainform.mnuModeDark.Checked = false;
-            _mainform.mnuModeLight.Checked = true;
-            _mainform.mnuModeHighContrast.Checked = false;
-
+            Config.Theme = ETheme.Light;
+          
             _mainform.textBoxFind.BackColor = Color.White;
             _mainform.textBoxFind.ForeColor = Color.Black;
             _mainform.buttonFind.BackColor = SystemColors.ButtonFace;
@@ -161,7 +158,7 @@ namespace CodeLibrary.Helpers
             _mainform.treeViewLibrary.ForeColor = Color.FromArgb(255, 0, 0, 0);
             _mainform.treeViewLibrary.BackColor = Color.FromArgb(255, 255, 255, 255);
             _mainform.fastColoredTextBox.IndentBackColor = Color.FromArgb(255, 255, 255, 255);
-            _mainform.rtfEditor.Theme = RtfTheme.Light;
+            _mainform.rtfEditor.Theme = ETheme.Light;
 
             _mainform.fastColoredTextBox.BackColor = Color.FromArgb(255, 255, 255, 255);
             _mainform.fastColoredTextBox.ForeColor = Color.Black;
@@ -205,19 +202,19 @@ namespace CodeLibrary.Helpers
 
         public void RichTextBoxTheme(RichTextBox rtb)
         {
-            switch (_CurrentTheme)
+            switch (Config.Theme)
             {
-                case RtfTheme.Dark:
+                case ETheme.Dark:
                     rtb.BackColor = Color.FromArgb(255, 40, 40, 40);
                     rtb.ForeColor = Color.FromArgb(255, 255, 255, 255);
                     break;
 
-                case RtfTheme.Light:
+                case ETheme.Light:
                     rtb.BackColor = Color.FromArgb(255, 255, 255, 255);
                     rtb.ForeColor = Color.FromArgb(255, 0, 0, 0);
                     break;
 
-                case RtfTheme.HighContrast:
+                case ETheme.HighContrast:
                     rtb.BackColor = Color.FromArgb(255, 10, 10, 10);
                     rtb.ForeColor = Color.FromArgb(255, 255, 255, 255);
                     break;

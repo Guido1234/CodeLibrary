@@ -12,11 +12,26 @@ namespace CodeLibrary.Core
             _Treshhold = treshhold;
         }
 
-        public bool IsIdle => DateTime.Now - _LastRefresh > _Treshhold;
+        private bool IsIdle => DateTime.Now - _LastRefresh > _Treshhold;
 
         public void Refresh()
         {
             _LastRefresh = DateTime.Now;
         }
+
+        public static implicit operator bool(Idle value) => value.IsIdle;
+
+        public static bool operator !=(Idle a, Idle b) => a.IsIdle != b.IsIdle;
+
+        public static bool operator !=(Idle a, bool b) => a.IsIdle != b;
+
+        public static bool operator !=(bool a, Idle b) => b.IsIdle != a;
+
+        public static bool operator ==(Idle a, Idle b) => a.IsIdle == b.IsIdle;
+
+        public static bool operator ==(Idle a, bool b) => a.IsIdle == b;
+
+        public static bool operator ==(bool a, Idle b) => b.IsIdle == a;
+
     }
 }
