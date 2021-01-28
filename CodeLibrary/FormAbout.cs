@@ -17,6 +17,8 @@ NEW:
     -   Sort Mode
     -   Theme
 
+-   Browse file in Restore Backup
+
 -   USBKey.
     Use a usb flash drive as a passkey container instead of using a password.
     -   There can be only one usb flash drive marked as a USBKey inserted in the usb ports. 

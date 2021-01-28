@@ -33,9 +33,10 @@ namespace CodeLibrary
             this.btCancel = new System.Windows.Forms.Button();
             this.btRestore = new System.Windows.Forms.Button();
             this.lbName = new System.Windows.Forms.Label();
-            this.lbBackups = new CodeLibrary.Controls.CollectionListBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.lbBackups = new CodeLibrary.Controls.CollectionListBox();
+            this.btBrowse = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -72,31 +73,6 @@ namespace CodeLibrary
             this.lbName.TabIndex = 3;
             this.lbName.Text = "NAME";
             // 
-            // lbBackups
-            // 
-            this.lbBackups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbBackups.AskBeforeDelete = false;
-            this.lbBackups.CategoryProperty = null;
-            this.lbBackups.ColorProperty = null;
-            this.lbBackups.ColumnWidth = 383;
-            this.lbBackups.DefaultCategoryName = "No Category";
-            this.lbBackups.ImageProperty = null;
-            this.lbBackups.Location = new System.Drawing.Point(71, 34);
-            this.lbBackups.MultiSelect = false;
-            this.lbBackups.Name = "lbBackups";
-            this.lbBackups.NameProperty = null;
-            this.lbBackups.ShowAdd = false;
-            this.lbBackups.ShowCopy = false;
-            this.lbBackups.ShowDelete = false;
-            this.lbBackups.ShowRefresh = false;
-            this.lbBackups.ShowSearch = false;
-            this.lbBackups.ShowToolstrip = false;
-            this.lbBackups.Size = new System.Drawing.Size(621, 333);
-            this.lbBackups.Sorting = System.Windows.Forms.SortOrder.Descending;
-            this.lbBackups.TabIndex = 0;
-            // 
             // textBox1
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -123,11 +99,47 @@ namespace CodeLibrary
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
+            // lbBackups
+            // 
+            this.lbBackups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbBackups.AskBeforeDelete = false;
+            this.lbBackups.CategoryProperty = null;
+            this.lbBackups.ColorProperty = null;
+            this.lbBackups.ColumnWidth = 383;
+            this.lbBackups.DefaultCategoryName = "No Category";
+            this.lbBackups.ImageProperty = null;
+            this.lbBackups.Location = new System.Drawing.Point(71, 34);
+            this.lbBackups.MultiSelect = false;
+            this.lbBackups.Name = "lbBackups";
+            this.lbBackups.NameProperty = null;
+            this.lbBackups.ShowAdd = false;
+            this.lbBackups.ShowCopy = false;
+            this.lbBackups.ShowDelete = false;
+            this.lbBackups.ShowRefresh = false;
+            this.lbBackups.ShowSearch = false;
+            this.lbBackups.ShowToolstrip = false;
+            this.lbBackups.Size = new System.Drawing.Size(621, 333);
+            this.lbBackups.Sorting = System.Windows.Forms.SortOrder.Descending;
+            this.lbBackups.TabIndex = 0;
+            // 
+            // btBrowse
+            // 
+            this.btBrowse.Image = global::CodeLibrary.Properties.Resources.folder_star_16x16;
+            this.btBrowse.Location = new System.Drawing.Point(651, 6);
+            this.btBrowse.Name = "btBrowse";
+            this.btBrowse.Size = new System.Drawing.Size(41, 23);
+            this.btBrowse.TabIndex = 7;
+            this.btBrowse.UseVisualStyleBackColor = true;
+            this.btBrowse.Click += new System.EventHandler(this.btBrowse_Click);
+            // 
             // FormBackupRestore
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(705, 426);
+            this.Controls.Add(this.btBrowse);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.lbName);
@@ -152,5 +164,6 @@ namespace CodeLibrary
         private System.Windows.Forms.Label lbName;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button btBrowse;
     }
 }

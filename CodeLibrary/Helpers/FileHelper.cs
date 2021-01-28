@@ -380,6 +380,9 @@ namespace CodeLibrary
             var _result = _f.ShowDialog();
             if (_result == DialogResult.OK)
             {
+                CurrentFile = _f.CurrentFile;
+                Config.LastOpenedFile = CurrentFile;
+                SetTitle();
                 LoadBackup(_f.Selected.Path);
             }
         }
