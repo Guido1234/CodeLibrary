@@ -9,8 +9,8 @@ namespace CodeLibrary.Core
     public class CodeLib
     {
         private static CodeLib _Instance;
-        private int _CurrentHashCode = 0;
-        private int _InitialHashCode = 0;
+
+        private int _Updating = 0;
 
         private CodeLib()
         {
@@ -18,14 +18,13 @@ namespace CodeLibrary.Core
             Library.RegisterLookup(Constants.LOOKUP_TIMERACTIVE, p => p.AlarmActive);
             Library.RegisterLookup(Constants.LOOKUP_PATH, p => p.Path);
             Library.RegisterLookup(Constants.LOOKUP_SHORTCUT, p => p.ShortCutKeys);
-            Library.RegisterLookup(Constants.LOOKUP_CYCLICSHORTCUT, p => p.CyclicShortCut);
-
-            Library.CollectionChanged += Libary_CollectionChanged;
-            Library.ItemsAdded += Libary_ItemsAdded;
             Library.ItemsRemoved += Libary_ItemsRemoved;
+            Library.ItemsAdded += Library_ItemsAdded;
         }
 
         public static CodeLib Instance => _Instance ?? (_Instance = new CodeLib());
+
+        public bool Changed { get; set; }
 
         public CodeSnippet ClipboardMonitor
         {
@@ -34,8 +33,6 @@ namespace CodeLibrary.Core
                 return Library.Get(Constants.CLIPBOARDMONITOR);
             }
         }
-
-        public bool Changed { get; set; }
 
         public DictionaryList<CodeSnippet, string> Library { get; } = new DictionaryList<CodeSnippet, string>(p => p.Id);
 
@@ -62,6 +59,20 @@ namespace CodeLibrary.Core
             target.AddRange(collection.Items);
         }
 
+        public void AddNodeIndexer(TreeNode node)
+        {
+            if (NodeIndexer.ContainsKey(node.Name))
+            {
+                return;
+            }
+            NodeIndexer.Add(node);
+        }
+
+        public void BeginUpdate()
+        {
+            _Updating++;
+        }
+
         public void BuildNodeIndexer(TreeView treeview)
         {
             NodeIndexer.Clear();
@@ -80,7 +91,14 @@ namespace CodeLibrary.Core
             Instance.Library.Add(_root);
         }
 
+        public void EndUpdate()
+        {
+            _Updating--;
+        }
+
         public IEnumerable<CodeSnippet> GetByAlarmActive() => Library.Lookup(Constants.LOOKUP_TIMERACTIVE, true);
+
+        public CodeSnippet GetById(string id) => Library.Get(id);
 
         public IEnumerable<CodeSnippet> GetByName(string name) => Library.Lookup(Constants.LOOKUP_NAME, name);
 
@@ -88,18 +106,11 @@ namespace CodeLibrary.Core
 
         public IEnumerable<CodeSnippet> GetByShortCut(Keys shortcut) => Library.Lookup(Constants.LOOKUP_SHORTCUT, shortcut);
 
-        public IEnumerable<CodeSnippet> GetCyclicShortCuts() => Library.Lookup(Constants.LOOKUP_CYCLICSHORTCUT, true);
-
-        public void Import(CodeSnippetCollection collection)
-        {
-            CodeLib.Import(collection, Library, false);
-
-            _InitialHashCode = Library.GetHashCode();
-            _CurrentHashCode = _InitialHashCode;
-        }
 
         public void Load(CodeSnippetCollection collection)
         {
+            BeginUpdate();
+
             foreach (CodeSnippet snippet in collection.Items)
             {
                 if (string.IsNullOrWhiteSpace(snippet.Path))
@@ -119,6 +130,8 @@ namespace CodeLibrary.Core
                 Trashcan.Order = -2;
                 Trashcan.Path = "Trashcan";
             }
+
+            EndUpdate();
         }
 
         public void New()
@@ -179,20 +192,23 @@ namespace CodeLibrary.Core
             }
         }
 
-        private void Libary_CollectionChanged(object sender, EventArgs e)
-        {
-            _CurrentHashCode = Library.GetHashCode();
-        }
-
-        private void Libary_ItemsAdded(object sender, ItemsAddedEventArgs<CodeSnippet> e)
-        {
-            _CurrentHashCode = Library.GetHashCode();
-        }
-
         private void Libary_ItemsRemoved(object sender, ItemsRemovedEventArgs<CodeSnippet> e)
         {
+            if (_Updating != 0)
+            {
+                return;
+            }
+            Changed = true;
             NodeIndexer.RemoveRange(e.Removed.Select(p => p.Id));
-            _CurrentHashCode = Library.GetHashCode();
+        }
+
+        private void Library_ItemsAdded(object sender, ItemsAddedEventArgs<CodeSnippet> e)
+        {
+            if (_Updating != 0)
+            {
+                return;
+            }
+            Changed = true;
         }
     }
 }

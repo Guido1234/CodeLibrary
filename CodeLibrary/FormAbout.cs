@@ -21,13 +21,12 @@ NEW:
 
 -   USBKey.
     Use a usb flash drive as a passkey container instead of using a password.
-    -   There can be only one usb flash drive marked as a USBKey inserted in the usb ports. 
+    -   There can be only one usb flash drive marked as a USBKey inserted in the usb ports.
     -   When creating an usb key drive, there can only be one usb drive in the ports.
     -   When an USBKey is created multiple files can be created using this usb flash drive.
     -   Each new file protected with a USBKey has an unique identifier which matches the keyfiles in: [Drive]:\EncrKeys
     -   You will never be prompted for a password, only to insert the USBKey flash drive when it's not presents or the required key does not exist.
     -   The USBKey is required for Saving and for loading, keys are not kept in memory and are read from the drive when needed.
-
 
 -   Improved TreeView Load.
 
@@ -37,7 +36,7 @@ NEW:
     This field is set when the 'Code' field changes.
     This field is currently only shown in the search results.
 
--   Added new commands to Library management (treeview): 
+-   Added new commands to Library management (treeview):
 
         - Sort children ascending (A-Z).
             This command sorts the children of the selected node in ascending order.
@@ -52,17 +51,22 @@ NEW:
 
 -   Added some shortcuts to Library management (in treeview) and dialogs
         - Ctrl + Enter in TreeView
-            This will open the properties dialog for the selected node 
+            This will open the properties dialog for the selected node
         - Esc key in Property dialog
             This will close the form
 
-
 FIXED:
+-   Paste text per line misses last one
+
+-   Treeview paste text applies text to current note.
+
+-   AddImageNode ChangeType
+
 -   HTML Preview
 
 -   CreationDate contained incorrect formatting for seconds containing ':nn'.
     The is changed in the getter changed to ':00:00'.
-    Please note that the field is still incorrect in the contents of file (Json) 
+    Please note that the field is still incorrect in the contents of file (Json)
     until the the Code Snippet is changed and saved again.
 
 -   Removed Shortcut keys from Library Ordering Menu.
@@ -88,7 +92,6 @@ Version 2.1:
 -   Move to Top / Move to Bottom
 
 -   Bugfixes
-
 
 Version 2.0:
 
@@ -183,7 +186,6 @@ Version 1.9:
 
 -   Html Preview window for Html / Xml
 
-
 ----------------------------------------------------------------------
 Version 1.8:
 -   Paste in Treeviewer (Ctrl-V)
@@ -194,7 +196,6 @@ Version 1.8:
 -   Paste in Treeviewer (Ctrl-Shift-V): Splits text in lines and creates a note for every line.
 
 -   Drag / Drop into treeviewer supports images (jpg / png / bmp)
-
 
 ----------------------------------------------------------------------
 Version 1.7:
@@ -216,7 +217,6 @@ Version 1.7:
 -   Added KeepQuoted to C# plugins: remove all text except for text enclosed within double qoutes.
 
 -   Added a Template function KeepQouted.
-
 
 ----------------------------------------------------------------------
 Version 1.6:
@@ -243,7 +243,6 @@ Version 1.6:
 -   Remind Last line on note.
 
 -   New Plugin: Encoding\Import as base64
-
 
 ----------------------------------------------------------------------
 Version 1.5:
@@ -310,19 +309,14 @@ Version 1.5:
 
     0:MethodAsciiValue()
 
-
-
-
 ----------------------------------------------------------------------
 General Public Licence
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. 
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-
 
 Programming: Guido Kleijer
 ";

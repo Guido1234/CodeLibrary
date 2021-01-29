@@ -6,7 +6,6 @@ namespace CodeLibrary.Helpers
 {
     public static class HelperUtils
     {
-
         public static CodeType CodeTypeByExtension(FileInfo file)
         {
             string _extension = file.Extension.Trim(new char[] { '.' }).ToLower();
@@ -57,7 +56,6 @@ namespace CodeLibrary.Helpers
             }
             return CodeType.UnSuported;
         }
-
 
         public static Language CodeTypeToLanguage(CodeType codeType)
         {

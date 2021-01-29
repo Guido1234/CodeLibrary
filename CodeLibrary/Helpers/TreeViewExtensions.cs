@@ -6,6 +6,23 @@ namespace CodeLibrary
 {
     public static class TreeViewExtensions
     {
+        public static TreeNode FindNodeByPath(this TreeNode parent, string fullpath)
+        {
+            foreach (TreeNode node in parent.Nodes)
+            {
+                if (node.FullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return node;
+                }
+                var _newNode = node.FindNodeByPath(fullpath);
+                if (_newNode != null)
+                {
+                    return _newNode;
+                }
+            }
+            return null;
+        }
+
         public static void GetAllChildNames(this TreeNode node, ref List<string> name)
         {
             foreach (TreeNode child in node.Nodes)
@@ -45,6 +62,48 @@ namespace CodeLibrary
             }
 
             view.SelectedNode = node;
+        }
+
+        public static void MoveLeft(this TreeNode node)
+        {
+            var view = node.TreeView;
+            if (node != null)
+            {
+                view.BeginUpdate();
+                if (node.Parent != null)
+                {
+                    var _parent = node.Parent;
+                    if (_parent.Parent == null)
+                    {
+                        node.Remove();
+                        view.Nodes.Insert(_parent.Index + 1, node);
+                    }
+                    else
+                    {
+                        node.Remove();
+                        _parent.Parent.Nodes.Insert(_parent.Index + 1, node);
+                    }
+                }
+                view.SelectedNode = node;
+                view.EndUpdate();
+            }
+        }
+
+        public static void MoveRight(this TreeNode node)
+        {
+            var view = node.TreeView;
+            if (node != null)
+            {
+                view.BeginUpdate();
+                if (node.PrevNode != null)
+                {
+                    var _newParent = node.PrevNode;
+                    node.Remove();
+                    _newParent.Nodes.Add(node);
+                }
+                view.SelectedNode = node;
+                view.EndUpdate();
+            }
         }
 
         public static void MoveToBottom(this TreeNode node)
@@ -91,47 +150,6 @@ namespace CodeLibrary
 
             view.SelectedNode = node;
         }
-        public static void MoveLeft(this TreeNode node)
-        {
-            var view = node.TreeView;
-            if (node != null)
-            {
-                view.BeginUpdate();
-                if (node.Parent != null)
-                {
-                    var _parent = node.Parent;
-                    if (_parent.Parent == null)
-                    {
-                        node.Remove();
-                        view.Nodes.Insert(_parent.Index + 1, node);
-                    }
-                    else
-                    {
-                        node.Remove();
-                        _parent.Parent.Nodes.Insert(_parent.Index + 1, node);
-                    }
-                }
-                view.SelectedNode = node;
-                view.EndUpdate();
-            }
-        }
-
-        public static void MoveRight(this TreeNode node)
-        {
-            var view = node.TreeView;
-            if (node != null)
-            {
-                view.BeginUpdate();
-                if (node.PrevNode != null)
-                {
-                    var _newParent = node.PrevNode;
-                    node.Remove();
-                    _newParent.Nodes.Add(node);
-                }
-                view.SelectedNode = node;
-                view.EndUpdate();
-            }
-        }
 
         public static int ParentCount(this TreeNode node)
         {
@@ -164,26 +182,5 @@ namespace CodeLibrary
             }
             return parents;
         }
-
-
-
-        public static TreeNode FindNodeByPath(this TreeNode parent, string fullpath)
-        {
-            foreach (TreeNode node in parent.Nodes)
-            {
-                if (node.FullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return node;
-                }
-                var _newNode = node.FindNodeByPath(fullpath);
-                if (_newNode != null)
-                {
-                    return _newNode;
-                }
-            }
-            return null;
-        }
-
-
     }
 }

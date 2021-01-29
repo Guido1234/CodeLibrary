@@ -6,7 +6,6 @@ using GK.Template;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Security;
 using System.Windows.Forms;
 
 namespace CodeLibrary
@@ -17,11 +16,11 @@ namespace CodeLibrary
         private readonly DebugHelper _debugHelper;
         private readonly FavoriteHelper _FavoriteHelper;
         private readonly FileHelper _fileHelper;
-        private readonly TextBoxHelper _textboxHelper;
-        private readonly TreeviewHelper _treeHelper;
-        private readonly ThemeHelper _themeHelper;
         private readonly MenuHelper _menuHelper;
         private readonly PasswordHelper _passwordHelper;
+        private readonly TextBoxHelper _textboxHelper;
+        private readonly ThemeHelper _themeHelper;
+        private readonly TreeviewHelper _treeHelper;
         private TextEditorContainer _CurrentEditor = new TextEditorContainer();
         private bool _exitWithoutSaving = false;
         private MainPluginHelper _PluginHelper;
@@ -113,12 +112,10 @@ namespace CodeLibrary
                 return;
 
             treeViewLibrary.SelectedNode = _newNode;
-            fastColoredTextBox.Focus();
+            _textboxHelper.Focus();
         }
 
         private void ButtonFind_Click(object sender, EventArgs e) => FindNode();
-
-
 
         private void EditNodeProperties(bool keepFocus = false)
         {
@@ -128,7 +125,6 @@ namespace CodeLibrary
             CodeSnippet _snippet = _treeHelper.FromNode(treeViewLibrary.SelectedNode);
             FormProperties _form = new FormProperties(_themeHelper) { Snippet = _snippet };
             _form.ShowDialog(this);
-
 
             CodeLib.Instance.Refresh();
 
@@ -141,7 +137,6 @@ namespace CodeLibrary
             {
                 fastColoredTextBox.Focus();
             }
-
         }
 
         private void FindNode()
@@ -163,10 +158,8 @@ namespace CodeLibrary
             if (_exitWithoutSaving)
                 return;
 
-
             if (!string.IsNullOrEmpty(_fileHelper.CurrentFile))
                 Config.LastOpenedFile = _fileHelper.CurrentFile;
-
 
             _fileHelper.SaveFile(false);
 
@@ -248,9 +241,16 @@ namespace CodeLibrary
         private void mncEmptyTrashcan_Click(object sender, EventArgs e) => _treeHelper.EmptyTrashcan();
 
         private void mncMarkImportant_Click(object sender, EventArgs e) => _treeHelper.MarkImportant();
-        private void mncSortChildrenAscending_Click(object sender, EventArgs e) => _treeHelper.SortChildren();
 
         private void mncMoveDown_Click(object sender, EventArgs e) => _treeHelper.MoveDown();
+
+        private void mncMoveLeft_Click(object sender, EventArgs e) => _treeHelper.MoveToLeft();
+
+        private void mncMoveRight_Click(object sender, EventArgs e) => _treeHelper.MoveToRight();
+
+        private void mncMoveToBottom_Click(object sender, EventArgs e) => _treeHelper.MoveToBottom();
+
+        private void mncMoveToTop_Click(object sender, EventArgs e) => _treeHelper.MoveToTop();
 
         private void mncMoveUp_Click(object sender, EventArgs e) => _treeHelper.MoveUp();
 
@@ -268,6 +268,8 @@ namespace CodeLibrary
         private void mncSelectAll_Click(object sender, EventArgs e) => _textboxHelper.SelectAll();
 
         private void mncSelectLine_Click(object sender, EventArgs e) => _textboxHelper.SelectLine();
+
+        private void mncSortChildrenAscending_Click(object sender, EventArgs e) => _treeHelper.SortChildren();
 
         private void mncTypeCSharp_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.CSharp);
 
@@ -316,11 +318,13 @@ namespace CodeLibrary
                 return;
 
             treeViewLibrary.SelectedNode = _newNode;
+
             fastColoredTextBox.Focus();
         }
 
         private void mnuChangeType_DropDownOpening(object sender, EventArgs e) => _treeHelper.SetTypeMenuState();
 
+        private void mnuClearPassword_Click(object sender, EventArgs e) => _passwordHelper.ClearPassWord();
 
         private void mnuConfigurePlugins_Click(object sender, EventArgs e)
         {
@@ -374,6 +378,14 @@ namespace CodeLibrary
         private void mnuModeLight_Click(object sender, EventArgs e) => _themeHelper.LightTheme();
 
         private void mnuMoveDown_Click(object sender, EventArgs e) => _treeHelper.MoveDown();
+
+        private void mnuMoveLeft_Click(object sender, EventArgs e) => _treeHelper.MoveToLeft();
+
+        private void mnuMoveRight_Click(object sender, EventArgs e) => _treeHelper.MoveToRight();
+
+        private void mnuMoveToBottom_Click(object sender, EventArgs e) => _treeHelper.MoveToBottom();
+
+        private void mnuMoveToTop_Click(object sender, EventArgs e) => _treeHelper.MoveToTop();
 
         private void mnuMoveUp_Click(object sender, EventArgs e) => _treeHelper.MoveUp();
 
@@ -439,6 +451,12 @@ namespace CodeLibrary
 
         private void mnuSelectLine_Click(object sender, EventArgs e) => _textboxHelper.SelectLine();
 
+        private void mnuSetPassword_Click(object sender, EventArgs e) => _passwordHelper.SetPassWord();
+
+        private void mnuSetUsbKey_Click(object sender, EventArgs e) => _passwordHelper.SetUsbKey();
+
+        private void mnuSortChildrenAscending_Click(object sender, EventArgs e) => _treeHelper.SortChildren();
+
         private void mnuSwitchLast2Documents_Click(object sender, EventArgs e) => _treeHelper.SwitchLastTwo();
 
         private void mnuTypeCSharp_Click(object sender, EventArgs e) => _treeHelper.ChangeType(treeViewLibrary.SelectedNode, CodeType.CSharp);
@@ -469,7 +487,15 @@ namespace CodeLibrary
 
         private void PluginsToolStripContextMenu_DropDownOpening(object sender, EventArgs e) => _PluginHelper.SetMenuState(mncPlugins);
 
-
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormSettings f = new FormSettings();
+            DialogResult _r = f.ShowDialog();
+            if (_r == DialogResult.OK)
+            {
+                _themeHelper.SetTheme(Config.Theme);
+            }
+        }
 
         private void TextBoxFind_KeyUp(object sender, KeyEventArgs e)
         {
@@ -487,40 +513,11 @@ namespace CodeLibrary
             }
         }
 
-
-        private void mnuSortChildrenAscending_Click(object sender, EventArgs e) => _treeHelper.SortChildren();
-
-        private void mnuMoveToTop_Click(object sender, EventArgs e) => _treeHelper.MoveToTop();
-        private void mncMoveToTop_Click(object sender, EventArgs e) => _treeHelper.MoveToTop();
-
-        private void mnuMoveLeft_Click(object sender, EventArgs e) => _treeHelper.MoveToLeft();
-        private void mncMoveLeft_Click(object sender, EventArgs e) => _treeHelper.MoveToLeft();
-        private void mncMoveToBottom_Click(object sender, EventArgs e) => _treeHelper.MoveToBottom();
-        private void mnuMoveToBottom_Click(object sender, EventArgs e) => _treeHelper.MoveToBottom();
-        private void mnuMoveRight_Click(object sender, EventArgs e) => _treeHelper.MoveToRight();
-        private void mncMoveRight_Click(object sender, EventArgs e) => _treeHelper.MoveToRight();
-
-
         private void treeViewLibrary_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode == Keys.Enter)
             {
                 EditNodeProperties(true);
-            }
-
-        }
-
-        private void mnuSetPassword_Click(object sender, EventArgs e) => _passwordHelper.SetPassWord();
-        private void mnuSetUsbKey_Click(object sender, EventArgs e) => _passwordHelper.SetUsbKey();
-        private void mnuClearPassword_Click(object sender, EventArgs e) => _passwordHelper.ClearPassWord();
-
-        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FormSettings f = new FormSettings();
-            DialogResult _r = f.ShowDialog();
-            if (_r == DialogResult.OK)
-            {
-                _themeHelper.SetTheme(Config.Theme);
             }
         }
     }

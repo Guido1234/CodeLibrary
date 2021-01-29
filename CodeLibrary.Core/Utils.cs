@@ -395,6 +395,7 @@ namespace CodeLibrary.Core
             return _items;
         }
 
+        // #TODO Misses last line
         public static string[] SplitLines(string text)
         {
             var _result = new List<string>();
@@ -434,6 +435,12 @@ namespace CodeLibrary.Core
                 _partBuilder.Append(_currChar);
                 _prevChar = _textCharArray[ii];
             }
+
+            if (_partBuilder.Length > 0)
+            {
+                _result.Add(_partBuilder.ToString());
+            }
+
             return _result.ToArray();
         }
 

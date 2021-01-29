@@ -17,9 +17,9 @@ namespace CodeLibrary
         private readonly Timer _autoSaveTimer = new Timer();
         private readonly DebugHelper _DebugHelper;
         private readonly FormCodeLibrary _mainform;
+        private readonly PasswordHelper _passwordHelper;
         private readonly TextBoxHelper _textBoxHelper;
         private readonly TreeView _treeViewLibrary;
-        private readonly PasswordHelper _passwordHelper;
         private String _AutoSaveFileName = string.Empty;
         private string _Find = string.Empty;
         private DateTime _lastAutoSavedDate = new DateTime();
@@ -50,7 +50,6 @@ namespace CodeLibrary
         public string SelectedId { get; set; }
         public TreeNode TrashcanNode { get; set; }
         public TreeviewHelper TreeHelper { get; set; }
-
 
         public void BeginUpdate()
         {
@@ -135,17 +134,12 @@ namespace CodeLibrary
 
             root.Nodes.Clear();
             List<CodeSnippet> items = library.OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.Path, '\\').Length).ToList();
-            //List<CodeSnippet> items = CodeLib.Instance.Library.OrderBy(p => PathUtility.SplitPath(p.Path, '\\').Length).ToList();
             int _x = 0;
 
             foreach (CodeSnippet snippet in items)
             {
                 _x++;
-                // #TODO sort on: snippet.Order
-
                 TreeNodeCollection parentCollection = root.Nodes;
-
-                // string _extendedpath = Path.Combine(_basepath.TrimEnd(new char[] { '\\' }), snippet.Path.TrimEnd(new char[] { '\\' }));
 
                 string _extendedpath = Utils.CombinePath(_basepath, snippet.Path);
 
@@ -165,7 +159,6 @@ namespace CodeLibrary
 
             CodeLib.Instance.BuildNodeIndexer(_treeViewLibrary);
         }
-
 
         public void EndUpdate()
         {
@@ -291,11 +284,14 @@ namespace CodeLibrary
             _passwordHelper.UsbKeyId = null;
             _passwordHelper.Password = null;
             _AutoSaveFileName = null;
+            _lastAutoSavedDate = new DateTime();
+            _lastOpenedDate = DateTime.Now;
 
             CodeLib.Instance.New();
             CodeCollectionToForm(string.Empty);
             TreeHelper.FindNodeByPath("Snippets");
             _passwordHelper.ShowKey();
+            SetTitle();
         }
 
         public void OpenFile()
@@ -454,7 +450,6 @@ namespace CodeLibrary
                 _securepw = StringCipher.ToSecureString(Utils.ByteArrayToString(_key));
             }
 
-
             CurrentFile = _selectedfile;
             _lastOpenedDate = DateTime.Now;
             SetTitle();
@@ -534,8 +529,8 @@ namespace CodeLibrary
         {
             string _fileName = GetAutoSaveFileName();
 
-            CodeSnippetCollection _collection = new CodeSnippetCollection 
-            { 
+            CodeSnippetCollection _collection = new CodeSnippetCollection
+            {
                 LastSaved = _lastOpenedDate,
             };
 
@@ -581,7 +576,7 @@ namespace CodeLibrary
             int _order = 0;
             foreach (TreeNode node in nodes)
             {
-                CodeSnippet _snippet = CodeLib.Instance.Library.Get(node.Name);
+                CodeSnippet _snippet = CodeLib.Instance.GetById(node.Name);
 
                 _snippet.Path = node.FullPath;
                 _snippet.Name = node.Name;
@@ -607,7 +602,7 @@ namespace CodeLibrary
             int _order = 0;
             foreach (TreeNode node in nodes)
             {
-                CodeSnippet _snippet = CodeLib.Instance.Library.Get(node.Name);
+                CodeSnippet _snippet = CodeLib.Instance.GetById(node.Name);
 
                 string _fullpath = $"##_{node.FullPath}";
                 string _path = _fullpath.Replace(_rootpath, string.Empty).TrimStart(new char[] { '\\' });
@@ -704,7 +699,6 @@ namespace CodeLibrary
             SecureString _usbKeyPassword = null;
             FileContainer _container = new FileContainer();
 
-
             try
             {
                 _fileData = File.ReadAllText(filename, Encoding.Default);
@@ -716,7 +710,6 @@ namespace CodeLibrary
                 succes = false;
                 return null;
             }
-
 
             if (_container.Encrypted)
             {
@@ -749,7 +742,6 @@ namespace CodeLibrary
                         _passwordHelper.UsbKeyId = null;
                         _passwordHelper.ShowKey();
                     }
-
                 }
 
                 // Decrypt with given password.
@@ -821,9 +813,9 @@ namespace CodeLibrary
 
             string _base64Json = Utils.ToBase64(_json);
 
-            FileContainer _fileContainer = new FileContainer() 
-            { 
-                Version = Config.CurrentVersion().ToString(), 
+            FileContainer _fileContainer = new FileContainer()
+            {
+                Version = Config.CurrentVersion().ToString(),
                 Encrypted = (_passwordHelper.Password != null) || !string.IsNullOrEmpty(_passwordHelper.UsbKeyId),
                 Data = _base64Json,
                 UsbKeyId = _passwordHelper.UsbKeyId
