@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace CodeLibrary
+namespace CodeLibrary.Extensions
 {
     public static class TreeViewExtensions
     {

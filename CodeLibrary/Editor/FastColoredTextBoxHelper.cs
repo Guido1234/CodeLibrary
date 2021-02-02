@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace CodeLibrary
+namespace CodeLibrary.Editor
 {
     public class FastColoredTextBoxHelper : ITextBoxHelper
     {

@@ -1,11 +1,12 @@
 ﻿using CodeLibrary.Core;
+using CodeLibrary.Editor;
+using CodeLibrary.Extensions;
 using CodeLibrary.Helpers;
 using DevToys;
 using FastColoredTextBoxNS;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -15,21 +16,16 @@ namespace CodeLibrary
     public class TreeviewHelper
     {
         private readonly FileHelper _fileHelper;
-
         private readonly FixedQueue<TreeNode> _LastTwo = new FixedQueue<TreeNode>(2);
-
         private readonly FormCodeLibrary _mainform;
         private readonly TextBoxHelper _textBoxHelper;
         private readonly ThemeHelper _themeHelper;
-
         private readonly Timer _timer = new Timer();
         private readonly TreeView _treeViewLibrary;
         private bool _BlockDrop = false;
         private string _SelectedId;
         private bool _timerTick = false;
-
         private int _upodating = 0;
-
         private CodeType DialogSelectedCodeType = CodeType.None;
 
         public TreeviewHelper(FormCodeLibrary mainform, TextBoxHelper textBoxHelper, FileHelper fileHelper, ThemeHelper themeHelper)
@@ -84,13 +80,13 @@ namespace CodeLibrary
 
         public void AddImageNode(TreeNode parentNode, Image image, string name)
         {
-            byte[] _imageData = ConvertImageToByteArray(image, 33L);
+            byte[] _imageData = image.ConvertImageToByteArray(33L);
             AddImageNode(parentNode, _imageData, name);
         }
 
         public void AddImageNodeNoCompression(TreeNode parentNode, Image image, string name)
         {
-            byte[] _imageData = ConvertImageToByteArray(image);
+            byte[] _imageData = image.ConvertImageToByteArray();
             AddImageNode(parentNode, _imageData, name);
         }
 
@@ -116,7 +112,7 @@ namespace CodeLibrary
                     if (_oldType != CodeType.RTF)
                     {
                         FastColoredTextBox _fb = new FastColoredTextBox();
-                        _fb.Language = HelperUtils.CodeTypeToLanguage(_oldType);
+                        _fb.Language = LocalUtils.CodeTypeToLanguage(_oldType);
                         _fb.Text = snippet.Code;
                         _fb.Refresh();
                     }
@@ -894,57 +890,9 @@ namespace CodeLibrary
             }
         }
 
-        // #TODO to ImageExstensions
-        private static byte[] ConvertImageToByteArray(Image imageToConvert)
-        {
-            byte[] Ret;
-            try
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    imageToConvert.Save(ms, ImageFormat.Jpeg);
-                    Ret = ms.ToArray();
-                }
-            }
-            catch (Exception) { throw; }
-            return Ret;
-        }
 
-        // #TODO to ImageExstensions
-        private static byte[] ConvertImageToByteArray(Image imageToConvert, long quality)
-        {
-            ImageCodecInfo jgpEncoder = GetEncoder(ImageFormat.Jpeg);
-            Encoder myEncoder = Encoder.Quality;
-            EncoderParameters myEncoderParameters = new EncoderParameters(1);
-            myEncoderParameters.Param[0] = new EncoderParameter(myEncoder, quality);
-            ImageCodecInfo.GetImageEncoders();
 
-            byte[] Ret;
-            try
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    imageToConvert.Save(ms, jgpEncoder, myEncoderParameters);
-                    Ret = ms.ToArray();
-                }
-            }
-            catch (Exception) { throw; }
-            return Ret;
-        }
 
-        // #TODO to ImageExstensions
-        private static ImageCodecInfo GetEncoder(ImageFormat format)
-        {
-            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
-            foreach (ImageCodecInfo codec in codecs)
-            {
-                if (codec.FormatID == format.Guid)
-                {
-                    return codec;
-                }
-            }
-            return null;
-        }
 
         private void _treeViewLibrary_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
@@ -958,7 +906,7 @@ namespace CodeLibrary
             foreach (string filename in _filenames)
             {
                 FileInfo _file = new FileInfo(filename);
-                var _type = HelperUtils.CodeTypeByExtension(_file);
+                var _type = LocalUtils.CodeTypeByExtension(_file);
 
                 switch (_type)
                 {

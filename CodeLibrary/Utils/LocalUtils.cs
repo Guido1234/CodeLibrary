@@ -2,10 +2,20 @@
 using FastColoredTextBoxNS;
 using System.IO;
 
-namespace CodeLibrary.Helpers
+namespace CodeLibrary
 {
-    public static class HelperUtils
+    public static class LocalUtils
     {
+
+        public static string LastPart(string path)
+        {
+            int ii = path.IndexOf('\\');
+            if (ii < 0)
+                return path;
+
+            return path.Substring(ii, path.Length - ii);
+        }
+
         public static CodeType CodeTypeByExtension(FileInfo file)
         {
             string _extension = file.Extension.Trim(new char[] { '.' }).ToLower();

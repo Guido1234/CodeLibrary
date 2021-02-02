@@ -6,19 +6,16 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace CodeLibrary
-{ 
+namespace CodeLibrary.Editor
+{
     public class RtfEditorHelper : ITextBoxHelper
     {
-        private CodeSnippet _StateSnippet;
-
         private readonly FormCodeLibrary _mainform;
         private readonly RtfControl _rtf;
         private readonly TextBoxHelper _TextBoxHelper;
         private Idle _Idle = new Idle(new TimeSpan(0, 0, 2));
+        private CodeSnippet _StateSnippet;
         private bool _supressTextChanged = false;
-
-        public CodeSnippet GetStateSnippet() => _StateSnippet;
 
         public RtfEditorHelper(FormCodeLibrary mainform, TextBoxHelper textboxHelper)
         {
@@ -32,8 +29,6 @@ namespace CodeLibrary
             _rtf.RichTextConrol.SelectionChanged += RichTextConrol_SelectionChanged;
         }
 
-        public bool IsIdle => _Idle;
-
         public ITextEditor Editor
         {
             get
@@ -41,6 +36,8 @@ namespace CodeLibrary
                 return _rtf;
             }
         }
+
+        public bool IsIdle => _Idle;
 
         public string SelectedText
         {
@@ -51,7 +48,7 @@ namespace CodeLibrary
             set
             {
                 _rtf.SelectedText = value;
-            } 
+            }
         }
 
         public string Text
@@ -72,56 +69,25 @@ namespace CodeLibrary
 
         public void BringToFront() => _rtf.BringToFront();
 
-        public void SetState(CodeSnippet snippet)
-        {
-            _supressTextChanged = true;
-
-            _StateSnippet = snippet;
-            _mainform.tbPath.Text = snippet.Path;
-            _mainform.rtfEditor.ClearUndo();
-            _mainform.rtfEditor.ResetText();
-
-            _mainform.rtfEditor.OwnTheme = snippet.RTFOwnTheme;
-            if (_mainform.rtfEditor.OwnTheme)
-            {
-                _mainform.rtfEditor.SetOwnTheme(snippet.RTFTheme);
-            }
-            else
-            {
-                _mainform.rtfEditor.Theme = Config.Theme;
-            }
-
-            _mainform.rtfEditor.Rtf = snippet.RTF;
-
-            _mainform.rtfEditor.Zoom = Config.Zoom;
-
-            _supressTextChanged = false;
-        }
-
         public void Copy() => _rtf.Copy();
 
-        public string CurrentLine()
-        {
-            return _rtf.CurrentLine();
-        }
+        public string CurrentLine() => _rtf.CurrentLine();
 
         public void Cut() => _rtf.Cut();
 
         public void Focus() => _rtf.Focus();
 
+        public CodeSnippet GetStateSnippet() => _StateSnippet;
+
         public void GotoLine() => _rtf.GotoLine();
 
         public void GotoLine(int line) => _rtf.GotoLine(line);
 
-        public bool GotoNextBookMark()
-        {
-            return false;
-        }
+        public bool GotoNextBookMark() => false;
 
-        public bool GotoPrevBookMark()
-        {
-            return false;
-        }
+        public bool GotoPrevBookMark() => false;
+
+        public string Merge() => string.Empty;
 
         public void Paste() => _rtf.Paste();
 
@@ -153,25 +119,45 @@ namespace CodeLibrary
 
         public void SelectAll() => _rtf.SelectAll();
 
-        public void SelectLine()
+        public void SelectLine() => _rtf.SelectLine();
+
+        public void SetState(CodeSnippet snippet)
         {
-            _rtf.SelectLine();
+            _supressTextChanged = true;
+
+            _StateSnippet = snippet;
+            _mainform.tbPath.Text = snippet.Path;
+            _mainform.rtfEditor.ClearUndo();
+            _mainform.rtfEditor.ResetText();
+
+            _mainform.rtfEditor.OwnTheme = snippet.RTFOwnTheme;
+            if (_mainform.rtfEditor.OwnTheme)
+            {
+                _mainform.rtfEditor.SetOwnTheme(snippet.RTFTheme);
+            }
+            else
+            {
+                _mainform.rtfEditor.Theme = Config.Theme;
+            }
+
+            _mainform.rtfEditor.Rtf = snippet.RTF;
+
+            _mainform.rtfEditor.Zoom = Config.Zoom;
+
+            _supressTextChanged = false;
         }
 
         public void ShowFindDialog() => _rtf.ShowFindDialog();
 
         public void ShowReplaceDialog() => _rtf.ShowReplaceDialog();
 
-        public bool SwitchWordWrap()
-        {
-            return false;
-        }
-
-        public void UpdateHtmlPreview() 
-        { 
-        }
-
         public void SwitchHtmlPreview()
+        {
+        }
+
+        public bool SwitchWordWrap() => false;
+
+        public void UpdateHtmlPreview()
         {
         }
 
@@ -264,7 +250,6 @@ namespace CodeLibrary
             }
             catch
             { }
-
         }
 
         private void RtfEditor_TextChanged(object sender, EventArgs e)
@@ -273,11 +258,6 @@ namespace CodeLibrary
 
             if (_supressTextChanged)
                 return;
-        }
-
-        public string Merge()
-        {
-            return string.Empty;
         }
     }
 }

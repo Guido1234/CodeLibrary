@@ -1,7 +1,7 @@
 ﻿using CodeLibrary.Core;
 using FastColoredTextBoxNS;
 
-namespace CodeLibrary
+namespace CodeLibrary.Editor
 {
     public class TextBoxHelper
     {

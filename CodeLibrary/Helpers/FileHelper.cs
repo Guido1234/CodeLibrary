@@ -1,4 +1,5 @@
 ﻿using CodeLibrary.Core;
+using CodeLibrary.Editor;
 using CodeLibrary.Helpers;
 using DevToys;
 using System;
@@ -172,7 +173,7 @@ namespace CodeLibrary
 
         public List<CodeSnippet> FindNodes(string find)
         {
-            DictionaryList<CodeSnippet, string> _items = CodeLib.Instance.Library.Where(p => LastPart(p.Path).ToLower().Contains(find.ToLower())).ToDictionaryList(p => p.Id);
+            DictionaryList<CodeSnippet, string> _items = CodeLib.Instance.Library.Where(p => LocalUtils.LastPart(p.Path).ToLower().Contains(find.ToLower())).ToDictionaryList(p => p.Id);
             _items.RegisterLookup("PATH", p => p.Path);
 
             DictionaryList<CodeSnippet, string> _paths = new DictionaryList<CodeSnippet, string>(p => p.Path);
@@ -665,14 +666,7 @@ namespace CodeLibrary
             return _result;
         }
 
-        private string LastPart(string path)
-        {
-            int ii = path.IndexOf('\\');
-            if (ii < 0)
-                return path;
 
-            return path.Substring(ii, path.Length - ii);
-        }
 
         private void LoadBackup(string file)
         {

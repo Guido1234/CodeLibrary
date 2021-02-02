@@ -1,4 +1,5 @@
 ﻿using CodeLibrary.Core;
+using CodeLibrary.Editor;
 using CodeLibrary.Helpers;
 using EditorPlugins.Engine;
 using FastColoredTextBoxNS;
