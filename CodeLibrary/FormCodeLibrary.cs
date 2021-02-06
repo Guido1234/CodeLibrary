@@ -19,6 +19,7 @@ namespace CodeLibrary
         private readonly FileHelper _fileHelper;
         private readonly MenuHelper _menuHelper;
         private readonly PasswordHelper _passwordHelper;
+        private readonly StateIconHelper _stateIconHelper;
         private readonly TextBoxHelper _textboxHelper;
         private readonly ThemeHelper _themeHelper;
         private readonly TreeviewHelper _treeHelper;
@@ -31,16 +32,18 @@ namespace CodeLibrary
         {
             InitializeComponent();
             DoubleBuffered = true;
-            _debugHelper = new DebugHelper(this);
+            _stateIconHelper = new StateIconHelper(this);
+
             _textboxHelper = new TextBoxHelper(this);
             _themeHelper = new ThemeHelper(this);
-            _passwordHelper = new PasswordHelper(this);
-            _fileHelper = new FileHelper(this, _debugHelper, _textboxHelper, _passwordHelper);
+            _debugHelper = new DebugHelper(this, _stateIconHelper);
+            _passwordHelper = new PasswordHelper(this, _stateIconHelper);
+            _fileHelper = new FileHelper(this, _debugHelper, _textboxHelper, _passwordHelper, _stateIconHelper);
             _treeHelper = new TreeviewHelper(this, _textboxHelper, _fileHelper, _themeHelper);
             _fileHelper.TreeHelper = _treeHelper;
             _FavoriteHelper = new FavoriteHelper(this, _fileHelper);
-            _clipboardMonitorHelper = new ClipboardMonitorHelper(this, _textboxHelper, _treeHelper);
-            _menuHelper = new MenuHelper(this, _treeHelper);
+            _clipboardMonitorHelper = new ClipboardMonitorHelper(this, _textboxHelper, _treeHelper, _stateIconHelper);
+            _menuHelper = new MenuHelper(this, _treeHelper, _FavoriteHelper);
 
             containerLeft.Dock = DockStyle.Fill;
 
@@ -157,7 +160,9 @@ namespace CodeLibrary
         private void FormCodeLibrary_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (_exitWithoutSaving)
+            {
                 return;
+            }
 
             if (!string.IsNullOrEmpty(_fileHelper.CurrentFile))
                 Config.LastOpenedFile = _fileHelper.CurrentFile;
@@ -167,6 +172,17 @@ namespace CodeLibrary
             Config.SplitterDistance = this.splitContainerMain.SplitterDistance;
 
             Config.Save();
+        }
+
+        private void FormCodeLibrary_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!_exitWithoutSaving)
+            {
+                if (_fileHelper.DiscardChangesDialog() == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
         }
 
         private void FormCodeLibrary_Load(object sender, EventArgs e)
@@ -308,8 +324,6 @@ namespace CodeLibrary
 
         private void mnuAdd_Click(object sender, EventArgs e) => AddNote();
 
-        private void mnuAddCurrentToFavorite_Click(object sender, EventArgs e) => _FavoriteHelper.AddCurrentToFavorite();
-
         private void mnuAddDialog_Click(object sender, EventArgs e)
         {
             if (_treeHelper.IsSystem(treeViewLibrary.SelectedNode))
@@ -419,8 +433,6 @@ namespace CodeLibrary
 
             treeViewLibrary.SelectedNode.Text = DateTime.Now.ToString(menu.Text);
         }
-
-        private void mnuRemoveCurrentFromFavorite_Click(object sender, EventArgs e) => _FavoriteHelper.RemoveCurrentFromFavorite();
 
         private void mnuRenameAsSelectedText_Click(object sender, EventArgs e)
         {

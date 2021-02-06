@@ -9,18 +9,9 @@ namespace EditorPlugins.Engine
 {
     internal static class Utils
     {
-        public static string AppDataPath
-        {
-            get
-            {
-                return Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), "GK.Common");
-            }
-        }
+        public static string AppDataPath => Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), "GK.Common");
 
-        public static string ConfigFile()
-        {
-            return Path.Combine(AppDataPath, "pluginsettings.json");
-        }
+        public static string ConfigFile() => Path.Combine(AppDataPath, "pluginsettings.json");
 
         public static T FromJson<T>(string json)
         {
@@ -36,10 +27,8 @@ namespace EditorPlugins.Engine
                 return (List<T>)serializer.ReadObject(memoryStream);
         }
 
-        public static bool HasInterface(Type type, Type interfacetype)
-        {
-            return (type.GetInterfaces().Where(p => p == interfacetype).FirstOrDefault() != null);
-        }
+        public static bool HasInterface(Type type, Type interfacetype) => (type.GetInterfaces().Where(p => p == interfacetype).FirstOrDefault() != null);
+
 
         public static bool IsSimpleType(Type type)
         {
@@ -61,7 +50,7 @@ namespace EditorPlugins.Engine
 
         public static string ToJson<T>(T items)
         {
-            using (MemoryStream stream = new MemoryStream())
+            using (MemoryStream stream = new MemoryStream()) 
             {
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
                 serializer.WriteObject(stream, items);

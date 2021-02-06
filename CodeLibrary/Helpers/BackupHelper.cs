@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace CodeLibrary
 {
     public class BackupHelper
-    { 
+    {
         private string _patternDate = $"[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9]";
         private Regex _regExDate;
 
@@ -31,7 +31,7 @@ namespace CodeLibrary
             FileInfo file = new FileInfo(CurrentFile);
             string newName = $"{file.Name.Replace($".{file.Extension}", string.Empty)}_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.bak";
             FileInfo bakfile = new FileInfo(Path.Combine(file.Directory.FullName, newName));
-            
+
             if (!bakfile.Exists)
             {
                 try
@@ -85,7 +85,7 @@ namespace CodeLibrary
 
             if (!file.Directory.Exists)
                 return;
- 
+
             string pattern = $"{file.Name.Replace($".{file.Extension}", string.Empty)}_*.bak";
 
             DateTime filterDate = DateTime.Now.AddDays(-2);

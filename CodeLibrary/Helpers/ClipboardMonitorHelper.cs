@@ -6,18 +6,20 @@ using System.Windows.Forms;
 namespace CodeLibrary.Helpers
 {
     public class ClipboardMonitorHelper
-    { 
+    {
         private readonly Timer _timer = new Timer();
         private FormCodeLibrary _mainform;
         private string _prevClipboard = string.Empty;
+        private StateIconHelper _StateIconHelper;
         private TextBoxHelper _textBoxHelper;
         private TreeviewHelper _treeviewHelper;
 
-        public ClipboardMonitorHelper(FormCodeLibrary mainform, TextBoxHelper textBoxHelper, TreeviewHelper treeviewHelper)
+        public ClipboardMonitorHelper(FormCodeLibrary mainform, TextBoxHelper textBoxHelper, TreeviewHelper treeviewHelper, StateIconHelper stateIconHelper)
         {
             _mainform = mainform;
             _textBoxHelper = textBoxHelper;
             _treeviewHelper = treeviewHelper;
+            _StateIconHelper = stateIconHelper;
 
             _timer.Enabled = false;
             _timer.Interval = 100;
@@ -67,6 +69,7 @@ namespace CodeLibrary.Helpers
         {
             _timer.Enabled = !_timer.Enabled;
             _mainform.mnuRecordClipboard.Checked = _timer.Enabled;
+            _StateIconHelper.ClipBoardMonitor = _timer.Enabled;
         }
     }
 }

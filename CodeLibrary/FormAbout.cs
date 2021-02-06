@@ -9,13 +9,21 @@ namespace CodeLibrary
     public partial class FormAbout : Form
     {
         private readonly string _Content = @"
-
-Upcoming:
-
-NEW:
+----------------------------------------------------------------------
+Version 2.2:
 -   Added Setting Screen
     -   Sort Mode
     -   Theme
+
+-   New: Manage Favorites
+
+-   State Icons (right corner)
+    -   Debug Mode
+    -   Document Changed
+    -   Password / USB locked
+    -   Clipboard monitor on
+
+-   Exit without saving warning dialog.
 
 -   Browse file in Restore Backup
 

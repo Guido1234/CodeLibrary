@@ -99,6 +99,12 @@
     <Compile Include="FormBackupRestore.Designer.cs">
       <DependentUpon>FormBackupRestore.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormFavorites.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFavorites.Designer.cs">
+      <DependentUpon>FormFavorites.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSearch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -159,6 +165,7 @@
     <Compile Include="Extensions\ImageExtensions.cs" />
     <Compile Include="Helpers\MenuHelper.cs" />
     <Compile Include="Helpers\PasswordHelper.cs" />
+    <Compile Include="Helpers\StateIconHelper.cs" />
     <Compile Include="Helpers\ThemeHelper.cs" />
     <Compile Include="Extensions\TreeViewExtensions.cs" />
     <Compile Include="Utils\LocalUtils.cs" />
@@ -180,6 +187,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormBackupRestore.resx">
       <DependentUpon>FormBackupRestore.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormFavorites.resx">
+      <DependentUpon>FormFavorites.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSearch.resx">
       <DependentUpon>FormSearch.cs</DependentUpon>
@@ -319,6 +329,7 @@
     <Content Include="Note.ico" />
     <None Include="Resources\key_16x16.png" />
     <None Include="Resources\usb_3_32x32.png" />
+    <None Include="Resources\computer_edit_16x16.png" />
     <Content Include="T4\VersionInc.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>VersionInc.cs</LastGenOutput>

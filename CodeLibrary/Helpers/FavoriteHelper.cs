@@ -6,12 +6,14 @@ using System.Windows.Forms;
 namespace CodeLibrary.Helpers
 {
     public class FavoriteHelper
-    { 
-        private readonly ToolStripMenuItem _mnuFavoriteLibraries;
+    {
         private readonly FileHelper _fileHelper;
+        private readonly ToolStripMenuItem _mnuFavoriteLibraries;
+        private FormCodeLibrary _mainform;
 
         public FavoriteHelper(FormCodeLibrary mainform, FileHelper fileHelper)
         {
+            _mainform = mainform;
             _mnuFavoriteLibraries = mainform.mnuFavoriteLibraries;
             _fileHelper = fileHelper;
         }
@@ -62,6 +64,46 @@ namespace CodeLibrary.Helpers
                 _item.Click += Item_Click;
                 index++;
             }
+        }
+
+        public void OpenCSharpLibrary()
+        {
+            if (_fileHelper.DiscardChangesDialog() == DialogResult.No)
+            {
+                return;
+            }
+
+            string _filename = Path.Combine(Application.StartupPath, @"Libraries\CSharp Library.json");
+
+            _fileHelper.SaveFile(false);
+
+            if (!File.Exists(_filename))
+            {
+                MessageBox.Show($"File '{_filename}' does not exists!.");
+                return;
+            }
+
+            _fileHelper.OpenFile(_filename);
+        }
+
+        public void OpenDemo()
+        {
+            if (_fileHelper.DiscardChangesDialog() == DialogResult.No)
+            {
+                return;
+            }
+
+            string _filename = Path.Combine(Application.StartupPath, @"Libraries\Demo.json");
+
+            _fileHelper.SaveFile(false);
+
+            if (!File.Exists(_filename))
+            {
+                MessageBox.Show($"File '{_filename}' does not exists!.");
+                return;
+            }
+
+            _fileHelper.OpenFile(_filename);
         }
 
         public void RemoveCurrentFromFavorite()
@@ -135,39 +177,6 @@ namespace CodeLibrary.Helpers
         {
             ToolStripItem _item = (ToolStripItem)sender;
             string _filename = (string)_item.Tag;
-
-            if (!File.Exists(_filename))
-            {
-                MessageBox.Show($"File '{_filename}' does not exists!.");
-                return;
-            }
-
-            _fileHelper.OpenFile(_filename);
-        }
-
-
-        public void OpenDemo()
-        {
-            string _filename = Path.Combine(Application.StartupPath, @"Libraries\Demo.json");
-            
- 
-            _fileHelper.SaveFile(false);
-
-            if (!File.Exists(_filename))
-            {
-                MessageBox.Show($"File '{_filename}' does not exists!.");
-                return;
-            }
-
-            _fileHelper.OpenFile(_filename);
-        }
-
-        public void OpenCSharpLibrary()
-        {
-            string _filename = Path.Combine(Application.StartupPath, @"Libraries\CSharp Library.json");
-
-
-            _fileHelper.SaveFile(false);
 
             if (!File.Exists(_filename))
             {

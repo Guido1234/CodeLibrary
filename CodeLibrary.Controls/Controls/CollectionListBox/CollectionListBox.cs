@@ -429,6 +429,11 @@ namespace CodeLibrary.Controls
             SetSelected();
         }
 
+        public void Clear()
+        {
+            this._collection.Clear();
+        }
+
         /// <summary>
         /// Sets the collection
         /// </summary>
@@ -439,7 +444,9 @@ namespace CodeLibrary.Controls
             this._collection.Clear();
             this.CollectionType = typeof(T);
             foreach (T item in collection)
+            {
                 _collection.Add((object)item);
+            }
         }
 
         /// <summary>
@@ -461,15 +468,26 @@ namespace CodeLibrary.Controls
             RaiseEventBeforeItemSelected(_selectedObject);
 
             var _obj = Activator.CreateInstance(addtype);
-            var _prop = _obj.GetType().GetProperty(CategoryProperty);
 
-            if (_prop.CanWrite && _prop.PropertyType == typeof(string))
-                _prop.SetValue(_obj, _lastCategory);
+            if (CategoryProperty != null)
+            {
+                var _prop = _obj.GetType().GetProperty(CategoryProperty);
+
+                if (_prop.CanWrite && _prop.PropertyType == typeof(string))
+                    _prop.SetValue(_obj, _lastCategory);
+            }
 
             CollectionListBoxEventArgs ea = new CollectionListBoxEventArgs(_obj);
-            _collection.Add(ea.Item);
+
 
             OnAdd?.Invoke(this, ea);
+            if (ea.Canceled)
+            {
+                return;
+            }
+
+            _collection.Add(ea.Item);
+
             OnCollectionChanged?.Invoke(this, new EventArgs());
 
             BuildCollectionList();
@@ -877,6 +895,8 @@ namespace CodeLibrary.Controls
             }
 
             public object Item { get; set; }
+
+            public bool Canceled { get; set; }
         }
 
         public class CollectionListBoxMultiEventArgs : EventArgs
@@ -1022,8 +1042,6 @@ namespace CodeLibrary.Controls
             buttonCut.ForeColor = Color.White;
             buttonPaste.BackColor = Color.FromArgb(255, 100, 100, 100);
             buttonPaste.ForeColor = Color.White;
-            toolStripButton1.BackColor = Color.FromArgb(255, 100, 100, 100);
-            toolStripButton1.ForeColor = Color.White;
             ForeColor = Color.White;
             BackColor = Color.FromArgb(255, 100, 100, 100);
             toolStrip1.BackColor = Color.FromArgb(255, 100, 100, 100);
@@ -1047,8 +1065,6 @@ namespace CodeLibrary.Controls
             buttonCut.ForeColor = Color.White;
             buttonPaste.BackColor = Color.FromArgb(255, 100, 100, 100);
             buttonPaste.ForeColor = Color.White;
-            toolStripButton1.BackColor = Color.FromArgb(255, 100, 100, 100);
-            toolStripButton1.ForeColor = Color.White;
             ForeColor = Color.White;
             BackColor = Color.FromArgb(255, 100, 100, 100);
             toolStrip1.BackColor = Color.FromArgb(255, 100, 100, 100);
@@ -1072,8 +1088,6 @@ namespace CodeLibrary.Controls
             buttonCut.ForeColor = Color.Black;
             buttonPaste.BackColor = Color.FromArgb(255, 240, 240, 240);
             buttonPaste.ForeColor = Color.Black;
-            toolStripButton1.BackColor = Color.FromArgb(255, 240, 240, 240);
-            toolStripButton1.ForeColor = Color.Black;
             ForeColor = Color.Black;
             BackColor = Color.FromArgb(255, 240, 240, 240);
             toolStrip1.BackColor = Color.FromArgb(255, 240, 240, 240);

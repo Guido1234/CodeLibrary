@@ -258,6 +258,8 @@ namespace CodeLibrary.Editor
 
             if (_supressTextChanged)
                 return;
+
+            CodeLib.Instance.Changed = true;
         }
     }
 }

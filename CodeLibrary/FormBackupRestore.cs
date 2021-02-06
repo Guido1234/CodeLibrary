@@ -77,6 +77,13 @@ namespace CodeLibrary
 
         private void Show()
         {
+            if (string.IsNullOrWhiteSpace(_currentFile))
+            {
+                lbBackups.Clear();
+                lbBackups.Refresh();
+                return;
+            }
+
             FileInfo file = new FileInfo(_currentFile);
             lbName.Text = file.Name;
 

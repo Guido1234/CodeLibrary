@@ -100,6 +100,12 @@
     <Compile Include="Controls\RtfControl.Designer.cs">
       <DependentUpon>RtfControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\StateIcons.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\StateIcons.Designer.cs">
+      <DependentUpon>StateIcons.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FindForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,6 +156,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\RtfControl.resx">
       <DependentUpon>RtfControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\StateIcons.resx">
+      <DependentUpon>StateIcons.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindForm.resx">
       <DependentUpon>FindForm.cs</DependentUpon>

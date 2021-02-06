@@ -12,24 +12,19 @@ namespace CodeLibrary.Editor
 {
     public class FastColoredTextBoxHelper : ITextBoxHelper
     {
-        private CodeSnippet _StateSnippet;
-
         private readonly FormCodeLibrary _mainform;
         private readonly FastColoredTextBox _tb;
         private readonly TextBoxHelper _TextBoxHelper;
         private Idle _Idle = new Idle(new TimeSpan(0, 0, 2));
-
         private Regex _regexWildCards = new Regex("(?<=#\\[)(.*?)(?=\\]#)");
+        private CodeSnippet _StateSnippet;
         private bool _supressTextChanged = false;
-
-        public CodeSnippet GetStateSnippet() => _StateSnippet;
 
         public FastColoredTextBoxHelper(FormCodeLibrary mainform, TextBoxHelper textboxHelper)
         {
             _mainform = mainform;
             _tb = _mainform.fastColoredTextBox;
             _TextBoxHelper = textboxHelper;
-
 
             CodeInsight.Instance.Init(_mainform.listBoxInsight, _tb);
             _tb.AllowDrop = true;
@@ -40,8 +35,6 @@ namespace CodeLibrary.Editor
             _tb.KeyDown += new KeyEventHandler(TbCode_KeyDown);
             _tb.MouseUp += new MouseEventHandler(TbCode_MouseUp);
         }
-
-        public bool IsIdle => _Idle;
 
         public ITextEditor Editor
         {
@@ -58,6 +51,8 @@ namespace CodeLibrary.Editor
                 return _tb;
             }
         }
+
+        public bool IsIdle => _Idle;
 
         public string SelectedText
         {
@@ -100,48 +95,6 @@ namespace CodeLibrary.Editor
 
         public void BringToFront() => _tb.BringToFront();
 
-        public void SetState(CodeSnippet snippet)
-        {
-            _StateSnippet = snippet;
-            _supressTextChanged = true;
-            _tb.BeginUpdate();
-
-            _TextBoxHelper.SetEditorView(snippet);
-
-            _tb.Text = snippet.Code;
-            _tb.ClearUndo();
-            _mainform.tbPath.Text = snippet.Path;// + $"    [C: {snippet.CreationDate},M:{snippet.CodeLastModificationDate:yyyy-MM-dd HH:mm:ss}]";
-            _tb.WordWrap = snippet.Wordwrap;
-            _tb.SelectionStart = 0;
-            _tb.SelectionLength = 0;
-            _tb.ScrollControlIntoView(_tb);
-
-            int _lines = _tb.LinesCount;
-            try
-            {
-                if (_lines > snippet.CurrentLine)
-                    _tb.GotoLine(snippet.CurrentLine);
-            }
-            catch { }
-
-            _mainform.mnuWordwrap.Checked = snippet.Wordwrap;
-            _mainform.mnuHTMLPreview.Checked = snippet.HtmlPreview;
-
-            _tb.EndUpdate();
-
-            _supressTextChanged = false;
-        }
-
-        public void SwitchHtmlPreview()
-        {            
-            if (_StateSnippet == null)
-                return;
-
-            _StateSnippet.HtmlPreview = !_StateSnippet.HtmlPreview;
-            _mainform.mnuHTMLPreview.Checked = _StateSnippet.HtmlPreview;
-            _mainform.splitContainerCode.Panel2Collapsed = !_StateSnippet.HtmlPreview;
-        }
-
         public void Copy()
         {
             _mainform.textBoxClipboard.Text = SelectedText;
@@ -176,6 +129,8 @@ namespace CodeLibrary.Editor
 
         public void Focus() => _tb.Focus();
 
+        public CodeSnippet GetStateSnippet() => _StateSnippet;
+
         public void GotoLine() => _tb.GotoLine();
 
         public void GotoLine(int line) => _tb.GotoLine(line);
@@ -208,6 +163,11 @@ namespace CodeLibrary.Editor
             }
 
             return _newText;
+        }
+
+        public string Merge()
+        {
+            return Merge(Text, CodeType.HTML);
         }
 
         public void Paste() => _tb.Paste();
@@ -249,9 +209,51 @@ namespace CodeLibrary.Editor
             _tb.Selection = new Range(_tb, _start, _end);
         }
 
+        public void SetState(CodeSnippet snippet)
+        {
+            _StateSnippet = snippet;
+            _supressTextChanged = true;
+            _tb.BeginUpdate();
+
+            _TextBoxHelper.SetEditorView(snippet);
+
+            _tb.Text = snippet.Code;
+            _tb.ClearUndo();
+            _mainform.tbPath.Text = snippet.Path;// + $"    [C: {snippet.CreationDate},M:{snippet.CodeLastModificationDate:yyyy-MM-dd HH:mm:ss}]";
+            _tb.WordWrap = snippet.Wordwrap;
+            _tb.SelectionStart = 0;
+            _tb.SelectionLength = 0;
+            _tb.ScrollControlIntoView(_tb);
+
+            int _lines = _tb.LinesCount;
+            try
+            {
+                if (_lines > snippet.CurrentLine)
+                    _tb.GotoLine(snippet.CurrentLine);
+            }
+            catch { }
+
+            _mainform.mnuWordwrap.Checked = snippet.Wordwrap;
+            _mainform.mnuHTMLPreview.Checked = snippet.HtmlPreview;
+
+            _tb.EndUpdate();
+
+            _supressTextChanged = false;
+        }
+
         public void ShowFindDialog() => _tb.ShowFindDialog();
 
         public void ShowReplaceDialog() => _tb.ShowReplaceDialog();
+
+        public void SwitchHtmlPreview()
+        {
+            if (_StateSnippet == null)
+                return;
+
+            _StateSnippet.HtmlPreview = !_StateSnippet.HtmlPreview;
+            _mainform.mnuHTMLPreview.Checked = _StateSnippet.HtmlPreview;
+            _mainform.splitContainerCode.Panel2Collapsed = !_StateSnippet.HtmlPreview;
+        }
 
         public bool SwitchWordWrap()
         {
@@ -280,9 +282,9 @@ namespace CodeLibrary.Editor
                         _text = _markdown.Transform(_text);
                         _mainform.webBrowser.DocumentText = _text;
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        _mainform.webBrowser.DocumentText = string.Empty;
+                        _mainform.webBrowser.DocumentText = Merge(_tb.Text, CodeType.HTML);
                     }
                 }
                 else
@@ -290,6 +292,17 @@ namespace CodeLibrary.Editor
                     _mainform.webBrowser.DocumentText = Merge(_tb.Text, CodeType.HTML);
                 }
             }
+        }
+
+        private void _tb_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                _mainform.lblStart.Text = _tb.SelectionStart.ToString();
+                _mainform.lblEnd.Text = (_tb.SelectionStart + _tb.SelectionLength).ToString();
+                _mainform.lblLength.Text = _tb.SelectionLength.ToString();
+            }
+            catch { }
         }
 
         private bool DocShortCut(KeyEventArgs e)
@@ -393,23 +406,8 @@ namespace CodeLibrary.Editor
 
             if (_supressTextChanged)
                 return;
-        }
 
-        public string Merge()
-        {
-            return Merge(Text, CodeType.HTML);
+            CodeLib.Instance.Changed = true;
         }
-
-        private void _tb_SelectionChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                _mainform.lblStart.Text = _tb.SelectionStart.ToString();
-                _mainform.lblEnd.Text = (_tb.SelectionStart + _tb.SelectionLength).ToString();
-                _mainform.lblLength.Text = _tb.SelectionLength.ToString();
-            }
-            catch { }
-        }
-
     }
 }

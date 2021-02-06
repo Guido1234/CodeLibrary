@@ -1,36 +1,27 @@
-﻿using CodeLibrary.Core;
-using DevToys;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
-
-
-namespace CodeLibrary.Helpers
+﻿namespace CodeLibrary.Helpers
 {
     public class DebugHelper
     {
         private readonly FormCodeLibrary _mainform;
         private bool _Debug;
-         
-        public DebugHelper(FormCodeLibrary mainform)
+        private StateIconHelper _StateIconHelper;
+
+        public DebugHelper(FormCodeLibrary mainform, StateIconHelper stateIconHelper)
         {
             _mainform = mainform;
+            _StateIconHelper = stateIconHelper;
 
 #if (DEBUG)
             _mainform.mnuDebug.Visible = true;
             _mainform.mnuDebugSeparator.Visible = true;
+            _StateIconHelper.Debug = true;
 #else
             _mainform.mnuDebug.Visible = false;
             _mainform.mnuDebugSeparator.Visible = false;
+            _StateIconHelper.Debug = false;
 #endif
-
         }
 
         public bool Debug => _Debug;
-
     }
 }

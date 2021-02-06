@@ -126,6 +126,7 @@ namespace CodeLibrary
             // 
             // btBrowse
             // 
+            this.btBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btBrowse.Image = global::CodeLibrary.Properties.Resources.folder_star_16x16;
             this.btBrowse.Location = new System.Drawing.Point(651, 6);
             this.btBrowse.Name = "btBrowse";

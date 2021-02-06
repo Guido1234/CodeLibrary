@@ -8,9 +8,14 @@ namespace CodeLibrary.Core
 {
     public class CodeLib
     {
+
+        public event EventHandler<EventArgs> ChangeStateChanged = delegate { };
+
         private static CodeLib _Instance;
 
         private int _Updating = 0;
+
+        private bool _Changed = false;
 
         private CodeLib()
         {
@@ -24,7 +29,21 @@ namespace CodeLibrary.Core
 
         public static CodeLib Instance => _Instance ?? (_Instance = new CodeLib());
 
-        public bool Changed { get; set; }
+        public bool Changed 
+        { 
+            get
+            {
+                return _Changed; 
+            }
+            
+            set
+            {
+                _Changed = value;
+                ChangeStateChanged(this, new EventArgs());
+            }
+        
+        
+        }
 
         public CodeSnippet ClipboardMonitor
         {

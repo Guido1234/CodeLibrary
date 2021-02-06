@@ -8,11 +8,13 @@ namespace CodeLibrary.Helpers
     public class MenuHelper
     {
         private readonly FormCodeLibrary _mainform;
+        private FavoriteHelper _FavoriteHelper;
         private TreeviewHelper _treeviewHelper;
 
-        public MenuHelper(FormCodeLibrary mainform, TreeviewHelper treeviewHelper)
+        public MenuHelper(FormCodeLibrary mainform, TreeviewHelper treeviewHelper, FavoriteHelper favoriteHelper)
         {
             _mainform = mainform;
+            _FavoriteHelper = favoriteHelper;
             _treeviewHelper = treeviewHelper;
             _mainform.mncPasteFilelist.Click += mnuPasteFilelist_Click;
             _mainform.mnuPasteFilelist.Click += mnuPasteFilelist_Click;
@@ -34,6 +36,8 @@ namespace CodeLibrary.Helpers
             _mainform.mncCopyImageAsBase64String.Click += mnuCopyImageAsBase64String_Click;
             _mainform.mncCopyImageAsMarkDownImage.Click += mnuCopyImageAsMarkDownImage_Click;
             _mainform.mncCopyImageAsHTMLIMG.Click += mnuCopyImageAsHTMLIMG_Click;
+
+            _mainform.mnuManageFavorites.Click += MnuManageFavorites_Click;
         }
 
         private void mnuCopyImage_Click(object sender, EventArgs e)
@@ -60,6 +64,16 @@ namespace CodeLibrary.Helpers
             CodeSnippet _snippet = CodeLib.Instance.GetById(_treeviewHelper.SelectedId);
             string _base64 = Convert.ToBase64String(_snippet.Blob);
             Clipboard.SetText(string.Format(@"![{0}](data:image/png;base64,{1})", _snippet.Title(), _base64));
+        }
+
+        private void MnuManageFavorites_Click(object sender, EventArgs e)
+        {
+            FormFavorites f = new FormFavorites();
+            DialogResult _dr = f.ShowDialog();
+            if (_dr == DialogResult.OK)
+            {
+                _FavoriteHelper.BuildMenu();
+            }
         }
 
         private void mnuPasteFilelist_Click(object sender, EventArgs e)

@@ -141,8 +141,7 @@
             this.mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuFavoriteLibraries = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuAddCurrentToFavorite = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuRemoveCurrentFromFavorite = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuManageFavorites = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuRestoreBackup = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep4 = new System.Windows.Forms.ToolStripSeparator();
@@ -242,12 +241,12 @@
             this.mnuDemoProject = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuExampleLibrary = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMainStrip = new System.Windows.Forms.MenuStrip();
-            this.container1 = new CodeLibrary.Controls.Container();
             this.mncClipboardMonitor = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuRecordClipboard = new System.Windows.Forms.ToolStripMenuItem();
             this.mncSep11 = new System.Windows.Forms.ToolStripSeparator();
             this.mncClearClipboardMonitor = new System.Windows.Forms.ToolStripMenuItem();
-            this.pctKey = new System.Windows.Forms.PictureBox();
+            this.stateIcons = new CodeLibrary.Controls.Controls.StateIcons();
+            this.container1 = new CodeLibrary.Controls.Container();
             this.mncEdit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -271,7 +270,6 @@
             this.mncImage.SuspendLayout();
             this.mnuMainStrip.SuspendLayout();
             this.mncClipboardMonitor.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pctKey)).BeginInit();
             this.SuspendLayout();
             // 
             // imageList
@@ -1300,8 +1298,7 @@
             this.mnuSaveAs,
             this.mnuSep2,
             this.mnuFavoriteLibraries,
-            this.mnuAddCurrentToFavorite,
-            this.mnuRemoveCurrentFromFavorite,
+            this.mnuManageFavorites,
             this.mnuSep3,
             this.mnuRestoreBackup,
             this.mnuSep4,
@@ -1320,7 +1317,7 @@
             this.mnuNew.Image = global::CodeLibrary.Properties.Resources.page_white_text_32x32;
             this.mnuNew.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuNew.Name = "mnuNew";
-            this.mnuNew.Size = new System.Drawing.Size(250, 38);
+            this.mnuNew.Size = new System.Drawing.Size(196, 38);
             this.mnuNew.Text = "New";
             this.mnuNew.ToolTipText = "Create a new document without saving current";
             this.mnuNew.Click += new System.EventHandler(this.mnuNew_Click);
@@ -1328,14 +1325,14 @@
             // mnuSep1
             // 
             this.mnuSep1.Name = "mnuSep1";
-            this.mnuSep1.Size = new System.Drawing.Size(247, 6);
+            this.mnuSep1.Size = new System.Drawing.Size(193, 6);
             // 
             // mnuLoad
             // 
             this.mnuLoad.Image = global::CodeLibrary.Properties.Resources.open_32x32;
             this.mnuLoad.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuLoad.Name = "mnuLoad";
-            this.mnuLoad.Size = new System.Drawing.Size(250, 38);
+            this.mnuLoad.Size = new System.Drawing.Size(196, 38);
             this.mnuLoad.Text = "Load";
             this.mnuLoad.Click += new System.EventHandler(this.mnuLoad_Click);
             // 
@@ -1345,7 +1342,7 @@
             this.mnuSave.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuSave.Name = "mnuSave";
             this.mnuSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.mnuSave.Size = new System.Drawing.Size(250, 38);
+            this.mnuSave.Size = new System.Drawing.Size(196, 38);
             this.mnuSave.Text = "Save";
             this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
             // 
@@ -1354,64 +1351,54 @@
             this.mnuSaveAs.Image = global::CodeLibrary.Properties.Resources.save_as_32x32;
             this.mnuSaveAs.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuSaveAs.Name = "mnuSaveAs";
-            this.mnuSaveAs.Size = new System.Drawing.Size(250, 38);
+            this.mnuSaveAs.Size = new System.Drawing.Size(196, 38);
             this.mnuSaveAs.Text = "Save as";
             this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
             // 
             // mnuSep2
             // 
             this.mnuSep2.Name = "mnuSep2";
-            this.mnuSep2.Size = new System.Drawing.Size(247, 6);
+            this.mnuSep2.Size = new System.Drawing.Size(193, 6);
             // 
             // mnuFavoriteLibraries
             // 
             this.mnuFavoriteLibraries.Image = global::CodeLibrary.Properties.Resources.folder_star_32x32;
             this.mnuFavoriteLibraries.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuFavoriteLibraries.Name = "mnuFavoriteLibraries";
-            this.mnuFavoriteLibraries.Size = new System.Drawing.Size(250, 38);
+            this.mnuFavoriteLibraries.Size = new System.Drawing.Size(196, 38);
             this.mnuFavoriteLibraries.Text = "Favorite Libraries";
             // 
-            // mnuAddCurrentToFavorite
+            // mnuManageFavorites
             // 
-            this.mnuAddCurrentToFavorite.Image = global::CodeLibrary.Properties.Resources.award_star_add_32x32;
-            this.mnuAddCurrentToFavorite.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.mnuAddCurrentToFavorite.Name = "mnuAddCurrentToFavorite";
-            this.mnuAddCurrentToFavorite.Size = new System.Drawing.Size(250, 38);
-            this.mnuAddCurrentToFavorite.Text = "Add Current to Favorite";
-            this.mnuAddCurrentToFavorite.Click += new System.EventHandler(this.mnuAddCurrentToFavorite_Click);
-            // 
-            // mnuRemoveCurrentFromFavorite
-            // 
-            this.mnuRemoveCurrentFromFavorite.Name = "mnuRemoveCurrentFromFavorite";
-            this.mnuRemoveCurrentFromFavorite.Size = new System.Drawing.Size(250, 38);
-            this.mnuRemoveCurrentFromFavorite.Text = "Remove Current from Favorite";
-            this.mnuRemoveCurrentFromFavorite.Click += new System.EventHandler(this.mnuRemoveCurrentFromFavorite_Click);
+            this.mnuManageFavorites.Name = "mnuManageFavorites";
+            this.mnuManageFavorites.Size = new System.Drawing.Size(196, 38);
+            this.mnuManageFavorites.Text = "Manage Favorites";
             // 
             // mnuSep3
             // 
             this.mnuSep3.Name = "mnuSep3";
-            this.mnuSep3.Size = new System.Drawing.Size(247, 6);
+            this.mnuSep3.Size = new System.Drawing.Size(193, 6);
             // 
             // mnuRestoreBackup
             // 
             this.mnuRestoreBackup.Image = global::CodeLibrary.Properties.Resources.backup_manager_32x32;
             this.mnuRestoreBackup.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuRestoreBackup.Name = "mnuRestoreBackup";
-            this.mnuRestoreBackup.Size = new System.Drawing.Size(250, 38);
+            this.mnuRestoreBackup.Size = new System.Drawing.Size(196, 38);
             this.mnuRestoreBackup.Text = "Restore Backup";
             this.mnuRestoreBackup.Click += new System.EventHandler(this.mnuRestoreBackup_Click);
             // 
             // mnuSep4
             // 
             this.mnuSep4.Name = "mnuSep4";
-            this.mnuSep4.Size = new System.Drawing.Size(247, 6);
+            this.mnuSep4.Size = new System.Drawing.Size(193, 6);
             // 
             // mnuSetPassword
             // 
             this.mnuSetPassword.Image = global::CodeLibrary.Properties.Resources.change_password_32x32;
             this.mnuSetPassword.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuSetPassword.Name = "mnuSetPassword";
-            this.mnuSetPassword.Size = new System.Drawing.Size(250, 38);
+            this.mnuSetPassword.Size = new System.Drawing.Size(196, 38);
             this.mnuSetPassword.Text = "Set Password";
             this.mnuSetPassword.ToolTipText = "Password remains persistant in memory, until application is closed. All documents" +
     " saved are encrypted with specified password.";
@@ -1422,7 +1409,7 @@
             this.mnuSetUsbKey.Image = global::CodeLibrary.Properties.Resources.usb_3_32x32;
             this.mnuSetUsbKey.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuSetUsbKey.Name = "mnuSetUsbKey";
-            this.mnuSetUsbKey.Size = new System.Drawing.Size(250, 38);
+            this.mnuSetUsbKey.Size = new System.Drawing.Size(196, 38);
             this.mnuSetUsbKey.Text = "Set USBKey";
             this.mnuSetUsbKey.Click += new System.EventHandler(this.mnuSetUsbKey_Click);
             // 
@@ -1430,21 +1417,21 @@
             // 
             this.mnuClearPassword.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuClearPassword.Name = "mnuClearPassword";
-            this.mnuClearPassword.Size = new System.Drawing.Size(250, 38);
+            this.mnuClearPassword.Size = new System.Drawing.Size(196, 38);
             this.mnuClearPassword.Text = "Clear Password";
             this.mnuClearPassword.Click += new System.EventHandler(this.mnuClearPassword_Click);
             // 
             // mnuSep5
             // 
             this.mnuSep5.Name = "mnuSep5";
-            this.mnuSep5.Size = new System.Drawing.Size(247, 6);
+            this.mnuSep5.Size = new System.Drawing.Size(193, 6);
             // 
             // mnuExit
             // 
             this.mnuExit.Image = global::CodeLibrary.Properties.Resources.close_32x32;
             this.mnuExit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuExit.Name = "mnuExit";
-            this.mnuExit.Size = new System.Drawing.Size(250, 38);
+            this.mnuExit.Size = new System.Drawing.Size(196, 38);
             this.mnuExit.Text = "Exit";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
             // 
@@ -1452,7 +1439,7 @@
             // 
             this.mnuExitWithoutSaving.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mnuExitWithoutSaving.Name = "mnuExitWithoutSaving";
-            this.mnuExitWithoutSaving.Size = new System.Drawing.Size(250, 38);
+            this.mnuExitWithoutSaving.Size = new System.Drawing.Size(196, 38);
             this.mnuExitWithoutSaving.Text = "Exit without saving";
             this.mnuExitWithoutSaving.Click += new System.EventHandler(this.mnuExitWithoutSaving_Click);
             // 
@@ -2226,15 +2213,6 @@
             this.mnuMainStrip.TabIndex = 2;
             this.mnuMainStrip.Text = "menuStrip1";
             // 
-            // container1
-            // 
-            this.container1.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.container1.Location = new System.Drawing.Point(3, 394);
-            this.container1.Name = "container1";
-            this.container1.Size = new System.Drawing.Size(483, 99);
-            this.container1.TabIndex = 19;
-            this.container1.Text = "container2";
-            // 
             // mncClipboardMonitor
             // 
             this.mncClipboardMonitor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2263,23 +2241,30 @@
             this.mncClearClipboardMonitor.Size = new System.Drawing.Size(169, 38);
             this.mncClearClipboardMonitor.Text = "Clear";
             // 
-            // pctKey
+            // stateIcons
             // 
-            this.pctKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pctKey.Image = global::CodeLibrary.Properties.Resources.key_16x16;
-            this.pctKey.Location = new System.Drawing.Point(1139, 2);
-            this.pctKey.Name = "pctKey";
-            this.pctKey.Size = new System.Drawing.Size(16, 16);
-            this.pctKey.TabIndex = 20;
-            this.pctKey.TabStop = false;
-            this.pctKey.Visible = false;
+            this.stateIcons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.stateIcons.BackColor = System.Drawing.Color.Gray;
+            this.stateIcons.Location = new System.Drawing.Point(1050, 2);
+            this.stateIcons.Name = "stateIcons";
+            this.stateIcons.Size = new System.Drawing.Size(105, 16);
+            this.stateIcons.TabIndex = 22;
+            // 
+            // container1
+            // 
+            this.container1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.container1.Location = new System.Drawing.Point(3, 394);
+            this.container1.Name = "container1";
+            this.container1.Size = new System.Drawing.Size(483, 99);
+            this.container1.TabIndex = 19;
+            this.container1.Text = "container2";
             // 
             // FormCodeLibrary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1158, 770);
-            this.Controls.Add(this.pctKey);
+            this.Controls.Add(this.stateIcons);
             this.Controls.Add(this.splitContainerMain);
             this.Controls.Add(this.textBoxClipboard);
             this.Controls.Add(this.mnuMainStrip);
@@ -2289,6 +2274,7 @@
             this.Name = "FormCodeLibrary";
             this.Text = "Code Library";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormCodeLibrary_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormCodeLibrary_FormClosed);
             this.Load += new System.EventHandler(this.FormCodeLibrary_Load);
             this.mncEdit.ResumeLayout(false);
@@ -2318,7 +2304,6 @@
             this.mnuMainStrip.ResumeLayout(false);
             this.mnuMainStrip.PerformLayout();
             this.mncClipboardMonitor.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pctKey)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2518,8 +2503,6 @@
         internal System.Windows.Forms.ToolStripMenuItem mnuLoad;
         internal System.Windows.Forms.ToolStripMenuItem mnuSave;
         internal System.Windows.Forms.ToolStripMenuItem mnuSaveAs;
-        internal System.Windows.Forms.ToolStripMenuItem mnuAddCurrentToFavorite;
-        internal System.Windows.Forms.ToolStripMenuItem mnuRemoveCurrentFromFavorite;
         internal System.Windows.Forms.ToolStripSeparator mncSep20;
         internal System.Windows.Forms.Label lblLength;
         internal System.Windows.Forms.Label lblLengthText;
@@ -2540,9 +2523,10 @@
         private System.Windows.Forms.ToolStripSeparator mnuSep50;
         private System.Windows.Forms.ToolStripSeparator mnuSep51;
         internal System.Windows.Forms.ToolStripMenuItem mnuSetUsbKey;
-        internal System.Windows.Forms.PictureBox pctKey;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        internal Controls.Controls.StateIcons stateIcons;
+        internal System.Windows.Forms.ToolStripMenuItem mnuManageFavorites;
     }
 }
 

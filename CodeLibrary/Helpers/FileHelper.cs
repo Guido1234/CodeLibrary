@@ -19,6 +19,7 @@ namespace CodeLibrary
         private readonly DebugHelper _DebugHelper;
         private readonly FormCodeLibrary _mainform;
         private readonly PasswordHelper _passwordHelper;
+        private readonly StateIconHelper _StateIconHelper;
         private readonly TextBoxHelper _textBoxHelper;
         private readonly TreeView _treeViewLibrary;
         private String _AutoSaveFileName = string.Empty;
@@ -28,13 +29,15 @@ namespace CodeLibrary
         private Cursor _PrevCursor;
         private int _updating = 0;
 
-        public FileHelper(FormCodeLibrary mainform, DebugHelper debugHelper, TextBoxHelper textBoxHelper, PasswordHelper passwordHelper)
+        public FileHelper(FormCodeLibrary mainform, DebugHelper debugHelper, TextBoxHelper textBoxHelper, PasswordHelper passwordHelper, StateIconHelper stateIconHelper)
         {
+            _StateIconHelper = stateIconHelper;
             _DebugHelper = debugHelper;
             _mainform = mainform;
             _treeViewLibrary = _mainform.treeViewLibrary;
             _textBoxHelper = textBoxHelper;
             _passwordHelper = passwordHelper;
+            CodeLib.Instance.ChangeStateChanged += Instance_ChangeStateChanged;
 
             _lastAutoSavedDate = DateTime.Now;
             _autoSaveTimer.Interval = 1000;
@@ -49,7 +52,9 @@ namespace CodeLibrary
         public bool IsUpdating => _updating > 0;
 
         public string SelectedId { get; set; }
+
         public TreeNode TrashcanNode { get; set; }
+
         public TreeviewHelper TreeHelper { get; set; }
 
         public void BeginUpdate()
@@ -159,6 +164,16 @@ namespace CodeLibrary
             }
 
             CodeLib.Instance.BuildNodeIndexer(_treeViewLibrary);
+        }
+
+        public DialogResult DiscardChangesDialog()
+        {
+            DialogResult _dialogResult = DialogResult.Yes;
+            if (CodeLib.Instance.Changed)
+            {
+                _dialogResult = MessageBox.Show(_mainform, "Changes have not been saved, are you sure?", "File not saved", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            }
+            return _dialogResult;
         }
 
         public void EndUpdate()
@@ -297,6 +312,11 @@ namespace CodeLibrary
 
         public void OpenFile()
         {
+            if (DiscardChangesDialog() == DialogResult.No)
+            {
+                return;
+            }
+
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = "json Files (*.json)|*.json|All Files (*.*)|*.*",
@@ -361,18 +381,15 @@ namespace CodeLibrary
 
             if (Config.LastOpenedFile != null)
                 if (Utils.IsFileOrDirectory(Config.LastOpenedFile) == Utils.FileOrDirectory.File)
+                {
                     OpenFile(Config.LastOpenedFile);
+                }
 
             EndUpdate();
         }
 
         public void RestoreBackup()
         {
-            if (string.IsNullOrEmpty(CurrentFile))
-            {
-                return;
-            }
-
             FormBackupRestore _f = new FormBackupRestore(CurrentFile);
             var _result = _f.ShowDialog();
             if (_result == DialogResult.OK)
@@ -470,6 +487,11 @@ namespace CodeLibrary
             backupHelper.Backup();
 
             Save(_collection, _selectedfile, _securepw);
+        }
+
+        internal void ShowIcon()
+        {
+            _StateIconHelper.Changed = CodeLib.Instance.Changed;
         }
 
         private static CodeSnippetCollection ReadCollectionOld(string filename, SecureString password, out bool succes)
@@ -666,7 +688,10 @@ namespace CodeLibrary
             return _result;
         }
 
-
+        private void Instance_ChangeStateChanged(object sender, EventArgs e)
+        {
+            ShowIcon();
+        }
 
         private void LoadBackup(string file)
         {

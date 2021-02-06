@@ -13,24 +13,8 @@ namespace CodeLibrary.Helpers
             _mainform = mainform;
         }
 
-        public void SetTheme(ETheme theme)
-        {
-            switch (theme)
-            {
-                case ETheme.Dark:
-                    DarkTheme();
-                    break;
-                case ETheme.HighContrast:
-                    HighContrastTheme();
-                    break;
-                case ETheme.Light:
-                    LightTheme();
-                    break;
-            }
-        }
-
         public void DarkTheme()
-        {            
+        {
             Config.Theme = ETheme.Dark;
 
             _mainform.textBoxFind.BackColor = Color.FromArgb(255, 40, 40, 40);
@@ -40,6 +24,7 @@ namespace CodeLibrary.Helpers
 
             _mainform.mnuMainStrip.ForeColor = Color.White;
             _mainform.mnuMainStrip.BackColor = Color.FromArgb(255, 100, 100, 100);
+            _mainform.stateIcons.BackColor = Color.FromArgb(255, 100, 100, 100);
 
             _mainform.mnuMain.BackColor = Color.FromArgb(255, 100, 100, 100);
             _mainform.ForeColor = Color.White;
@@ -96,6 +81,7 @@ namespace CodeLibrary.Helpers
 
             _mainform.mnuMainStrip.ForeColor = Color.White;
             _mainform.mnuMainStrip.BackColor = Color.FromArgb(255, 60, 60, 60);
+            _mainform.stateIcons.BackColor = Color.FromArgb(255, 60, 60, 60);
 
             _mainform.mnuMain.BackColor = Color.FromArgb(255, 60, 60, 60);
             _mainform.ForeColor = Color.White;
@@ -145,7 +131,7 @@ namespace CodeLibrary.Helpers
         public void LightTheme()
         {
             Config.Theme = ETheme.Light;
-          
+
             _mainform.textBoxFind.BackColor = Color.White;
             _mainform.textBoxFind.ForeColor = Color.Black;
             _mainform.buttonFind.BackColor = SystemColors.ButtonFace;
@@ -153,6 +139,8 @@ namespace CodeLibrary.Helpers
 
             _mainform.mnuMainStrip.ForeColor = Color.FromArgb(255, 0, 0, 0);
             _mainform.mnuMainStrip.BackColor = Color.FromArgb(255, 240, 240, 240);
+            _mainform.stateIcons.BackColor = Color.FromArgb(255, 240, 240, 240);
+
             _mainform.ForeColor = Color.FromArgb(255, 0, 0, 0);
             _mainform.BackColor = Color.FromArgb(255, 240, 240, 240);
             _mainform.treeViewLibrary.ForeColor = Color.FromArgb(255, 0, 0, 0);
@@ -217,6 +205,24 @@ namespace CodeLibrary.Helpers
                 case ETheme.HighContrast:
                     rtb.BackColor = Color.FromArgb(255, 10, 10, 10);
                     rtb.ForeColor = Color.FromArgb(255, 255, 255, 255);
+                    break;
+            }
+        }
+
+        public void SetTheme(ETheme theme)
+        {
+            switch (theme)
+            {
+                case ETheme.Dark:
+                    DarkTheme();
+                    break;
+
+                case ETheme.HighContrast:
+                    HighContrastTheme();
+                    break;
+
+                case ETheme.Light:
+                    LightTheme();
                     break;
             }
         }

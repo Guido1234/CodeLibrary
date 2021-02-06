@@ -1,5 +1,4 @@
 ﻿using CodeLibrary.Core;
-using System.Drawing;
 using System.Security;
 using System.Windows.Forms;
 
@@ -8,10 +7,12 @@ namespace CodeLibrary.Helpers
     public class PasswordHelper
     {
         private readonly FormCodeLibrary _mainform;
+        private readonly StateIconHelper _StateIconHelper;
 
-        public PasswordHelper(FormCodeLibrary mainform)
+        public PasswordHelper(FormCodeLibrary mainform, StateIconHelper stateIconHelper)
         {
             _mainform = mainform;
+            _StateIconHelper = stateIconHelper;
         }
 
         public SecureString Password { get; set; }
@@ -21,7 +22,6 @@ namespace CodeLibrary.Helpers
         public void ClearPassWord()
         {
             Password = null;
-            _mainform.tbPath.BackColor = SystemColors.ButtonFace;
             ShowKey();
         }
 
@@ -155,7 +155,7 @@ namespace CodeLibrary.Helpers
 
         internal void ShowKey()
         {
-            _mainform.pctKey.Visible = Password != null;
+            _StateIconHelper.Encrypted = Password != null;
             SetPassWordMenuState();
         }
     }
