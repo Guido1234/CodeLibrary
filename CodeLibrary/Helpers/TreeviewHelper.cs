@@ -42,7 +42,7 @@ namespace CodeLibrary
             _treeViewLibrary.DragDrop += new DragEventHandler(this.TreeViewLibrary_DragDrop);
             _treeViewLibrary.DragEnter += new DragEventHandler(this.TreeViewLibrary_DragEnter);
             _treeViewLibrary.DragOver += new DragEventHandler(this.TreeViewLibrary_DragOver);
-            _treeViewLibrary.KeyUp += new KeyEventHandler(this.TreeViewLibrary_KeyUp);
+            _treeViewLibrary.KeyDown += new KeyEventHandler(this.TreeViewLibrary_KeyDown);
             _treeViewLibrary.MouseUp += new MouseEventHandler(this.TreeViewLibrary_MouseUp);
             _treeViewLibrary.BeforeExpand += _treeViewLibrary_BeforeExpand;
 
@@ -1254,7 +1254,7 @@ namespace CodeLibrary
             SetLibraryMenuState();
         }
 
-        private void TreeViewLibrary_KeyUp(object sender, KeyEventArgs e)
+        private void TreeViewLibrary_KeyDown(object sender, KeyEventArgs e)
         {
             SetLibraryMenuState();
 
