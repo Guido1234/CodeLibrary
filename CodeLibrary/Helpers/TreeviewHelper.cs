@@ -25,7 +25,7 @@ namespace CodeLibrary
         private bool _BlockDrop = false;
         private string _SelectedId;
         private bool _timerTick = false;
-        private int _upodating = 0;
+        private int _updating = 0;
         private CodeType DialogSelectedCodeType = CodeType.None;
 
         public TreeviewHelper(FormCodeLibrary mainform, TextBoxHelper textBoxHelper, FileHelper fileHelper, ThemeHelper themeHelper)
@@ -45,7 +45,8 @@ namespace CodeLibrary
             _treeViewLibrary.KeyDown += new KeyEventHandler(this.TreeViewLibrary_KeyDown);
             _treeViewLibrary.MouseUp += new MouseEventHandler(this.TreeViewLibrary_MouseUp);
             _treeViewLibrary.BeforeExpand += _treeViewLibrary_BeforeExpand;
-
+            _treeViewLibrary.AfterLabelEdit += _treeViewLibrary_AfterLabelEdit;
+            _treeViewLibrary.BeforeLabelEdit += _treeViewLibrary_BeforeLabelEdit;
             _mainform.imageViewer.ImageMouseClick += ImageViewer_ImageMouseClick;
 
             _timer.Interval = 1000;
@@ -90,10 +91,23 @@ namespace CodeLibrary
             AddImageNode(parentNode, _imageData, name);
         }
 
+        public TreeNode AddReferenceNode(TreeNode parent)
+        {
+            FormAddReference _f = new FormAddReference(_mainform);
+            if (_f.ShowDialog() == DialogResult.Cancel)
+            {
+                return null;
+            }
+
+            CreateNewNode(parent.Nodes, CodeType.ReferenceLink, _f.SelectedNode.Text, "", "", _f.SelectedNode.Name);
+
+            return null;
+        }
+
         public void BeginUpdate()
         {
             _treeViewLibrary.BeginUpdate();
-            _upodating++;
+            _updating++;
         }
 
         public void ChangeType(TreeNode node, CodeType newType)
@@ -101,7 +115,7 @@ namespace CodeLibrary
             if (IsSystem(node))
                 return;
 
-            CodeSnippet snippet = CodeLib.Instance.GetById(node.Name);
+            CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
 
             if (snippet != null)
             {
@@ -138,26 +152,27 @@ namespace CodeLibrary
                 _textBoxHelper.ChangeView(newType);
                 snippet.CodeType = newType;
                 _textBoxHelper.SetStateNoSave(snippet);
-                int imageIndex = _fileHelper.GetImageIndex(snippet);
+                int imageIndex = LocalUtils.GetImageIndex(snippet);
                 node.ImageIndex = imageIndex;
                 node.SelectedImageIndex = imageIndex;
             }
         }
 
-        public TreeNode CreateNewNode(TreeNodeCollection parent, CodeType codetype, string name, string text, string rtf)
+        public TreeNode CreateNewNode(TreeNodeCollection parent, CodeType codetype, string name, string text, string rtf, string referenceId = null)
         {
-            CodeSnippet snippet = new CodeSnippet() { Code = text, CodeType = codetype, Locked = false, Name = name, RTF = rtf };
+            CodeSnippet snippet = new CodeSnippet() { Code = text, CodeType = codetype, Locked = false, Name = name, RTF = rtf, ReferenceLinkId = referenceId };
             if (snippet.CodeType == CodeType.HTML || snippet.CodeType == CodeType.MarkDown)
             {
                 snippet.HtmlPreview = true;
             }
-            CodeLib.Instance.Library.Add(snippet);
+            CodeLib.Instance.CodeSnippets.Add(snippet);
 
-            int _imageIndex = _fileHelper.GetImageIndex(snippet);
+            int _imageIndex = LocalUtils.GetImageIndex(snippet);
 
             TreeNode _node = parent.Add(snippet.Name, snippet.Name, _imageIndex, _imageIndex);
             _node.Name = snippet.Id;
-            CodeLib.Instance.AddNodeIndexer(_node);
+            UpdateNodePath(_node);
+            CodeLib.Instance.TreeNodes.Add(_node);
 
             return _node;
         }
@@ -183,6 +198,7 @@ namespace CodeLibrary
         public TreeNode CreateNewNodeWindowedDialog(TreeNode parent)
         {
             FormAddNote _f = new FormAddNote();
+            _f.ParentNode = parent;
             _f.SelectedType = DialogSelectedCodeType;
 
             DialogResult _r = _f.ShowDialog();
@@ -203,7 +219,7 @@ namespace CodeLibrary
             {
                 if (_f.DefaultParent)
                 {
-                    var _parentSNippet = CodeLib.Instance.GetById(_noteName);
+                    var _parentSNippet = CodeLib.Instance.CodeSnippets.Get(_noteName);
                     _parentSNippet.DefaultChildCodeTypeEnabled = true;
                     _parentSNippet.DefaultChildCodeType = _f.SelectedType;
                 }
@@ -212,13 +228,13 @@ namespace CodeLibrary
                     _newNode = CreateNewRootNode(_f.SelectedType, string.Format(_noteName, DateTime.Now, ii + 1), string.Empty);
                 }
 
-                CodeLib.Instance.AddNodeIndexer(_newNode);
+                CodeLib.Instance.TreeNodes.Add(_newNode);
                 return _newNode;
             }
 
             if (_f.DefaultParent)
             {
-                var _parentSNippet = CodeLib.Instance.GetById(parent.Name);
+                var _parentSNippet = CodeLib.Instance.CodeSnippets.Get(parent.Name);
                 _parentSNippet.DefaultChildCodeTypeEnabled = true;
                 _parentSNippet.DefaultChildCodeType = _f.SelectedType;
             }
@@ -226,7 +242,7 @@ namespace CodeLibrary
             {
                 _newNode = CreateNewNode(parent.Nodes, _f.SelectedType, string.Format(_noteName, DateTime.Now, ii + 1), string.Empty, string.Empty);
             }
-            CodeLib.Instance.AddNodeIndexer(_newNode);
+            CodeLib.Instance.TreeNodes.Add(_newNode);
             return _newNode;
         }
 
@@ -242,7 +258,7 @@ namespace CodeLibrary
 
             RemoveNode(_treeViewLibrary.SelectedNode, false);
 
-            CodeLib.Instance.BuildNodeIndexer(_treeViewLibrary);
+            CodeLib.Instance.TreeNodes.Add(_treeViewLibrary);
 
             SetLibraryMenuState();
         }
@@ -258,9 +274,10 @@ namespace CodeLibrary
 
             _fileHelper.TrashcanNode.Nodes.Clear();
 
-            CodeLib.Instance.Library.RemoveRange(_ids);
+            // #TODO check refs
+            CodeLib.Instance.CodeSnippets.RemoveRange(_ids);
 
-            if (CodeLib.Instance.Library.Count == 2)
+            if (CodeLib.Instance.CodeSnippets.Count == 2)
             {
                 CreateNewNode(_treeViewLibrary.Nodes, CodeType.Folder, Constants.SNIPPETS, "", "");
             }
@@ -271,10 +288,10 @@ namespace CodeLibrary
         public void EndUpdate()
         {
             _treeViewLibrary.EndUpdate();
-            _upodating--;
-            if (_upodating < 0)
+            _updating--;
+            if (_updating < 0)
             {
-                _upodating = 0;
+                _updating = 0;
             }
         }
 
@@ -298,7 +315,7 @@ namespace CodeLibrary
             return false;
         }
 
-        public CodeSnippet FromNode(TreeNode node) => CodeLib.Instance.GetById(node.Name);
+        public CodeSnippet FromNode(TreeNode node) => CodeLib.Instance.CodeSnippets.Get(node.Name);
 
         public string GetDefaultCode(TreeNode node, string defaultDefault, int level, ref int nodecount)
         {
@@ -398,7 +415,7 @@ namespace CodeLibrary
             if (node == null)
                 return false;
 
-            CodeSnippet snippet = CodeLib.Instance.GetById(node.Name);
+            CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
             return (snippet.CodeType == CodeType.System && snippet.Id == Constants.CLIPBOARDMONITOR);
         }
 
@@ -407,7 +424,7 @@ namespace CodeLibrary
             if (node == null)
                 return false;
 
-            CodeSnippet snippet = CodeLib.Instance.GetById(node.Name);
+            CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
             return (snippet.CodeType == CodeType.Image);
         }
 
@@ -420,12 +437,21 @@ namespace CodeLibrary
             return IsTrashcan(root);
         }
 
+        public bool IsReference(TreeNode node)
+        {
+            if (node == null)
+                return false;
+
+            CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
+            return (snippet.CodeType == CodeType.ReferenceLink);
+        }
+
         public bool IsSystem(TreeNode node)
         {
             if (node == null)
                 return false;
 
-            CodeSnippet snippet = CodeLib.Instance.GetById(node.Name);
+            CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
             return snippet.CodeType == CodeType.System;
         }
 
@@ -434,7 +460,7 @@ namespace CodeLibrary
             if (node == null)
                 return false;
 
-            CodeSnippet snippet = CodeLib.Instance.GetById(node.Name);
+            CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
             return (snippet.CodeType == CodeType.System && snippet.Id == Constants.TRASHCAN);
         }
 
@@ -458,13 +484,14 @@ namespace CodeLibrary
             if (node == null)
                 return false;
 
-            CodeSnippet snippet = CodeLib.Instance.GetById(node.Name);
+            CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
             switch (snippet.CodeType)
             {
                 case CodeType.Image:
                 case CodeType.System:
                 case CodeType.UnSuported:
                 case CodeType.RTF:
+                case CodeType.ReferenceLink:
                     return false;
             }
             return true;
@@ -505,6 +532,7 @@ namespace CodeLibrary
             {
                 BeginUpdate();
                 _treeViewLibrary.SelectedNode.MoveLeft();
+                UpdateNodePath(_treeViewLibrary.SelectedNode);
                 EndUpdate();
             }
         }
@@ -518,6 +546,7 @@ namespace CodeLibrary
             {
                 BeginUpdate();
                 _treeViewLibrary.SelectedNode.MoveRight();
+                UpdateNodePath(_treeViewLibrary.SelectedNode);
                 EndUpdate();
             }
         }
@@ -648,10 +677,10 @@ namespace CodeLibrary
             if (IsSystem(node))
                 return;
 
-            CodeSnippet snippet = CodeLib.Instance.GetById(node.Name);
+            CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
             if (snippet != null)
             {
-                int imageIndex = _fileHelper.GetImageIndex(snippet);
+                int imageIndex = LocalUtils.GetImageIndex(snippet);
                 node.ImageIndex = imageIndex;
                 node.SelectedImageIndex = imageIndex;
                 _textBoxHelper.SetStateNoSave(snippet);
@@ -665,12 +694,19 @@ namespace CodeLibrary
             if (node == null)
                 return;
 
+            RemoveRefs(node);
+
             _treeViewLibrary.Nodes.Remove(node);
 
             if (permanent)
-                CodeLib.Instance.Library.Remove(node.Name);
+            {
+                CodeLib.Instance.CodeSnippets.Remove(node.Name);
+            }
             else
+            {
                 _fileHelper.TrashcanNode.Nodes.Add(node);
+                UpdateNodePath(node);
+            }
 
             SetLibraryMenuState();
         }
@@ -679,6 +715,15 @@ namespace CodeLibrary
         {
             CodeSnippet _snippet = FromNode(node);
             SelectedId = node.Name;
+
+            if (!string.IsNullOrEmpty(_snippet.ReferenceLinkId))
+            {
+                if (CodeLib.Instance.CodeSnippets.ContainsKey(_snippet.ReferenceLinkId))
+                {
+                    // Get the reference snippet.
+                    _snippet = CodeLib.Instance.CodeSnippets.Get(_snippet.ReferenceLinkId);
+                }
+            }
 
             if (setHistory)
                 _LastTwo.Add(node);
@@ -834,7 +879,7 @@ namespace CodeLibrary
 
                 foreach (TreeNode item in _node.Nodes)
                 {
-                    CodeSnippet snippet = CodeLib.Instance.GetById(item.Name);
+                    CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(item.Name);
                     if (snippet.Important)
                     {
                         _sort1.Add(item);
@@ -843,7 +888,7 @@ namespace CodeLibrary
 
                 foreach (TreeNode item in _node.Nodes)
                 {
-                    CodeSnippet snippet = CodeLib.Instance.GetById(item.Name);
+                    CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(item.Name);
                     if (snippet.CodeType == CodeType.Folder && !snippet.Important)
                     {
                         _sort2.Add(item);
@@ -852,7 +897,7 @@ namespace CodeLibrary
 
                 foreach (TreeNode item in _node.Nodes)
                 {
-                    CodeSnippet snippet = CodeLib.Instance.GetById(item.Name);
+                    CodeSnippet snippet = CodeLib.Instance.CodeSnippets.Get(item.Name);
                     if (snippet.CodeType != CodeType.Folder && !snippet.Important)
                     {
                         _sort3.Add(item);
@@ -890,12 +935,44 @@ namespace CodeLibrary
             }
         }
 
+        private void _treeViewLibrary_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            if (e.Node == null)
+            {
+                return;
+            }
+            bool _nameAlreadyExists = e.Node.ParentNodesEnumerated(true).Where(p => p.Text.Equals(e.Label, StringComparison.OrdinalIgnoreCase)).Any();
 
+            if (_nameAlreadyExists)
+            {
+                e.CancelEdit = true;
+                return;
+            }
+            UpdateNodePath(e.Node);
 
-
+            foreach (CodeSnippet snippet in CodeLib.Instance.CodeSnippets.GetReferencesById(e.Node.Name))
+            {
+                TreeNode _treeNode = CodeLib.Instance.TreeNodes.Get(snippet.Id);
+                _treeNode.Text = e.Label;
+                UpdateNodePath(_treeNode);
+            }
+        }
 
         private void _treeViewLibrary_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
+        }
+
+        private void _treeViewLibrary_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            if (e.Node == null)
+            {
+                return;
+            }
+            CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(e.Node.Name);
+            if (_snippet.CodeType == CodeType.ReferenceLink || _snippet.CodeType == CodeType.System)
+            {
+                e.CancelEdit = true;
+            }
         }
 
         private void AddFiles(TreeNode targetNode, string[] filenames)
@@ -941,12 +1018,13 @@ namespace CodeLibrary
         private void AddImageNode(TreeNode parentNode, byte[] _imageData, string name)
         {
             CodeSnippet snippet = new CodeSnippet() { Code = "", CodeType = CodeType.Image, Locked = false, Name = name, Blob = _imageData };
-            CodeLib.Instance.Library.Add(snippet);
+            CodeLib.Instance.CodeSnippets.Add(snippet);
 
-            int _imageIndex = _fileHelper.GetImageIndex(snippet);
+            int _imageIndex = LocalUtils.GetImageIndex(snippet);
             TreeNode _node = parentNode.Nodes.Add(snippet.Name, snippet.Name, _imageIndex, _imageIndex);
             _node.Name = snippet.Id;
-            CodeLib.Instance.AddNodeIndexer(_node);
+            UpdateNodePath(_node);
+            CodeLib.Instance.TreeNodes.Add(_node);
         }
 
         // Determine whether one node is a parent
@@ -1006,32 +1084,61 @@ namespace CodeLibrary
             }
         }
 
+        /// <summary>
+        /// Remove all references to node: remove the node and the Library CodeSnippet for each reference
+        /// </summary>
+        /// <param name="node"></param>
+        private void RemoveRefs(TreeNode node)
+        {
+            IEnumerable<CodeSnippet> _refSnippets = CodeLib.Instance.CodeSnippets.GetReferencesById(node.Name);
+            foreach (CodeSnippet _ref in _refSnippets)
+            {
+                TreeNode _refNode = CodeLib.Instance.TreeNodes.Get(_ref.Id);
+                try
+                {
+                    _treeViewLibrary.Nodes.Remove(_refNode);
+                }
+                catch
+                {
+                }
+                CodeLib.Instance.CodeSnippets.Remove(_refNode.Name);
+            }
+
+            foreach (TreeNode child in node.Nodes)
+            {
+                RemoveRefs(child);
+            }
+        }
+
         private void SetLibraryMenuState()
         {
             _mainform.mnuCopyContentsAndMerge.Enabled = MergeAllowed(_treeViewLibrary.SelectedNode);
             _mainform.mncCopyContentsAndMerge.Enabled = MergeAllowed(_treeViewLibrary.SelectedNode);
 
-            _mainform.mnuAdd.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode));
-            _mainform.mncAdd.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode));
-            _mainform.mnuAddDialog.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+            _mainform.mncAddReference.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode));
+            _mainform.mnuAddReference.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode));
+
+            _mainform.mnuAdd.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode));
+            _mainform.mncAdd.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode));
+            _mainform.mnuAddDialog.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
 
             _mainform.mnuDelete.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsInTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
             _mainform.mncDelete.Enabled = !IsInTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
 
-            _mainform.mncChangeType.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
-            _mainform.mnuChangeType.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode);
+            _mainform.mncChangeType.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mnuChangeType.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
 
-            _mainform.mnuQuickRename.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
-            _mainform.mncQuickRename.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+            _mainform.mnuQuickRename.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mncQuickRename.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
 
-            _mainform.mnuMarkImportant.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
-            _mainform.mncMarkImportant.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+            _mainform.mnuMarkImportant.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mncMarkImportant.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
 
-            _mainform.mnuCopyPath.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
-            _mainform.mncCopyPath.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+            _mainform.mnuCopyPath.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mncCopyPath.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
 
-            _mainform.mncSortChildrenAscending.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && TreeViewExtensions.ParentCount(_treeViewLibrary.SelectedNode) > 1 && _treeViewLibrary.SelectedNode.Nodes.Count > 1;
-            _mainform.mnuSortChildrenAscending.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && TreeViewExtensions.ParentCount(_treeViewLibrary.SelectedNode) > 1 && _treeViewLibrary.SelectedNode.Nodes.Count > 1;
+            _mainform.mncSortChildrenAscending.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && TreeViewExtensions.ParentCount(_treeViewLibrary.SelectedNode) > 1 && _treeViewLibrary.SelectedNode.Nodes.Count > 1 && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mnuSortChildrenAscending.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && TreeViewExtensions.ParentCount(_treeViewLibrary.SelectedNode) > 1 && _treeViewLibrary.SelectedNode.Nodes.Count > 1 && !IsReference(_treeViewLibrary.SelectedNode);
 
             _mainform.mncMoveLeft.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && _treeViewLibrary.SelectedNode.Parent != null;
             _mainform.mnuMoveLeft.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && _treeViewLibrary.SelectedNode.Parent != null;
@@ -1054,36 +1161,36 @@ namespace CodeLibrary
             _mainform.mncClipboard.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
             _mainform.mnuClipboard.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
 
-            _mainform.mnuProperties.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
-            _mainform.mncProperties.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+            _mainform.mnuProperties.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mncProperties.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsImage(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
 
             _mainform.mnuSearch.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
 
-            _mainform.mncPasteFilelist.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsFileDropList() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
-            _mainform.mnuPasteFilelist.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsFileDropList() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+            _mainform.mncPasteFilelist.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsFileDropList() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mnuPasteFilelist.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsFileDropList() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
 
-            _mainform.mnuPasteImage.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsImage() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
-            _mainform.mncPasteImage.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsImage() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+            _mainform.mnuPasteImage.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsImage() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mncPasteImage.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsImage() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
 
-            _mainform.mncPasteImageNoCompression.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsImage() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
-            _mainform.mnuPasteImageNoCompression.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsImage() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+            _mainform.mncPasteImageNoCompression.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsImage() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mnuPasteImageNoCompression.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsImage() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
 
-            _mainform.mncPasteTextPerLine.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsText() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
-            _mainform.mnuPasteTextPerLine.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsText() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+            _mainform.mncPasteTextPerLine.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsText() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mnuPasteTextPerLine.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsText() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
 
-            _mainform.mncPasteText.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsText() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
-            _mainform.mnuPasteText.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsText() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode);
+            _mainform.mncPasteText.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsText() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
+            _mainform.mnuPasteText.Visible = !IsTrashcan(_treeViewLibrary.SelectedNode) && Clipboard.ContainsText() && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
             _timerTick = !_timerTick;
-            IEnumerable<CodeSnippet> snippets = CodeLib.Instance.GetByAlarmActive();
+            IEnumerable<CodeSnippet> snippets = CodeLib.Instance.CodeSnippets.GetByAlarmActive();
             foreach (CodeSnippet snippet in snippets)
             {
                 if (snippet.AlarmDate < DateTime.Now)
                 {
-                    TreeNode node = CodeLib.Instance.NodeIndexer.Get(snippet.Id); // Find Node
+                    TreeNode node = CodeLib.Instance.TreeNodes.Get(snippet.Id); // Find Node
                     if (node == null)
                         continue;
 
@@ -1107,7 +1214,7 @@ namespace CodeLibrary
 
         private void TreeViewLibrary_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (_upodating > 0)
+            if (_updating > 0)
             {
                 return;
             }
@@ -1118,7 +1225,7 @@ namespace CodeLibrary
 
         private void TreeViewLibrary_BeforeSelect(object sender, TreeViewCancelEventArgs e)
         {
-            if (_upodating > 0)
+            if (_updating > 0)
             {
                 return;
             }
@@ -1126,7 +1233,7 @@ namespace CodeLibrary
             if (string.IsNullOrWhiteSpace(_SelectedId))
                 return;
 
-            CodeSnippet _snippet = CodeLib.Instance.GetById(_SelectedId);
+            CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(_SelectedId);
             if (_snippet != null)
                 _snippet.CurrentLine = _textBoxHelper.FastColoredTextBox.CurrentLineNumber();
         }
@@ -1167,6 +1274,7 @@ namespace CodeLibrary
                     {
                         _treeViewLibrary.Nodes.Add(draggedNode);
                     }
+                    UpdateNodePath(draggedNode);
                 }
 
                 // If it is a copy operation, clone the dragged node
@@ -1196,7 +1304,7 @@ namespace CodeLibrary
             if (_treeViewLibrary.SelectedNode != null)
             {
                 var _snippet = FromNode(_treeViewLibrary.SelectedNode);
-                Console.WriteLine(_snippet.Path);
+
                 if (_snippet.CodeType == CodeType.System)
                 {
                     e.Effect = DragDropEffects.None;
@@ -1224,7 +1332,6 @@ namespace CodeLibrary
             if (_treeViewLibrary.SelectedNode != null)
             {
                 var _snippet = FromNode(_treeViewLibrary.SelectedNode);
-                Console.WriteLine(_snippet.Path);
                 if (_snippet.CodeType == CodeType.System && _snippet.Name != Constants.TRASHCAN || _BlockDrop)
                 {
                     e.Effect = DragDropEffects.None;
@@ -1321,7 +1428,7 @@ namespace CodeLibrary
                 if (Clipboard.ContainsText())
                 {
                     TreeNode _node = CreateNewNode(_treeViewLibrary.SelectedNode.Nodes, CodeType.None, "New Note", Clipboard.GetText(), "");
-                    CodeLib.Instance.AddNodeIndexer(_node);
+                    CodeLib.Instance.TreeNodes.Add(_node);
                 }
                 if (Clipboard.ContainsFileDropList())
                 {
@@ -1361,6 +1468,20 @@ namespace CodeLibrary
                 }
 
                 _mainform.mncLibrary.Show(Cursor.Position.X, Cursor.Position.Y);
+            }
+        }
+
+        /// <summary>
+        /// Updates the CodeSnippet Path according to the TreeNode change.
+        /// </summary>
+        private void UpdateNodePath(TreeNode node)
+        {
+            CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
+            _snippet.Path = node.FullPath;
+
+            foreach (TreeNode child in node.Nodes)
+            {
+                UpdateNodePath(child);
             }
         }
     }

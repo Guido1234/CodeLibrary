@@ -13,6 +13,21 @@ namespace CodeLibrary
 Version 2.x:
 -   Improved TreeView behavior: changed behavior of the short cut keys - they now respond to KeyDown instead of the KeyUp event for better response
 
+-   New Template Function: SplitUpperCase, splits 'ThisIsAName' to 'This Is A Name'
+
+-   Reference Notes, add a link to another note anywhere in the the tree.
+    -   Reference will only be to the note specified, child notes will not be available.
+
+-   Note names are now required to be unique. (in most cases)
+
+-   New Note name default with a number.
+
+-   Bugfix: CodeSnippet Path was not directly updated on treeview Node change.
+
+-   Merging now supports pattern matching.
+    #[Markdown\Merge Example\*]#
+    See Help => Demo Library => Markdown
+
 Version 2.2:
 -   Added Setting Screen
     -   Sort Mode

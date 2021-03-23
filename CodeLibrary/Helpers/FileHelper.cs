@@ -80,7 +80,7 @@ namespace CodeLibrary
 
             if (string.IsNullOrWhiteSpace(find))
             {
-                items = CodeLib.Instance.Library.OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.Path, '\\').Length).ToList();
+                items = CodeLib.Instance.CodeSnippets.OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.Path, '\\').Length).ToList();
             }
             else
             {
@@ -97,13 +97,19 @@ namespace CodeLibrary
 
                 TreeNodeCollection parentCollection = _treeViewLibrary.Nodes;
                 string parentPath = Utils.ParentPath(snippet.Path, '\\');
-                string name = Utils.PathName(snippet.Path, '\\');
 
-                TreeNode parent = GetNodeByParentPath(_treeViewLibrary.Nodes, parentPath);
+                string name = Utils.PathName(snippet.Path, '\\');
+                if (snippet.CodeType == CodeType.ReferenceLink)
+                {
+                    var _refSnippet = CodeLib.Instance.CodeSnippets.Get(snippet.ReferenceLinkId);
+                    name = Utils.PathName(_refSnippet.Path, '\\');
+                }
+
+                TreeNode parent = LocalUtils.GetNodeByParentPath(_treeViewLibrary.Nodes, parentPath);
                 if (parent != null)
                     parentCollection = parent.Nodes;
 
-                int imageIndex = GetImageIndex(snippet);
+                int imageIndex = LocalUtils.GetImageIndex(snippet);
 
                 TreeNode node = new TreeNode(name, imageIndex, imageIndex) { Name = snippet.Id };
                 _foundNodes.Add(snippet.Id, node);
@@ -124,7 +130,7 @@ namespace CodeLibrary
                 node.Expand();
             }
 
-            CodeLib.Instance.BuildNodeIndexer(_treeViewLibrary);
+            CodeLib.Instance.TreeNodes.Add(_treeViewLibrary);
 
             if (!string.IsNullOrWhiteSpace(find))
                 _treeViewLibrary.ExpandAll();
@@ -132,38 +138,6 @@ namespace CodeLibrary
             TreeHelper.EndUpdate();
 
             return _foundNodes;
-        }
-
-        public void CodeCollectionToForm(TreeNode root, DictionaryList<CodeSnippet, string> library)
-        {
-            string _basepath = root.FullPath;
-
-            root.Nodes.Clear();
-            List<CodeSnippet> items = library.OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.Path, '\\').Length).ToList();
-            int _x = 0;
-
-            foreach (CodeSnippet snippet in items)
-            {
-                _x++;
-                TreeNodeCollection parentCollection = root.Nodes;
-
-                string _extendedpath = Utils.CombinePath(_basepath, snippet.Path);
-
-                string _parentPath = Utils.ParentPath(_extendedpath, '\\');
-                string _name = Utils.PathName(_extendedpath, '\\');
-
-                TreeNode parent = GetNodeByParentPath(root.Nodes, _parentPath);
-                if (parent != null)
-                    parentCollection = parent.Nodes;
-
-                int imageIndex = GetImageIndex(snippet);
-
-                TreeNode node = new TreeNode(_name, imageIndex, imageIndex) { Name = snippet.Id };
-
-                parentCollection.Add(node);
-            }
-
-            CodeLib.Instance.BuildNodeIndexer(_treeViewLibrary);
         }
 
         public DialogResult DiscardChangesDialog()
@@ -188,7 +162,7 @@ namespace CodeLibrary
 
         public List<CodeSnippet> FindNodes(string find)
         {
-            DictionaryList<CodeSnippet, string> _items = CodeLib.Instance.Library.Where(p => LocalUtils.LastPart(p.Path).ToLower().Contains(find.ToLower())).ToDictionaryList(p => p.Id);
+            DictionaryList<CodeSnippet, string> _items = CodeLib.Instance.CodeSnippets.Where(p => LocalUtils.LastPart(p.Path).ToLower().Contains(find.ToLower())).ToDictionaryList(p => p.Id);
             _items.RegisterLookup("PATH", p => p.Path);
 
             DictionaryList<CodeSnippet, string> _paths = new DictionaryList<CodeSnippet, string>(p => p.Path);
@@ -217,68 +191,6 @@ namespace CodeLibrary
 
             _mainform.SaveEditor();
             CodeLib.Instance.Save(collection);
-        }
-
-        public int GetImageIndex(CodeSnippet snippet)
-        {
-            if (snippet.Important)
-                return 2;
-
-            if (snippet.CodeType == CodeType.System && snippet.Id == Constants.TRASHCAN)
-                return 3;
-
-            if (snippet.CodeType == CodeType.System && snippet.Id == Constants.CLIPBOARDMONITOR)
-                return 11;
-
-            if (snippet.AlarmActive)
-                return 5;
-
-            return GetImageIndex(snippet.CodeType);
-        }
-
-        public int GetImageIndex(CodeType type)
-        {
-            switch (type)
-            {
-                case CodeType.Template:
-                    return 1;
-
-                case CodeType.CSharp:
-                case CodeType.HTML:
-                case CodeType.VB:
-                case CodeType.JS:
-                case CodeType.PHP:
-                case CodeType.XML:
-                case CodeType.Lua:
-                case CodeType.None:
-                case CodeType.RTF:
-                case CodeType.SQL:
-                case CodeType.MarkDown:
-                    return 1;
-
-                case CodeType.Folder:
-                    return 0;
-
-                case CodeType.Image:
-                    return 10;
-            }
-            return 0;
-        }
-
-        public TreeNode GetNodeByParentPath(TreeNodeCollection collection, string path)
-        {
-            foreach (TreeNode node in collection)
-            {
-                if (node.FullPath.Equals(path))
-                    return node;
-            }
-            foreach (TreeNode node in collection)
-            {
-                TreeNode subnode = GetNodeByParentPath(node.Nodes, path);
-                if (subnode != null)
-                    return subnode;
-            }
-            return null;
         }
 
         public bool IsOverwritingNewerFile(string filename)
@@ -349,14 +261,14 @@ namespace CodeLibrary
 
             CodeLib.Instance.Load(_collection);
 
-            if (!CodeLib.Instance.Library.ContainsKey(Constants.TRASHCAN))
+            if (!CodeLib.Instance.CodeSnippets.ContainsKey(Constants.TRASHCAN))
             {
-                CodeLib.Instance.Library.Add(CodeSnippet.TrashcanSnippet());
+                CodeLib.Instance.CodeSnippets.Add(CodeSnippet.TrashcanSnippet());
             }
 
-            if (!CodeLib.Instance.Library.ContainsKey(Constants.CLIPBOARDMONITOR))
+            if (!CodeLib.Instance.CodeSnippets.ContainsKey(Constants.CLIPBOARDMONITOR))
             {
-                CodeLib.Instance.Library.Add(CodeSnippet.ClipboardMonitorSnippet());
+                CodeLib.Instance.CodeSnippets.Add(CodeSnippet.ClipboardMonitorSnippet());
             }
 
             CodeCollectionToForm(string.Empty);
@@ -599,7 +511,7 @@ namespace CodeLibrary
             int _order = 0;
             foreach (TreeNode node in nodes)
             {
-                CodeSnippet _snippet = CodeLib.Instance.GetById(node.Name);
+                CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
 
                 _snippet.Path = node.FullPath;
                 _snippet.Name = node.Name;
@@ -625,7 +537,7 @@ namespace CodeLibrary
             int _order = 0;
             foreach (TreeNode node in nodes)
             {
-                CodeSnippet _snippet = CodeLib.Instance.GetById(node.Name);
+                CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
 
                 string _fullpath = $"##_{node.FullPath}";
                 string _path = _fullpath.Replace(_rootpath, string.Empty).TrimStart(new char[] { '\\' });
@@ -679,7 +591,7 @@ namespace CodeLibrary
             for (int ii = 0; ii < items.Length - 1; ii++)
             {
                 string _parentPath = items[ii];
-                CodeSnippet _item = CodeLib.Instance.Library.Lookup(Constants.LOOKUP_PATH, _parentPath).FirstOrDefault();
+                CodeSnippet _item = CodeLib.Instance.CodeSnippets.GetByPath(_parentPath);
                 if (_item != null)
                 {
                     _result.Add(_item);

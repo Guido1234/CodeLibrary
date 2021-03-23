@@ -109,6 +109,8 @@ namespace CodeLibrary.Extensions
         public static void MoveToBottom(this TreeNode node)
         {
             var view = node.TreeView;
+            view.BeginUpdate();
+
             var _parentNodes = ParentNodes(node);
 
             int index = _parentNodes.IndexOf(node);
@@ -119,11 +121,14 @@ namespace CodeLibrary.Extensions
             }
 
             view.SelectedNode = node;
+            view.EndUpdate();
         }
 
         public static void MoveToTop(this TreeNode node)
         {
             var view = node.TreeView;
+            view.BeginUpdate();
+
             var _parentNodes = ParentNodes(node);
 
             int index = _parentNodes.IndexOf(node);
@@ -134,11 +139,14 @@ namespace CodeLibrary.Extensions
             }
 
             view.SelectedNode = node;
+            view.EndUpdate();
         }
 
         public static void MoveUp(this TreeNode node)
         {
             var view = node.TreeView;
+            view.BeginUpdate();
+
             var _parentNodes = ParentNodes(node);
 
             int index = _parentNodes.IndexOf(node);
@@ -149,6 +157,15 @@ namespace CodeLibrary.Extensions
             }
 
             view.SelectedNode = node;
+            view.EndUpdate();
+        }
+
+        public static IEnumerable<TreeNode> NodesEnumerated(TreeNodeCollection collection)
+        {
+            foreach (TreeNode _node in collection)
+            {
+                yield return _node;
+            }
         }
 
         public static int ParentCount(this TreeNode node)
@@ -169,6 +186,18 @@ namespace CodeLibrary.Extensions
                 return parent.Nodes;
             }
             return view.Nodes;
+        }
+
+        public static IEnumerable<TreeNode> ParentNodesEnumerated(this TreeNode node, bool excludeThis = false)
+        {
+            foreach (TreeNode _node in ParentNodes(node))
+            {
+                if (excludeThis && node.Equals(_node))
+                {
+                    continue;
+                }
+                yield return _node;
+            }
         }
 
         public static List<TreeNode> ParentPath(this TreeNode node)

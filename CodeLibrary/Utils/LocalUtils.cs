@@ -1,21 +1,12 @@
 ﻿using CodeLibrary.Core;
 using FastColoredTextBoxNS;
 using System.IO;
+using System.Windows.Forms;
 
 namespace CodeLibrary
 {
     public static class LocalUtils
     {
-
-        public static string LastPart(string path)
-        {
-            int ii = path.IndexOf('\\');
-            if (ii < 0)
-                return path;
-
-            return path.Substring(ii, path.Length - ii);
-        }
-
         public static CodeType CodeTypeByExtension(FileInfo file)
         {
             string _extension = file.Extension.Trim(new char[] { '.' }).ToLower();
@@ -110,6 +101,83 @@ namespace CodeLibrary
                 default:
                     return Language.Custom;
             }
+        }
+
+        public static int GetImageIndex(CodeSnippet snippet)
+        {
+            if (snippet.CodeType == CodeType.ReferenceLink)
+                return 14;
+
+            if (snippet.Important)
+                return 2;
+
+            if (snippet.CodeType == CodeType.System && snippet.Id == Constants.TRASHCAN)
+                return 3;
+
+            if (snippet.CodeType == CodeType.System && snippet.Id == Constants.CLIPBOARDMONITOR)
+                return 11;
+
+            if (snippet.AlarmActive)
+                return 5;
+
+            return GetImageIndex(snippet.CodeType);
+        }
+
+        public static int GetImageIndex(CodeType type)
+        {
+            switch (type)
+            {
+                case CodeType.Template:
+                    return 1;
+
+                case CodeType.CSharp:
+                case CodeType.HTML:
+                case CodeType.VB:
+                case CodeType.JS:
+                case CodeType.PHP:
+                case CodeType.XML:
+                case CodeType.Lua:
+                case CodeType.None:
+                case CodeType.RTF:
+                case CodeType.SQL:
+                case CodeType.MarkDown:
+                    return 1;
+
+                case CodeType.Folder:
+                    return 0;
+
+                case CodeType.Image:
+                    return 10;
+
+                case CodeType.ReferenceLink:
+                    return 14;
+            }
+            return 0;
+        }
+
+        public static TreeNode GetNodeByParentPath(TreeNodeCollection collection, string path)
+        {
+            foreach (TreeNode node in collection)
+            {
+                if (node.FullPath.Equals(path))
+                    return node;
+            }
+            foreach (TreeNode node in collection)
+            {
+                TreeNode subnode = GetNodeByParentPath(node.Nodes, path);
+                if (subnode != null)
+                    return subnode;
+            }
+            return null;
+        }
+
+        public static string LastPart(string path)
+        {
+            int ii = path.IndexOf('\\');
+            if (ii < 0)
+                return path;
+
+            return path.Substring(ii, path.Length - ii);
         }
     }
 }

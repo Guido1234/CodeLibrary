@@ -17,6 +17,7 @@ namespace CodeLibrary.Core
         JS = 11,
         RTF = 12,
         MarkDown = 13,
+        ReferenceLink = 20,
 
         [Browsable(false)]
         Image = 100,
@@ -28,6 +29,12 @@ namespace CodeLibrary.Core
         UnSuported = 9999
     }
 
+    public enum ESortMode
+    {
+        Alphabetic = 0,
+        AlphabeticGrouped = 1
+    }
+
     public enum ETheme
     {
         Dark,
@@ -35,9 +42,11 @@ namespace CodeLibrary.Core
         HighContrast
     }
 
-    public enum ESortMode
+    public enum SnippetFlags
     {
-        Alphabetic = 0,
-        AlphabeticGrouped = 1
+        None = 0,
+        Important = 1,
+        Ok = 2,
+        NotOk = 3
     }
 }

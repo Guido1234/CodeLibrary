@@ -226,7 +226,7 @@ namespace CodeLibrary.Editor
 
         private bool DocShortCut(KeyEventArgs e)
         {
-            var _snippet = CodeLib.Instance.GetByShortCut(e.KeyData).FirstOrDefault();
+            var _snippet = CodeLib.Instance.CodeSnippets.GetByShortCut(e.KeyData).FirstOrDefault();
 
             if (_snippet != null)
             {

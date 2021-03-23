@@ -87,6 +87,12 @@
   <ItemGroup>
     <Compile Include="CodeInsight\BaseInsightHandler.cs" />
     <Compile Include="CodeInsight\CodeInsight.cs" />
+    <Compile Include="FormAddReference.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAddReference.Designer.cs">
+      <DependentUpon>FormAddReference.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormAddNote.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +188,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>VersionInc.tt</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FormAddReference.resx">
+      <DependentUpon>FormAddReference.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormAddNote.resx">
       <DependentUpon>FormAddNote.cs</DependentUpon>
     </EmbeddedResource>
@@ -330,6 +339,7 @@
     <None Include="Resources\key_16x16.png" />
     <None Include="Resources\usb_3_32x32.png" />
     <None Include="Resources\computer_edit_16x16.png" />
+    <None Include="Resources\bullet_link_32x32.png" />
     <Content Include="T4\VersionInc.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>VersionInc.cs</LastGenOutput>

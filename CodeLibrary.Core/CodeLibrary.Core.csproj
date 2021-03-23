@@ -48,11 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackupInfo.cs" />
-    <Compile Include="CodeBookmark.cs" />
-    <Compile Include="CodeLib.cs" />
-    <Compile Include="CodeSnippet.cs" />
-    <Compile Include="CodeSnippetCollection.cs" />
-    <Compile Include="CodeSnippetSearch.cs" />
+    <Compile Include="Library\CodeLib.cs" />
+    <Compile Include="Library\CodeSnippet.cs" />
+    <Compile Include="Files\CodeSnippetCollection.cs" />
+    <Compile Include="Library\CodeSnippetDictionaryList.cs" />
+    <Compile Include="Library\CodeSnippetSearch.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="ConvertUtil.cs" />
@@ -64,7 +64,7 @@
     <Compile Include="DevToys\VersionNumber.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="EnumComboBoxHelper.cs" />
-    <Compile Include="FileContainer.cs" />
+    <Compile Include="Files\FileContainer.cs" />
     <Compile Include="Idle.cs" />
     <Compile Include="ITextBoxHelper.cs" />
     <Compile Include="ComboBoxHelper.cs" />
@@ -73,6 +73,7 @@
     <Compile Include="RtfControlStyle.cs" />
     <Compile Include="StringCypher.cs" />
     <Compile Include="StyleCollection.cs" />
+    <Compile Include="Library\TreeNodeDictionaryList.cs" />
     <Compile Include="UsbKeyDrive\UsbDriveInfo.cs" />
     <Compile Include="UsbKeyDrive\UsbKey.cs" />
     <Compile Include="UsbKeyDrive\UsbKeyDriveErrorEnum.cs" />

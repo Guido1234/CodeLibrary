@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
@@ -9,6 +8,9 @@ namespace CodeLibrary.Core
     [DataContract()]
     public class CodeSnippet
     {
+        [DataMember(Name = "CreationDate")]
+        private string _CreationDate;
+
         public CodeSnippet()
         {
             CreationDate = DateTime.Now.ToString("yyyyMMdd HH:mm:ss");
@@ -21,23 +23,17 @@ namespace CodeLibrary.Core
         [DataMember(Name = "AlarmDate")]
         public DateTime? AlarmDate { get; set; }
 
-        [DataMember(Name = "CodeLastModificationDate")]
-        public DateTime? CodeLastModificationDate { get; set; }
-
         [DataMember(Name = "Blob")]
         public byte[] Blob { get; set; }
-
-        [DataMember(Name = "CodeBookmarks")]
-        public List<CodeBookmark> Bookmarks { get; set; }
 
         [DataMember(Name = "Code")]
         public string Code { get; set; } = string.Empty;
 
+        [DataMember(Name = "CodeLastModificationDate")]
+        public DateTime? CodeLastModificationDate { get; set; }
+
         [DataMember(Name = "CodeType")]
         public CodeType CodeType { get; set; }
-
-        [DataMember(Name = "CreationDate")]
-        private string _CreationDate;
 
         public string CreationDate
         {
@@ -64,7 +60,6 @@ namespace CodeLibrary.Core
             }
         }
 
-
         [DataMember(Name = "CurrentLine")]
         public int CurrentLine { get; set; }
 
@@ -89,17 +84,14 @@ namespace CodeLibrary.Core
         [DataMember(Name = "Expanded")]
         public bool Expanded { get; set; }
 
+        [DataMember(Name = "Flag")]
+        public SnippetFlags Flag { get; set; }
+
         [DataMember(Name = "HtmlPreview")]
         public bool HtmlPreview { get; set; } = false;
 
         [DataMember(Name = "Id")]
         public string Id { get; set; } = string.Empty;
-
-        //[DataMember(Name = "PId")]
-        //public string ParentId { get; set; } = string.Empty;
-
-        //[DataMember(Name = "PCSet")]
-        //public bool ParentChildRelationSet { get; set; } = false;
 
         [DataMember(Name = "Important")]
         public bool Important { get; set; }
@@ -114,6 +106,9 @@ namespace CodeLibrary.Core
 
         [DataMember(Name = "Path")]
         public string Path { get; set; } = string.Empty;
+
+        [DataMember(Name = "RL")]
+        public string ReferenceLinkId { get; set; }
 
         [DataMember(Name = "RTF")]
         public string RTF { get; set; } = string.Empty;
@@ -140,8 +135,6 @@ namespace CodeLibrary.Core
         public static CodeSnippet TrashcanSnippet() => new CodeSnippet() { Code = string.Empty, CodeType = CodeType.System, Name = Constants.TRASHCAN_TITLE, Path = Constants.TRASHCAN_TITLE, Id = Constants.TRASHCAN };
 
         public override int GetHashCode() => Code.GetHashCode() + Path.GetHashCode() + Name.GetHashCode() + Order;
-
-        public bool HasBookMarks() => (Bookmarks == null) ? false : Bookmarks.Count > 0;
 
         public string LabelName() => Utils.SplitPath(this.Path).Last();
 

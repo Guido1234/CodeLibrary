@@ -47,21 +47,21 @@ namespace CodeLibrary.Helpers
 
         private void mnuCopyImageAsBase64String_Click(object sender, EventArgs e)
         {
-            CodeSnippet _snippet = CodeLib.Instance.GetById(_treeviewHelper.SelectedId);
+            CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(_treeviewHelper.SelectedId);
             string _base64 = Convert.ToBase64String(_snippet.Blob);
             Clipboard.SetText(_base64);
         }
 
         private void mnuCopyImageAsHTMLIMG_Click(object sender, EventArgs e)
         {
-            CodeSnippet _snippet = CodeLib.Instance.GetById(_treeviewHelper.SelectedId);
+            CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(_treeviewHelper.SelectedId);
             string _base64 = Convert.ToBase64String(_snippet.Blob);
             Clipboard.SetText(string.Format(@"<img src=""data:image/png;base64,{0}"" />", _base64));
         }
 
         private void mnuCopyImageAsMarkDownImage_Click(object sender, EventArgs e)
         {
-            CodeSnippet _snippet = CodeLib.Instance.GetById(_treeviewHelper.SelectedId);
+            CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(_treeviewHelper.SelectedId);
             string _base64 = Convert.ToBase64String(_snippet.Blob);
             Clipboard.SetText(string.Format(@"![{0}](data:image/png;base64,{1})", _snippet.Title(), _base64));
         }
@@ -125,7 +125,7 @@ namespace CodeLibrary.Helpers
             {
                 string _filename = _dialog.FileName;
 
-                CodeSnippet _snippet = CodeLib.Instance.GetById(_treeviewHelper.SelectedId);
+                CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(_treeviewHelper.SelectedId);
                 File.WriteAllBytes(_filename, _snippet.Blob);
             }
         }

@@ -231,6 +231,19 @@ namespace CodeLibrary
 
         private void mncAdd_Click(object sender, EventArgs e) => AddNote();
 
+        private void mncAddReference_Click(object sender, EventArgs e)
+        {
+            if (_treeHelper.IsSystem(treeViewLibrary.SelectedNode))
+                return;
+            var _newNode = _treeHelper.AddReferenceNode(treeViewLibrary.SelectedNode);
+            if (_newNode == null)
+                return;
+
+            treeViewLibrary.SelectedNode = _newNode;
+
+            fastColoredTextBox.Focus();
+        }
+
         private void mncAsSelection_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(fastColoredTextBox.SelectedText))
@@ -329,6 +342,19 @@ namespace CodeLibrary
             if (_treeHelper.IsSystem(treeViewLibrary.SelectedNode))
                 return;
             var _newNode = _treeHelper.CreateNewNodeWindowedDialog(treeViewLibrary.SelectedNode);
+            if (_newNode == null)
+                return;
+
+            treeViewLibrary.SelectedNode = _newNode;
+
+            fastColoredTextBox.Focus();
+        }
+
+        private void mnuAddReference_Click(object sender, EventArgs e)
+        {
+            if (_treeHelper.IsSystem(treeViewLibrary.SelectedNode))
+                return;
+            var _newNode = _treeHelper.AddReferenceNode(treeViewLibrary.SelectedNode);
             if (_newNode == null)
                 return;
 

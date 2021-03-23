@@ -5,6 +5,7 @@ using MarkdownSharp;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -139,27 +140,32 @@ namespace CodeLibrary.Editor
         {
             string _newText = text;
             var _matches = _regexWildCards.Matches(text);
+            if (_matches == null)
+            {
+                return text;
+            }
+
+            string _text = string.Empty;
+
             foreach (Match match in _matches)
             {
-                CodeSnippet _snippet = CodeLib.Instance.GetByPath(match.Value);
-                if (_snippet.CodeType == CodeType.Image)
+                CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.GetByPath(match.Value);
+                if (_snippet == null)
                 {
-                    string _base64 = Convert.ToBase64String(_snippet.Blob);
-                    switch (targetType)
+                    var _snippets = CodeLib.Instance.CodeSnippets.GetChildsByPathAndPattern(match.Value);
+                    StringBuilder _sb = new StringBuilder();
+                    foreach (CodeSnippet snippet in _snippets)
                     {
-                        case CodeType.MarkDown:
-                            _newText = _newText.Replace($"#[{match.Value}]#", string.Format(@"![{0}](data:image/png;base64,{1})", _snippet.Path, _base64));
-                            break;
-
-                        default:
-                            _newText = _newText.Replace($"#[{match.Value}]#", string.Format(@"<img src=""data:image/png;base64,{0}"" />", _base64));
-                            break;
+                        _sb.Append(SnippetToText(snippet, targetType));
                     }
+                    _text = _sb.ToString();
                 }
                 else
                 {
-                    _newText = _newText.Replace($"#[{match.Value}]#", _snippet.Code);
+                    _text = SnippetToText(_snippet, targetType);
                 }
+
+                _newText = _newText.Replace($"#[{match.Value}]#", _text);
             }
 
             return _newText;
@@ -307,7 +313,7 @@ namespace CodeLibrary.Editor
 
         private bool DocShortCut(KeyEventArgs e)
         {
-            var _snippet = CodeLib.Instance.GetByShortCut(e.KeyData).FirstOrDefault();
+            var _snippet = CodeLib.Instance.CodeSnippets.GetByShortCut(e.KeyData).FirstOrDefault();
 
             if (_snippet != null)
             {
@@ -340,6 +346,34 @@ namespace CodeLibrary.Editor
             {
                 e.Effect = DragDropEffects.Move;
             }
+        }
+
+        private string SnippetToText(CodeSnippet snippet, CodeType targetType)
+        {
+            string _result = string.Empty;
+            if (snippet.CodeType == CodeType.ReferenceLink)
+            {
+                snippet = CodeLib.Instance.CodeSnippets.Get(snippet.ReferenceLinkId);
+            }
+            if (snippet.CodeType == CodeType.Image)
+            {
+                string _base64 = Convert.ToBase64String(snippet.Blob);
+                switch (targetType)
+                {
+                    case CodeType.MarkDown:
+                        _result = string.Format(@"![{0}](data:image/png;base64,{1})", snippet.Path, _base64);
+                        break;
+
+                    default:
+                        _result = string.Format(@"<img src=""data:image/png;base64,{0}"" />", _base64);
+                        break;
+                }
+            }
+            else
+            {
+                _result = snippet.Code;
+            }
+            return _result;
         }
 
         private void TbCode_KeyDown(object sender, KeyEventArgs e)

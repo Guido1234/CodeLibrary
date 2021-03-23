@@ -10,6 +10,11 @@ namespace CodeLibrary.Core
         [DataMember(Name = "Contents", Order = 3)]
         public string Code { get; set; } = string.Empty;
 
+        [Browsable(true)]
+        [DataMember(Name = "CodeLastModificationDate", Order = 1)]
+        [DisplayFormatAttribute(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
+        public DateTime? CodeLastModificationDate { get; set; }
+
         [DataMember(Name = "Type", Order = 2)]
         public CodeType CodeType { get; set; }
 
@@ -27,13 +32,5 @@ namespace CodeLibrary.Core
 
         [DataMember(Name = "Document", Order = 0)]
         public string Path { get; set; } = string.Empty;
-
-        [Browsable(true)]
-        [DataMember(Name = "CodeLastModificationDate", Order = 1)]
-        [DisplayFormatAttribute(  DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
-        public DateTime? CodeLastModificationDate { get; set; }
     }
-
-
-
 }

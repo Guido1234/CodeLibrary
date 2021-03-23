@@ -1,5 +1,7 @@
 ﻿using CodeLibrary.Core;
+using CodeLibrary.Extensions;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace CodeLibrary
@@ -11,6 +13,8 @@ namespace CodeLibrary
             InitializeComponent();
             Load += FormAddNote_Load;
             AcceptButton = dialogButton1.buttonOk;
+            tbName.TextChanged += TbName_TextChanged;
+            cbRoot.CheckedChanged += CbRoot_CheckedChanged;
             this.GotFocus += FormAddNote_GotFocus;
         }
 
@@ -18,11 +22,18 @@ namespace CodeLibrary
 
         public string NoteName { get; set; }
 
+        public TreeNode ParentNode { get; set; }
+
         public int Repeat { get; set; } = 1;
 
         public bool Root { get; set; }
 
         public CodeType SelectedType { get; set; }
+
+        private void CbRoot_CheckedChanged(object sender, EventArgs e)
+        {
+            dialogButton1.buttonOk.Enabled = !NameExists();
+        }
 
         private void dialogButton1_DialogButtonClick(object sender, Controls.DialogButton.DialogButtonClickEventArgs e)
         {
@@ -114,6 +125,34 @@ namespace CodeLibrary
             listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.MarkDown, ImageKey = "txt", Name = "Markdown", Text = "Markdown" });
             listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.RTF, ImageKey = "rtf", Name = "Rich Text", Text = "Rich Text" });
             listViewTypes.Items.Add(new ListViewItem() { Selected = SelectedType == CodeType.Template, ImageKey = "template", Name = "Template", Text = "Template" });
+
+            tbName.Text = $"New Note ({ CodeLib.Instance.Counter })";
+            dialogButton1.buttonOk.Enabled = !NameExists();
+        }
+
+        private bool NameExists()
+        {
+            if (ParentNode == null)
+            {
+                return false;
+            }
+
+            bool _nameAlreadyExists = false;
+            if (cbRoot.Checked)
+            {
+                _nameAlreadyExists = TreeViewExtensions.NodesEnumerated(ParentNode.TreeView.Nodes).Where(p => p.Text.Equals(tbName.Text, StringComparison.OrdinalIgnoreCase)).Any();
+            }
+            else
+            {
+                _nameAlreadyExists = TreeViewExtensions.NodesEnumerated(ParentNode.Nodes).Where(p => p.Text.Equals(tbName.Text, StringComparison.OrdinalIgnoreCase)).Any();
+            }
+
+            return _nameAlreadyExists;
+        }
+
+        private void TbName_TextChanged(object sender, EventArgs e)
+        {
+            dialogButton1.buttonOk.Enabled = !NameExists();
         }
     }
 }

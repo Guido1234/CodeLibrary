@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace CodeLibrary
@@ -64,7 +63,7 @@ namespace CodeLibrary
 
                 case CodeType.None:
                     tbCode.Language = FastColoredTextBoxNS.Language.Custom;
-                    break; 
+                    break;
 
                 case CodeType.RTF:
                     tbCode.Language = FastColoredTextBoxNS.Language.Custom;
@@ -213,7 +212,7 @@ namespace CodeLibrary
         {
             listViewSearch.BeginUpdate();
             listViewSearch.Clear();
-            IEnumerable<CodeSnippetSearch> _result = CodeLib.Instance.Search(tbSearch.Text).Select(p => new CodeSnippetSearch() { Code = p.Code, Name = p.Name, CodeType = p.CodeType, CreationDate = p.CreationDate, CodeLastModificationDate = p.CodeLastModificationDate, Id = p.Id, Path = p.Path });
+            IEnumerable<CodeSnippetSearch> _result = CodeLib.Instance.CodeSnippets.Search(tbSearch.Text).Select(p => new CodeSnippetSearch() { Code = p.Code, Name = p.Name, CodeType = p.CodeType, CreationDate = p.CreationDate, CodeLastModificationDate = p.CodeLastModificationDate, Id = p.Id, Path = p.Path });
             listViewSearch.Fill<CodeSnippetSearch, string>(CultureInfo.InvariantCulture, _result, p => p.Name);
             listViewSearch.EndUpdate();
         }
@@ -222,17 +221,16 @@ namespace CodeLibrary
         {
             listViewSearch.BeginUpdate();
             listViewSearch.Clear();
-            IEnumerable<CodeSnippetSearch> _result = CodeLib.Instance.SearchMatchCase(tbSearch.Text).Select(p => new CodeSnippetSearch() { Code = p.Code, Name = p.Name, CodeType = p.CodeType, CreationDate = p.CreationDate, CodeLastModificationDate = p.CodeLastModificationDate ,Id = p.Id, Path = p.Path });
+            IEnumerable<CodeSnippetSearch> _result = CodeLib.Instance.CodeSnippets.SearchMatchCase(tbSearch.Text).Select(p => new CodeSnippetSearch() { Code = p.Code, Name = p.Name, CodeType = p.CodeType, CreationDate = p.CreationDate, CodeLastModificationDate = p.CodeLastModificationDate, Id = p.Id, Path = p.Path });
             listViewSearch.Fill<CodeSnippetSearch, string>(CultureInfo.InvariantCulture, _result, p => p.Name);
             listViewSearch.EndUpdate();
         }
-
 
         private void SearchPattern()
         {
             listViewSearch.BeginUpdate();
             listViewSearch.Clear();
-            IEnumerable<CodeSnippetSearch> _result = CodeLib.Instance.SearchMatchPattern(tbSearch.Text).Select(p => new CodeSnippetSearch() { Code = p.Code, Name = p.Name, CodeType = p.CodeType, CreationDate = p.CreationDate, CodeLastModificationDate = p.CodeLastModificationDate, Id = p.Id, Path = p.Path });
+            IEnumerable<CodeSnippetSearch> _result = CodeLib.Instance.CodeSnippets.SearchMatchPattern(tbSearch.Text).Select(p => new CodeSnippetSearch() { Code = p.Code, Name = p.Name, CodeType = p.CodeType, CreationDate = p.CreationDate, CodeLastModificationDate = p.CodeLastModificationDate, Id = p.Id, Path = p.Path });
             listViewSearch.Fill<CodeSnippetSearch, string>(CultureInfo.InvariantCulture, _result, p => p.Name);
             listViewSearch.EndUpdate();
         }
@@ -245,7 +243,7 @@ namespace CodeLibrary
                 tbCode.Text = string.Empty;
                 return;
             }
-            var _item = CodeLib.Instance.GetByName(selected).FirstOrDefault();
+            var _item = CodeLib.Instance.CodeSnippets.GetByName(selected).FirstOrDefault();
             tbCode.Text = _item.Code;
             SelectedPath = _item.Path;
             SetEditorCodeType(_item.CodeType);

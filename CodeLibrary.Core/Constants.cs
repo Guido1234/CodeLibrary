@@ -8,10 +8,6 @@
         public const string DEFAULT_NOTE_TYPE = "DEFAULT_NOTE_TYPE";
         public const string LASTOPENEDDIR = "LastOpenedDir";
         public const string LASTOPENEDFILE = "LastOpenedFile";
-        public const string LOOKUP_NAME = "Name";
-        public const string LOOKUP_PATH = "Path";
-        public const string LOOKUP_SHORTCUT = "Shorcut";
-        public const string LOOKUP_TIMERACTIVE = "AlarmActive";
         public const string OPENDEFAULTONSTART = "OpenDefaultOnStart";
         public const string PLUGINPATH = "PluginPath";
         public const string SNIPPETS = "Snippets";

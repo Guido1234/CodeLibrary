@@ -75,6 +75,7 @@
     <Compile Include="Methods\MethodIF.cs" />
     <Compile Include="Methods\MethodFileToBinary.cs" />
     <Compile Include="Methods\MethodNetToSqlTypeConvertor.cs" />
+    <Compile Include="Methods\MethodSplitUpperCase.cs" />
     <Compile Include="PlaceHolder.cs" />
     <Compile Include="PlaceHolderMethods.cs" />
     <Compile Include="StringTemplateItem.cs" />

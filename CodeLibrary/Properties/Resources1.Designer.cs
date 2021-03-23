@@ -11,7 +11,7 @@
 namespace CodeLibrary.Properties {
     using System;
     
-     
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -256,6 +256,16 @@ namespace CodeLibrary.Properties {
         internal static System.Drawing.Bitmap bullet_delete_32x32 {
             get {
                 object obj = ResourceManager.GetObject("bullet_delete_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap bullet_link_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("bullet_link_32x32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

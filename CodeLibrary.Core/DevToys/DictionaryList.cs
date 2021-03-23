@@ -43,7 +43,7 @@ namespace DevToys
     /// <summary>
     /// Combines A Dictionary and Multiple Lookup objects as one List Object.
     /// </summary>
-    public sealed class DictionaryList<TPOCO, TPRIMARYKEY> : IEnumerable<TPOCO>, ICollection<TPOCO>
+    public class DictionaryList<TPOCO, TPRIMARYKEY> : IEnumerable<TPOCO>, ICollection<TPOCO>
     {
         private readonly Func<TPOCO, TPRIMARYKEY> _IndexFunctionPrimaryKey;
         private readonly Dictionary<TPRIMARYKEY, int> _PhysicalIndexes1 = new Dictionary<TPRIMARYKEY, int>();
@@ -92,13 +92,13 @@ namespace DevToys
 
         public static DictionaryList<TPOCO, TPRIMARYKEY> Create(Func<TPOCO, TPRIMARYKEY> indexfunction) => new DictionaryList<TPOCO, TPRIMARYKEY>(indexfunction);
 
-        public void Add(TPOCO item) => AddItem(item);
+        public virtual void Add(TPOCO item) => AddItem(item);
 
-        public void AddRange(List<TPOCO> newitems) => AddItemRange(newitems);
+        public virtual void AddRange(List<TPOCO> newitems) => AddItemRange(newitems);
 
-        public void AddRange(params TPOCO[] newitems) => AddItemRange(newitems);
+        public virtual void AddRange(params TPOCO[] newitems) => AddItemRange(newitems);
 
-        public void AddRange(IEnumerable<TPOCO> newitems) => AddItemRange(newitems);
+        public virtual void AddRange(IEnumerable<TPOCO> newitems) => AddItemRange(newitems);
 
         public void Clear()
         {

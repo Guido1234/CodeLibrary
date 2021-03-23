@@ -30,6 +30,9 @@ namespace CodeLibrary.Core
         [DataMember(Name = "Converted")]
         public int Version { get; set; }
 
+        [DataMember(Name = "Counter")]
+        public int Counter { get; set; }
+
         public void FromBase64()
         {
             if (Version == 0)
