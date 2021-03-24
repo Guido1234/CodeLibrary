@@ -9,6 +9,7 @@ namespace CodeLibrary.PluginPack
     [Description("")]
     public class RunCommandPrompt : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Shell";
         public string DisplayName => "Run Command Prompt";
         public Guid Id => Guid.Parse("64207bbf-0b15-4f4b-8363-e7b2201ef277");

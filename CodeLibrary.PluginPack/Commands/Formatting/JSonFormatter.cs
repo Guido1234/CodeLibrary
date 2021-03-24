@@ -17,6 +17,8 @@ namespace CodeLibrary.PluginPack
         public bool OmitResult => false;
         public Keys ShortcutKeys => Keys.None;
 
+        public bool IsExtension => false;
+
         public void Apply(ISelInfo sel)
         {
             sel.SelectedText = JsonHelper.FormatJson(sel.SelectedText);

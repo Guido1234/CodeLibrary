@@ -10,11 +10,28 @@ namespace CodeLibrary.Editor
         private FastColoredTextBoxHelper _FastColoredTextBoxHelper;
         private RtfEditorHelper _RtfEditorHelper;
 
+        private bool _SelectIsCopy = false;
+
+        public bool SelectIsCopy
+        {
+            get
+            {
+                return _SelectIsCopy;
+            }
+            set
+            {
+                _SelectIsCopy = value;
+                _mainform._stateIconHelper.SelectIsCopy = _SelectIsCopy;
+            }
+        }
+
+
         public TextBoxHelper(FormCodeLibrary mainform)
         {
             _mainform = mainform;
             _RtfEditorHelper = new RtfEditorHelper(_mainform, this);
             _FastColoredTextBoxHelper = new FastColoredTextBoxHelper(_mainform, this);
+            
         }
 
         public FastColoredTextBox FastColoredTextBox

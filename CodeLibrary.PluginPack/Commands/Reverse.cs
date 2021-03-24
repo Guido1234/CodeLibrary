@@ -9,6 +9,7 @@ namespace CodeLibrary.PluginPack
     [Description("Reverses the selected text.")]
     public class Reverse : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "";
         public string DisplayName => "Reverse";
         public Guid Id => Guid.Parse("1e3bb82c-22a1-4eaa-b5b8-207e0350eaa2");

@@ -6,7 +6,6 @@ namespace CodeLibrary.Controls
 {
     public partial class FindForm : Form
     {
-        private int startPlace;
         private RichTextBox tb;
 
         public FindForm(RichTextBox tb)

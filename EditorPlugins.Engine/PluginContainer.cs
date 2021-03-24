@@ -18,7 +18,10 @@ namespace EditorPlugins.Engine
             _id = id;
             Category = plugin.Category;
             CustomShortcutKeys = _plugin.ShortcutKeys;
+            IsExtension = plugin.IsExtension;
         }
+
+        public bool IsExtension { get; set; }
 
         public string Category { get; set; }
 

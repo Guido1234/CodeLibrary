@@ -44,7 +44,7 @@ namespace CodeLibrary.Core
                 error = UsbKeyDriveErrorEnum.Ok;
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 error = UsbKeyDriveErrorEnum.ExceptionCreatingKeyDrive;
             }
@@ -69,7 +69,7 @@ namespace CodeLibrary.Core
                 error = UsbKeyDriveErrorEnum.Ok;
                 return _key;
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
 

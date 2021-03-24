@@ -136,7 +136,6 @@ namespace CodeLibrary.Helpers
                         UsbKeyId = null;
                         return;
                     }
-                    break;
 
                 case UsbKeyDriveErrorEnum.MultipleUsbKeyDrives:
                 case UsbKeyDriveErrorEnum.ExceptionWritingKeyFile:

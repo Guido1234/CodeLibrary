@@ -19,7 +19,7 @@ namespace CodeLibrary
         private readonly FileHelper _fileHelper;
         private readonly MenuHelper _menuHelper;
         private readonly PasswordHelper _passwordHelper;
-        private readonly StateIconHelper _stateIconHelper;
+        internal readonly StateIconHelper _stateIconHelper;
         private readonly TextBoxHelper _textboxHelper;
         private readonly ThemeHelper _themeHelper;
         private readonly TreeviewHelper _treeHelper;
@@ -206,7 +206,7 @@ namespace CodeLibrary
             if (string.IsNullOrEmpty(Config.LastOpenedFile))
                 _fileHelper.NewDoc();
 
-            _PluginHelper = new MainPluginHelper(_CurrentEditor, mnuPlugins, mncPlugins);
+            _PluginHelper = new MainPluginHelper(_CurrentEditor, mnuPlugins, mncPlugins, mnuExtensions);
 
             if (Config.IsNewVersion())
             {
@@ -558,6 +558,12 @@ namespace CodeLibrary
             {
                 EditNodeProperties(true);
             }
+        }
+
+        private void mnuSelectAndCopy_Click(object sender, EventArgs e)
+        {
+            mnuSelectAndCopy.Checked = !mnuSelectAndCopy.Checked;
+            _textboxHelper.SelectIsCopy = mnuSelectAndCopy.Checked;
         }
     }
 }

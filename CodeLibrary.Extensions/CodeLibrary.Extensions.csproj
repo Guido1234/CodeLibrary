@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E8007401-28B2-4994-A802-FCC3C17F03A9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CodeLibrary.Extensions</RootNamespace>
+    <AssemblyName>CodeLibrary.Extensions</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\Plugins\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\Plugins\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SqlClientDataBaseDiagramReader\FormConfigureDiagramReader.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SqlClientDataBaseDiagramReader\FormConfigureDiagramReader.Designer.cs">
+      <DependentUpon>FormConfigureDiagramReader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SqlClientDataBaseDiagramReader\SqlClientDataBaseDiagramReaderExtension.cs" />
+    <Compile Include="SqlClientDataBaseDiagramReader\TableColumnDictionaryList.cs" />
+    <Compile Include="SqlClientDataBaseDiagramReader\TableColumn.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CodeLibrary.Controls\CodeLibrary.Controls.csproj">
+      <Project>{4dd58e8f-4d0a-495b-9dc2-c391d540a8ad}</Project>
+      <Name>CodeLibrary.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodeLibrary.Core\CodeLibrary.Core.csproj">
+      <Project>{49f5b576-5e64-4861-b799-0944ee363a4d}</Project>
+      <Name>CodeLibrary.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EditorPlugins.core\EditorPlugins.Core.csproj">
+      <Project>{0917226a-9093-496b-b947-f9df3cd82e94}</Project>
+      <Name>EditorPlugins.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EditorPlugins.Engine\EditorPlugins.Engine.csproj">
+      <Project>{288ff70f-4877-4eb0-b2cc-f0b79612a3f7}</Project>
+      <Name>EditorPlugins.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FastColoredTextBox\FastColoredTextBox\FastColoredTextBox.csproj">
+      <Project>{6dd14a85-ccfc-4774-bd26-0f5772512319}</Project>
+      <Name>FastColoredTextBox</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlClientDataBaseDiagramReader\FormConfigureDiagramReader.resx">
+      <DependentUpon>FormConfigureDiagramReader.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(SolutionDir)CodeLibrary\$(OutDir)" mkdir "$(SolutionDir)CodeLibrary\$(OutDir)"
+
+copy "$(TargetDir)CodeLibrary.Extensions.dll" "$(SolutionDir)CodeLibrary\$(OutDir)"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

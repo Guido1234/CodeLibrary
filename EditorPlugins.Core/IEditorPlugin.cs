@@ -17,5 +17,7 @@ namespace EditorPlugins.Core
         void Apply(ISelInfo selection);
 
         bool Configure();
+
+        bool IsExtension { get; }
     }
 }

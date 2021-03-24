@@ -12,6 +12,7 @@ namespace CodeLibrary.PluginPack
     [Description("Indents and formats XML")]
     public class XmlFormatter : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Formatting";
         public string DisplayName => "Xml Formatter";
         public Guid Id => Guid.Parse("b138e50a-cf6f-4ac3-bf72-a5e1233a21d3");

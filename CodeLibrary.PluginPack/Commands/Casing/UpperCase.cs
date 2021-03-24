@@ -9,6 +9,7 @@ namespace CodeLibrary.PluginPack
     [Description("Converts selection to uppercase")]
     public class UpperCase : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Casing";
         public string DisplayName => "Upper Case";
         public Guid Id => Guid.Parse("bc9c306c-66a0-48f9-8bc6-93f1c3121929");

@@ -11,6 +11,7 @@ namespace CodeLibrary.PluginPack
     [Description("Trims all lines in selection.")]
     public class TrimLines : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string DisplayName => "Trim Lines";
         public Guid Id => Guid.Parse("633403f3-d687-4892-82dc-eae43c670fa5");

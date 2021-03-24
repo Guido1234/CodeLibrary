@@ -11,6 +11,7 @@ namespace CodeLibrary.PluginPack
     [Description("Shuffles all lines in selection.")]
     public class ShuffleLines : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string DisplayName => "Shuffle Lines";
         public Guid Id => Guid.Parse("e9e3d1d5-ed28-4192-a62c-fc8d04dc9042");

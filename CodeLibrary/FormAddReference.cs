@@ -70,8 +70,6 @@ namespace CodeLibrary
                 parentCollection.Add(node);
             }
 
-            CodeLib.Instance.TreeNodes.Add(treeview);
-
             if (!string.IsNullOrWhiteSpace(find))
                 treeview.ExpandAll();
 

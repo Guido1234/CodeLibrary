@@ -10,6 +10,7 @@ namespace CodeLibrary.PluginPack
     [Description("Insert current Date and Time.\r\nRight click menu to configure.")]
     public class InsertDateTime : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "";
         public string DateFormat { get; set; } = "dd-MM-yyyy HH:mm";
         public string DisplayName => "Insert DateTime";

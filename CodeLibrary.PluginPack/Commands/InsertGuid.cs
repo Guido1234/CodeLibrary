@@ -9,6 +9,7 @@ namespace CodeLibrary.PluginPack
     [Description("Insert a new Guid.")]
     public class InsertGuid : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "";
         public string DisplayName => "Insert Guid";
         public Guid Id => Guid.Parse("88ba6eae-fa89-4275-8f92-020fbcf78a12");

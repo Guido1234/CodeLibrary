@@ -9,6 +9,7 @@ namespace CodeLibrary.PluginPack
     [Description("Insert an empty Guid.")]
     public class InsertEmptyGuid : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "";
 
         public string DisplayName => "Insert Empty Guid";

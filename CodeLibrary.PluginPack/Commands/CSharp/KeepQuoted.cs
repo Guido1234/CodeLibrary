@@ -10,6 +10,7 @@ namespace CodeLibrary.PluginPack
     [Description("Removes all text except for text enclosed in quotes.")]
     public class KeepQuoted : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "C#";
         public string DisplayName => "Keep Quoted";
         public Guid Id => Guid.Parse("04a9843c-bbd5-4252-860a-ce46e664bdbd");

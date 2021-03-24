@@ -9,6 +9,7 @@ namespace CodeLibrary.PluginPack
     [Description("Converts selection to Lowercase")]
     public class LowerCase : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Casing";
         public string DisplayName => "Lower Case";
         public Guid Id => Guid.Parse("376e2eb2-caf9-4478-ac7b-d0782b0b84d9");

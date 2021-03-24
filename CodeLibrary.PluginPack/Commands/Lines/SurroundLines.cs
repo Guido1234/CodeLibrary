@@ -12,6 +12,7 @@ namespace CodeLibrary.PluginPack
     [Description("Surrounds all lines with prefix and postfix in selection.")]
     public class SurroundLines : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string DisplayName => "Surround Lines";
         public Guid Id => Guid.Parse("bbc6fe3c-b845-40d3-ae86-46cd0fccdadb");

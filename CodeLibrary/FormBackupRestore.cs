@@ -75,7 +75,7 @@ namespace CodeLibrary
             btRestore.Enabled = true;
         }
 
-        private void Show()
+        private new void Show()
         {
             if (string.IsNullOrWhiteSpace(_currentFile))
             {

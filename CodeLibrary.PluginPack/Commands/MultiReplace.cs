@@ -11,6 +11,7 @@ namespace CodeLibrary.PluginPack
     [Description("Multiple replaces within selection.")]
     public class MultiReplace : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "";
         public string DisplayName => "Multi Replace";
         public string Find { get; set; }

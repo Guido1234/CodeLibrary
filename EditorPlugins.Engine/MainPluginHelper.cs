@@ -12,17 +12,19 @@ namespace EditorPlugins.Engine
     public class MainPluginHelper
     {
         private readonly Dictionary<string, ToolStripMenuItem> _CategoryMenus = new Dictionary<string, ToolStripMenuItem>();
-        private readonly ToolStripMenuItem _contextMenuPluginMenuItem;
-        private readonly ToolStripMenuItem _editMenuPluginMenuItem;
+        private readonly ToolStripMenuItem _contextMenuItem;
+        private readonly ToolStripMenuItem editorMenuItem;
+        private readonly ToolStripMenuItem _ExtensionMenu;
         private readonly Dictionary<string, ToolStripItem> _MenuItems = new Dictionary<string, ToolStripItem>();
         private readonly DictionaryList<PluginContainer, string> _Plugins = new DictionaryList<PluginContainer, string>(p => p.Id);
         private TextEditorContainer editor;
 
-        public MainPluginHelper(TextEditorContainer textEditor, ToolStripMenuItem editMenuPluginMenuItem, ToolStripMenuItem contextMenuPluginMenuItem)
+        public MainPluginHelper(TextEditorContainer textEditor, ToolStripMenuItem editMenuPluginMenuItem, ToolStripMenuItem contextMenuPluginMenuItem, ToolStripMenuItem extensionMenu)
         {
             editor = textEditor;
-            _editMenuPluginMenuItem = editMenuPluginMenuItem;
-            _contextMenuPluginMenuItem = contextMenuPluginMenuItem;
+            editorMenuItem = editMenuPluginMenuItem;
+            _contextMenuItem = contextMenuPluginMenuItem;
+            _ExtensionMenu = extensionMenu;
             LoadAssemblies();
             CreateMenus();
         }
@@ -41,8 +43,9 @@ namespace EditorPlugins.Engine
 
             _CategoryMenus.Clear();
 
-            CreateMenu(_editMenuPluginMenuItem, true);
-            CreateMenu(_contextMenuPluginMenuItem, false);
+            CreateMenu(editorMenuItem, true, false);
+            CreateMenu(_contextMenuItem, false, false);
+            CreateMenu(_ExtensionMenu, true, true);
         }
 
         public void LoadCustomSettings()
@@ -84,7 +87,10 @@ namespace EditorPlugins.Engine
             foreach (PluginContainer pluginContainer in _Plugins)
             {
                 string _name = $"{menu.Name}_{pluginContainer.Id}";
-                ToolStripItem _menu = _MenuItems[_name];
+                if (_MenuItems.ContainsKey(_name))
+                {
+                    ToolStripItem _menu = _MenuItems[_name];
+                }
             }
         }
 
@@ -100,6 +106,19 @@ namespace EditorPlugins.Engine
             IEditorPlugin _plugin = _Plugins.Get(key).GetPlugin();
 
             PluginHelper _pluginSettingsHelper = new PluginHelper(_plugin);
+
+            _pluginSettingsHelper.LoadSettings();
+
+            if (_plugin.IsExtension)
+            {
+
+                bool _result = _plugin.Configure();
+                if (!_result)
+                    return;
+
+                _pluginSettingsHelper.SaveSettings();
+
+            }
 
             _pluginSettingsHelper.LoadSettings();
 
@@ -127,6 +146,7 @@ namespace EditorPlugins.Engine
             }
 
             _pluginSettingsHelper.SaveSettings();
+            
         }
 
         private void _menuItem_MouseDown(object sender, MouseEventArgs e)
@@ -142,6 +162,11 @@ namespace EditorPlugins.Engine
             ToolStripItem _menuItem = sender as ToolStripItem;
             string key = _menuItem.Tag as string;
             IEditorPlugin _plugin = _Plugins.Get(key).GetPlugin();
+            
+            if (_plugin.IsExtension)
+            {
+                return;
+            }
 
             PluginHelper _pluginSettingsHelper = new PluginHelper(_plugin);
 
@@ -154,9 +179,9 @@ namespace EditorPlugins.Engine
             _pluginSettingsHelper.SaveSettings();
         }
 
-        private void CreateCategoryMenuItems(ToolStripMenuItem menu)
+        private void CreateCategoryMenuItems(ToolStripMenuItem menu, bool extensions)
         {
-            var _categories = _Plugins.Select(p => p.GetPlugin().Category).Distinct();
+            var _categories = _Plugins.Where(p => p.IsExtension == extensions).Select(p => p.GetPlugin().Category).Distinct();
             foreach (string cat in _categories)
             {
                 if (string.IsNullOrEmpty(cat))
@@ -168,16 +193,16 @@ namespace EditorPlugins.Engine
             }
         }
 
-        private void CreateMenu(ToolStripMenuItem menu, bool setShortCutKeys)
+        private void CreateMenu(ToolStripMenuItem menu, bool setShortCutKeys, bool extensions)
         {
             if (menu == null)
                 return;
 
             menu.DropDownItems.Clear();
 
-            CreateCategoryMenuItems(menu);
+            CreateCategoryMenuItems(menu, extensions);
 
-            foreach (PluginContainer pluginContainer in _Plugins)
+            foreach (PluginContainer pluginContainer in _Plugins.Where(p => p.IsExtension == extensions))
             {
                 ToolStripMenuItem _menuItem;
 

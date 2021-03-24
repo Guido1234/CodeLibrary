@@ -9,6 +9,7 @@ namespace CodeLibrary.PluginPack
     [Description("Opens Link Location, URL or any other application for specific link. \r\nif nothing is selected, current line will be used.")]
     public class OpenLink : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Shell";
         public string DisplayName => "Open Link";
         public Guid Id => Guid.Parse("d85e28a0-f1b1-4803-825e-992f8116d09b");

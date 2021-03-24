@@ -40,6 +40,7 @@ I force Int16 ( 100I )
 ")]
     public class StringFormatLines : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string DisplayName => "String Format";
         public Guid Id => Guid.Parse("6ac93162-f593-4a0a-9e5d-342de850752e");

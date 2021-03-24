@@ -10,6 +10,7 @@ namespace CodeLibrary.PluginPack
     [Description("Sorts all lines desc in selection.")]
     public class SortLinesDesc : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string DisplayName => "Sort Lines Desc";
         public Guid Id => Guid.Parse("a56a9533-b786-4ad0-b20f-2550431f617f");

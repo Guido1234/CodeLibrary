@@ -39,6 +39,7 @@
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.rtfControl1 = new CodeLibrary.Controls.Controls.RtfControl();
+            this.button8 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.txt)).BeginInit();
             this.SuspendLayout();
             // 
@@ -158,14 +159,34 @@
             // 
             this.rtfControl1.Location = new System.Drawing.Point(259, 203);
             this.rtfControl1.Name = "rtfControl1";
+            this.rtfControl1.OwnTheme = false;
+            this.rtfControl1.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "d\\f0\\fs23\\par\r\n}\r\n";
+            this.rtfControl1.SelectedRtf = "";
+            this.rtfControl1.SelectedText = "";
             this.rtfControl1.Size = new System.Drawing.Size(625, 181);
             this.rtfControl1.TabIndex = 8;
+           // this.rtfControl1.Theme = CodeLibrary.Core.ETheme.Dark;
+            this.rtfControl1.Zoom = 100;
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(11, 269);
+            this.button8.Margin = new System.Windows.Forms.Padding(2);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(182, 26);
+            this.button8.TabIndex = 9;
+            this.button8.Text = "Database diagram";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(936, 462);
+            this.Controls.Add(this.button8);
             this.Controls.Add(this.rtfControl1);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
@@ -194,6 +215,7 @@
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
         private CodeLibrary.Controls.Controls.RtfControl rtfControl1;
+        private System.Windows.Forms.Button button8;
     }
 }
 

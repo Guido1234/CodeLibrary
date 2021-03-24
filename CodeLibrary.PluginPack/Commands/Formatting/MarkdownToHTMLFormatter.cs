@@ -13,6 +13,7 @@ namespace CodeLibrary.PluginPack
     [Description("Markdown to HTML")]
     public class MarkdownFormatter : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Formatting";
         public string DisplayName => "Markdown to Html Formatter";
         public Guid Id => Guid.Parse("73c1846a-22fe-469f-8580-f7b79b658531");

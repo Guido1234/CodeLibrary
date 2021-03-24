@@ -10,6 +10,7 @@ namespace CodeLibrary.PluginPack
     [Description("Sorts all lines asc in selection.")]
     public class SortLinesAsc : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string DisplayName => "Sort Lines Asc";
         public Guid Id => Guid.Parse("8b54e23d-dacc-41a8-a094-6afdcdf26b87");

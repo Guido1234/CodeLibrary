@@ -190,4 +190,9 @@
     <None Include="Resources\replace_16x16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(SolutionDir)CodeLibrary\$(OutDir)" mkdir "$(SolutionDir)CodeLibrary\$(OutDir)"
+
+copy "$(TargetDir)CodeLibrary.PluginPack.dll" "$(SolutionDir)CodeLibrary\$(OutDir)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

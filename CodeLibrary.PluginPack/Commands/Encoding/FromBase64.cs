@@ -10,6 +10,7 @@ namespace CodeLibrary.PluginPack
     [Description("Encodes selection from Base 64")]
     public class FromBase64 : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Encoding";
         public string DisplayName => "From Base 64";
         public Guid Id => Guid.Parse("fe576d20-face-4b22-8025-70583f9b3a8a");

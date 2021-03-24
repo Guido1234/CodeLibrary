@@ -12,6 +12,7 @@ namespace CodeLibrary.PluginPack
     [Description("Removes all duplicate lines from selection.")]
     public class RemoveDuplicateLines : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string DisplayName => "Remove Duplicate Lines";
         public Guid Id => Guid.Parse("96d9b1b9-2cc7-4726-8160-d3fb1fa33385");

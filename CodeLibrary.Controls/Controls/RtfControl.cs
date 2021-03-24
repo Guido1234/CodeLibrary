@@ -158,7 +158,7 @@ namespace CodeLibrary.Controls.Controls
         }
 
 
-        public event EventHandler TextChanged;
+        public new event EventHandler TextChanged;
 
 
         public string Rtf
@@ -613,10 +613,7 @@ namespace CodeLibrary.Controls.Controls
 
         private void Rtf_TextChanged(object sender, EventArgs e)
         {
-            if (TextChanged != null)
-            {
-                TextChanged(this, new EventArgs());
-            }
+            TextChanged?.Invoke(this, new EventArgs());
         }
 
         private void RtfControl_Resize(object sender, EventArgs e)

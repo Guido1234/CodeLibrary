@@ -11,6 +11,7 @@ namespace CodeLibrary.PluginPack
     [Description("Removes all empty lines from selection")]
     public class RemoveEmptyLines : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string DisplayName => "Remove Empty Lines";
         public Guid Id => Guid.Parse("c5e4695e-9c5c-4615-b22f-dfd8eb50bf86");

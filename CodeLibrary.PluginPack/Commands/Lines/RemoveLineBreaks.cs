@@ -10,6 +10,7 @@ namespace CodeLibrary.PluginPack
     [Description("Removes all line breaks from selection.")]
     public class RemoveLineBreaks : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string DisplayName => "Remove Line Breaks";
         public Guid Id => Guid.Parse("61431de3-24cb-4f06-9fcb-2bb1aa512a69");

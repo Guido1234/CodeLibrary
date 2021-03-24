@@ -453,7 +453,7 @@ namespace CodeLibrary
                 succes = true;
                 return _collection;
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
             succes = false;
@@ -759,12 +759,12 @@ namespace CodeLibrary
                 File.WriteAllText(fileName, _json2);
                 CodeLib.Instance.Changed = false;
             }
-            catch (UnauthorizedAccessException ua)
+            catch (UnauthorizedAccessException)
             {
                 MessageBox.Show(_mainform, $"Access to file '{fileName}' denied!.", "File error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }

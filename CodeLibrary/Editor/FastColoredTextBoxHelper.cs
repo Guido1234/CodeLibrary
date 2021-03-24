@@ -33,9 +33,12 @@ namespace CodeLibrary.Editor
             _tb.DragOver += FastColoredTextBox_DragOver;
             _tb.TextChanged += new System.EventHandler<TextChangedEventArgs>(TbCode_TextChanged);
             _tb.SelectionChanged += _tb_SelectionChanged;
+            _tb.SelectionChangedDelayed += _tb_SelectionChangedDelayed;
             _tb.KeyDown += new KeyEventHandler(TbCode_KeyDown);
             _tb.MouseUp += new MouseEventHandler(TbCode_MouseUp);
         }
+
+
 
         public ITextEditor Editor
         {
@@ -288,7 +291,7 @@ namespace CodeLibrary.Editor
                         _text = _markdown.Transform(_text);
                         _mainform.webBrowser.DocumentText = _text;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         _mainform.webBrowser.DocumentText = Merge(_tb.Text, CodeType.HTML);
                     }
@@ -307,8 +310,21 @@ namespace CodeLibrary.Editor
                 _mainform.lblStart.Text = _tb.SelectionStart.ToString();
                 _mainform.lblEnd.Text = (_tb.SelectionStart + _tb.SelectionLength).ToString();
                 _mainform.lblLength.Text = _tb.SelectionLength.ToString();
+                
             }
             catch { }
+        }
+
+        private void _tb_SelectionChangedDelayed(object sender, EventArgs e)
+        {
+            if (_tb.SelectionLength == 0)
+            {
+                return;
+            }
+            if (_TextBoxHelper.SelectIsCopy)
+            {
+                Clipboard.SetText(_tb.SelectedText);
+            }
         }
 
         private bool DocShortCut(KeyEventArgs e)

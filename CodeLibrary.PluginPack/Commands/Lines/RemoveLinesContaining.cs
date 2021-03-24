@@ -12,6 +12,7 @@ namespace CodeLibrary.PluginPack
     [Description("Removes all containing items.")]
     public class RemoveLinesContaining : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string Containing { get; set; }
         public string DisplayName => "Remove Lines Containing";

@@ -11,6 +11,7 @@ namespace CodeLibrary.PluginPack
     [Description("Swaps left hand to right hand (left=right; => right=left;)")]
     public class SwapAssignments : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "C#";
         public string DisplayName => "Swap Assignments";
         public Guid Id => Guid.Parse("c04c5f72-ebfa-4570-a0f8-5f4973ad40d5");

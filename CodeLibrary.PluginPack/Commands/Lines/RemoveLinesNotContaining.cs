@@ -12,6 +12,7 @@ namespace CodeLibrary.PluginPack
     [Description("Removes all lines not containing")]
     public class RemoveLinesNotContaining : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Lines";
         public string DisplayName => "Remove Lines Not Containing";
         public Guid Id => Guid.Parse("4e605db3-1807-4a6b-b818-27c1691301c2");

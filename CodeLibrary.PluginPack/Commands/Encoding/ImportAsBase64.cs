@@ -10,6 +10,7 @@ namespace CodeLibrary.PluginPack.Commands.Encoding
     [Description("Import file as Base 64")]
     public class ImportAsBase64 : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Encoding";
         public string DisplayName => "Import file as Base 64";
         public Guid Id => Guid.Parse("f0e9336d-ff22-411c-8d56-f4404100060a");

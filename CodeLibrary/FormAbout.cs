@@ -28,6 +28,13 @@ Version 2.x:
     #[Markdown\Merge Example\*]#
     See Help => Demo Library => Markdown
 
+-   New Tool: Select Is Copy
+    When checked, any selection you make is directly available on clipboard. this can be usefull is you need to single pick and copy large amount of values.
+    This function does not work in RTF!
+
+-   Extensions
+    -   Database Schema Reader
+
 Version 2.2:
 -   Added Setting Screen
     -   Sort Mode

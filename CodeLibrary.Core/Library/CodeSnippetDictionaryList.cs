@@ -22,7 +22,7 @@ namespace CodeLibrary.Core
             RegisterLookup(LOOKUP_PATH, p => p.Path.ToLower());
             RegisterLookup(LOOKUP_PARENT_PATH, p => Utils.ParentPath( p.Path, '\\').ToLower());
             RegisterLookup(LOOKUP_SHORTCUT, p => p.ShortCutKeys);
-            RegisterLookup(LOOKUP_REFERENCELINKID, p => p.ReferenceLinkId);
+            RegisterLookup(LOOKUP_REFERENCELINKID, p => p.ReferenceLinkId); 
         }
 
         public IEnumerable<CodeSnippet> GetByAlarmActive() => Lookup(LOOKUP_TIMERACTIVE, true);

@@ -10,6 +10,7 @@ namespace CodeLibrary.PluginPack
     [Description("Encodes selection to Base 64")]
     public class ToBase64 : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "Encoding";
         public string DisplayName => "To Base 64";
         public Guid Id => Guid.Parse("0d3dcd90-e748-413b-b462-0ce1f2b5d0a1");

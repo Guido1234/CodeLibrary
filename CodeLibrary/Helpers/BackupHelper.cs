@@ -38,11 +38,11 @@ namespace CodeLibrary
                 {
                     File.Move(file.FullName, bakfile.FullName);
                 }
-                catch (UnauthorizedAccessException ua)
+                catch (UnauthorizedAccessException)
                 {
                     return;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return;
                 }

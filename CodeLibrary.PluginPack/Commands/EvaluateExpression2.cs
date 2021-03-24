@@ -10,6 +10,7 @@ namespace CodeLibrary.PluginPack
     [Description("Evaluate selected text as a math expression. Places result after expression.")]
     public class EvaluateExpression2 : IEditorPlugin
     {
+        public bool IsExtension => false;
         public string Category => "";
         public string DisplayName => "Evaluate Expression 2";
         public Guid Id => Guid.Parse("c99f0b26-71cf-4069-b2bc-3007c38a44f9");
