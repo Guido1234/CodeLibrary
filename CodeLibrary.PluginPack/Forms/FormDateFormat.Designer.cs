@@ -36,9 +36,10 @@
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(260, 77);
+            this.buttonOk.Location = new System.Drawing.Point(195, 63);
+            this.buttonOk.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonOk.Name = "buttonOk";
-            this.buttonOk.Size = new System.Drawing.Size(75, 35);
+            this.buttonOk.Size = new System.Drawing.Size(56, 28);
             this.buttonOk.TabIndex = 9;
             this.buttonOk.Text = "Ok";
             this.buttonOk.UseVisualStyleBackColor = true;
@@ -47,9 +48,10 @@
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.Location = new System.Drawing.Point(341, 77);
+            this.buttonCancel.Location = new System.Drawing.Point(256, 63);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 35);
+            this.buttonCancel.Size = new System.Drawing.Size(56, 28);
             this.buttonCancel.TabIndex = 8;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -58,21 +60,24 @@
             // txtFormat
             // 
             this.txtFormat.Font = new System.Drawing.Font("Courier New", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFormat.Location = new System.Drawing.Point(12, 26);
+            this.txtFormat.Location = new System.Drawing.Point(9, 21);
+            this.txtFormat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtFormat.Name = "txtFormat";
-            this.txtFormat.Size = new System.Drawing.Size(404, 27);
+            this.txtFormat.Size = new System.Drawing.Size(304, 23);
             this.txtFormat.TabIndex = 10;
             // 
             // FormDateFormat
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(431, 124);
+            this.ClientSize = new System.Drawing.Size(323, 101);
             this.Controls.Add(this.txtFormat);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.buttonCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "FormDateFormat";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Date Format";
             this.Load += new System.EventHandler(this.FormDateFormat_Load);
             this.ResumeLayout(false);

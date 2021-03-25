@@ -35,6 +35,8 @@ Version 2.x:
 -   Extensions
     -   Database Schema Reader
 
+-   Ctrl-DragDrop creates referrence link
+
 Version 2.2:
 -   Added Setting Screen
     -   Sort Mode

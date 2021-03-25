@@ -1240,6 +1240,7 @@ namespace CodeLibrary
 
         private void TreeViewLibrary_DragDrop(object sender, DragEventArgs e)
         {
+ 
             // Retrieve the client coordinates of the drop location.
             Point targetPoint = _treeViewLibrary.PointToClient(new Point(e.X, e.Y));
 
@@ -1265,16 +1266,31 @@ namespace CodeLibrary
                 // location and add it to the node at the drop location.
                 if (e.Effect == DragDropEffects.Move)
                 {
-                    draggedNode.Remove();
-                    if (targetNode != null)
+                    if (e.KeyState == 8)
                     {
-                        targetNode.Nodes.Add(draggedNode);
+                        if (targetNode != null)
+                        {
+                            CreateNewNode(targetNode.Nodes, CodeType.ReferenceLink, draggedNode.Text, "", "", draggedNode.Name);
+
+                        }
+                        else
+                        {
+                            CreateNewNode(_treeViewLibrary.Nodes, CodeType.ReferenceLink, draggedNode.Text, "", "", draggedNode.Name);
+                        }
                     }
                     else
                     {
-                        _treeViewLibrary.Nodes.Add(draggedNode);
+                        draggedNode.Remove();
+                        if (targetNode != null)
+                        {
+                            targetNode.Nodes.Add(draggedNode);
+                        }
+                        else
+                        {
+                            _treeViewLibrary.Nodes.Add(draggedNode);
+                        }
+                        UpdateNodePath(draggedNode);
                     }
-                    UpdateNodePath(draggedNode);
                 }
 
                 // If it is a copy operation, clone the dragged node

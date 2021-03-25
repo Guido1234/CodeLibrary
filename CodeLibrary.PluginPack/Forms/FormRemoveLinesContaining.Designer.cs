@@ -51,7 +51,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.Location = new System.Drawing.Point(401, 300);
-            this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(2);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(56, 28);
             this.buttonCancel.TabIndex = 2;
@@ -63,7 +63,7 @@
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOk.Location = new System.Drawing.Point(340, 300);
-            this.buttonOk.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonOk.Margin = new System.Windows.Forms.Padding(2);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(56, 28);
             this.buttonOk.TabIndex = 3;
@@ -93,7 +93,6 @@
             this.tbContaining.CharWidth = 8;
             this.tbContaining.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.tbContaining.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.tbContaining.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.tbContaining.Hotkeys = resources.GetString("tbContaining.Hotkeys");
             this.tbContaining.IsReplaceMode = false;
             this.tbContaining.Location = new System.Drawing.Point(13, 22);
@@ -115,8 +114,9 @@
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.labelTitle);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormRemoveLinesContaining";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Remove Lines Containing";
             this.Load += new System.EventHandler(this.FormTrimLines_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tbContaining)).EndInit();

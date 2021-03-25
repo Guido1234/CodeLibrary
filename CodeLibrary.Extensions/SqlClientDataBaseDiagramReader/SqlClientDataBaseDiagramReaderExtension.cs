@@ -19,6 +19,11 @@ namespace CodeLibrary.Extensions.SqlClientDataBaseDiagramReader
         public string FilterColumnNames { get; set; } = "*";
         public string FilterTableNames { get; set; } = "*";
         public string FilterTypeNames { get; set; } = "*";
+
+        public bool IncludeHeader { get; set; } = true;
+
+        public bool IncludeForeignKeys { get; set; } = true;
+
         public Guid Id => Guid.Parse("f9414972-cedd-4da6-9d7b-fed5a6847790");
         public Image Image => null;
         public bool IsExtension => true;
@@ -59,13 +64,16 @@ namespace CodeLibrary.Extensions.SqlClientDataBaseDiagramReader
 
                 foreach (DataRow row in schema_columns.Rows)
                 {
-                    string _tablename = row["TABLE_NAME"].ToString();
-                    string _columnname = row["COLUMN_NAME"].ToString();
-                    string _datatype = row["DATA_TYPE"].ToString();
-                    _columns.Add(new TableColumn() { TableName = _tablename, ColumnName = _columnname, DataType = _datatype });
+                    _columns.Add(new TableColumn(row) );
                 }
 
                 StringBuilder _sb = new StringBuilder();
+
+                if (IncludeHeader)
+                {
+                    _sb.Append(TableColumn.Header());
+                    _sb.Append("\r\n");
+                }
 
                 foreach (TableColumn column in _columns)
                 {

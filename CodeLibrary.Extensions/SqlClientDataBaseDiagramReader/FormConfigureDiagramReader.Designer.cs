@@ -39,6 +39,8 @@ namespace CodeLibrary.Extensions.SqlClientDataBaseDiagramReader
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.dialogButton1 = new CodeLibrary.Controls.DialogButton();
+            this.cbHeader = new System.Windows.Forms.CheckBox();
+            this.cbIncludeForeignKeys = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // tbConnectionString
@@ -61,6 +63,7 @@ namespace CodeLibrary.Extensions.SqlClientDataBaseDiagramReader
             // 
             // btTestConnection
             // 
+            this.btTestConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btTestConnection.Location = new System.Drawing.Point(583, 51);
             this.btTestConnection.Name = "btTestConnection";
             this.btTestConnection.Size = new System.Drawing.Size(75, 23);
@@ -139,11 +142,34 @@ namespace CodeLibrary.Extensions.SqlClientDataBaseDiagramReader
             this.dialogButton1.TextYes = "Yes";
             this.dialogButton1.DialogButtonClick += new CodeLibrary.Controls.DialogButton.DialogButtonClickEventHandler(this.dialogButton1_DialogButtonClick);
             // 
+            // cbHeader
+            // 
+            this.cbHeader.AutoSize = true;
+            this.cbHeader.Location = new System.Drawing.Point(12, 223);
+            this.cbHeader.Name = "cbHeader";
+            this.cbHeader.Size = new System.Drawing.Size(99, 17);
+            this.cbHeader.TabIndex = 10;
+            this.cbHeader.Text = "Include Header";
+            this.cbHeader.UseVisualStyleBackColor = true;
+            // 
+            // cbIncludeForeignKeys
+            // 
+            this.cbIncludeForeignKeys.AutoSize = true;
+            this.cbIncludeForeignKeys.Location = new System.Drawing.Point(12, 249);
+            this.cbIncludeForeignKeys.Name = "cbIncludeForeignKeys";
+            this.cbIncludeForeignKeys.Size = new System.Drawing.Size(125, 17);
+            this.cbIncludeForeignKeys.TabIndex = 11;
+            this.cbIncludeForeignKeys.Text = "Include Foreign Keys";
+            this.cbIncludeForeignKeys.UseVisualStyleBackColor = true;
+            this.cbIncludeForeignKeys.Visible = false;
+            // 
             // FormConfigureDiagramReader
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(670, 337);
+            this.Controls.Add(this.cbIncludeForeignKeys);
+            this.Controls.Add(this.cbHeader);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -154,8 +180,10 @@ namespace CodeLibrary.Extensions.SqlClientDataBaseDiagramReader
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tbConnectionString);
             this.Controls.Add(this.dialogButton1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "FormConfigureDiagramReader";
-            this.Text = "FormConfigureDiagramReader";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "SqlClient Diagram Reader";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -173,5 +201,7 @@ namespace CodeLibrary.Extensions.SqlClientDataBaseDiagramReader
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox cbHeader;
+        private System.Windows.Forms.CheckBox cbIncludeForeignKeys;
     }
 }

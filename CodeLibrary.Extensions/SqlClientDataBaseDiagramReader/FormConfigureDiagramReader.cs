@@ -16,6 +16,8 @@ namespace CodeLibrary.Extensions.SqlClientDataBaseDiagramReader
             tbFilterColumnNames.Text = _Extension.FilterColumnNames;
             tbFilterTableNames.Text = _Extension.FilterTableNames;
             tbFilterTypeNames.Text = _Extension.FilterTypeNames;
+            cbHeader.Checked = _Extension.IncludeHeader;
+            cbIncludeForeignKeys.Checked = _Extension.IncludeForeignKeys;
         }
 
         private void btTestConnection_Click(object sender, EventArgs e)
@@ -47,6 +49,8 @@ namespace CodeLibrary.Extensions.SqlClientDataBaseDiagramReader
             _Extension.FilterColumnNames = tbFilterColumnNames.Text;
             _Extension.FilterTableNames = tbFilterTableNames.Text;
             _Extension.FilterTypeNames = tbFilterTypeNames.Text;
+            _Extension.IncludeHeader = cbHeader.Checked;
+            _Extension.IncludeForeignKeys = cbIncludeForeignKeys.Checked;
             Close();
         }
     }
