@@ -1118,6 +1118,10 @@ namespace CodeLibrary
             _mainform.mncAddReference.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode));
             _mainform.mnuAddReference.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode));
 
+            _mainform.mncGotoReference.Visible = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && IsReference(_treeViewLibrary.SelectedNode));
+            _mainform.mnuGotoReference.Visible = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && IsReference(_treeViewLibrary.SelectedNode));
+
+
             _mainform.mnuAdd.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode));
             _mainform.mncAdd.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode));
             _mainform.mnuAddDialog.Enabled = !IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode);

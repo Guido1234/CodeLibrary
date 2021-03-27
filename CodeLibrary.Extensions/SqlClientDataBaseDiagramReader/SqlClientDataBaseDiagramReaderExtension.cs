@@ -60,6 +60,10 @@ namespace CodeLibrary.Extensions.SqlClientDataBaseDiagramReader
             using (SqlConnection _connection = new SqlConnection(ConnectionString))
             {
                 _connection.Open();
+
+                DataTable schemas = _connection.GetSchema();
+
+
                 DataTable schema_columns = _connection.GetSchema("Columns");
 
                 foreach (DataRow row in schema_columns.Rows)

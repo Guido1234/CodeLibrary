@@ -231,18 +231,7 @@ namespace CodeLibrary
 
         private void mncAdd_Click(object sender, EventArgs e) => AddNote();
 
-        private void mncAddReference_Click(object sender, EventArgs e)
-        {
-            if (_treeHelper.IsSystem(treeViewLibrary.SelectedNode))
-                return;
-            var _newNode = _treeHelper.AddReferenceNode(treeViewLibrary.SelectedNode);
-            if (_newNode == null)
-                return;
 
-            treeViewLibrary.SelectedNode = _newNode;
-
-            fastColoredTextBox.Focus();
-        }
 
         private void mncAsSelection_Click(object sender, EventArgs e)
         {
@@ -350,18 +339,6 @@ namespace CodeLibrary
             fastColoredTextBox.Focus();
         }
 
-        private void mnuAddReference_Click(object sender, EventArgs e)
-        {
-            if (_treeHelper.IsSystem(treeViewLibrary.SelectedNode))
-                return;
-            var _newNode = _treeHelper.AddReferenceNode(treeViewLibrary.SelectedNode);
-            if (_newNode == null)
-                return;
-
-            treeViewLibrary.SelectedNode = _newNode;
-
-            fastColoredTextBox.Focus();
-        }
 
         private void mnuChangeType_DropDownOpening(object sender, EventArgs e) => _treeHelper.SetTypeMenuState();
 
@@ -564,6 +541,47 @@ namespace CodeLibrary
         {
             mnuSelectAndCopy.Checked = !mnuSelectAndCopy.Checked;
             _textboxHelper.SelectIsCopy = mnuSelectAndCopy.Checked;
+        }
+
+
+        private void mncAddReference_Click(object sender, EventArgs e)
+        {
+            if (_treeHelper.IsSystem(treeViewLibrary.SelectedNode))
+                return;
+            var _newNode = _treeHelper.AddReferenceNode(treeViewLibrary.SelectedNode);
+            if (_newNode == null)
+                return;
+
+            treeViewLibrary.SelectedNode = _newNode;
+
+            fastColoredTextBox.Focus();
+        }
+
+        private void mnuAddReference_Click(object sender, EventArgs e)
+        {
+            if (_treeHelper.IsSystem(treeViewLibrary.SelectedNode))
+                return;
+            var _newNode = _treeHelper.AddReferenceNode(treeViewLibrary.SelectedNode);
+            if (_newNode == null)
+                return;
+
+            treeViewLibrary.SelectedNode = _newNode;
+
+            fastColoredTextBox.Focus();
+        }
+
+        private void mncGotoReference_Click(object sender, EventArgs e)
+        {            
+            CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(treeViewLibrary.SelectedNode.Name);
+            TreeNode _node = CodeLib.Instance.TreeNodes.Get(_snippet.ReferenceLinkId);
+            _treeHelper.SetSelectedNode(_node, false);
+        }
+
+        private void mnuGotoReference_Click(object sender, EventArgs e)
+        {
+            CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(treeViewLibrary.SelectedNode.Name);
+            TreeNode _node = CodeLib.Instance.TreeNodes.Get(_snippet.ReferenceLinkId);
+            _treeHelper.SetSelectedNode(_node, false);
         }
     }
 }
