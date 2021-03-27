@@ -1388,47 +1388,55 @@ namespace CodeLibrary
             if (e.KeyCode == Keys.Up && e.Control && e.Shift)
             {
                 MoveToTop();
+                e.Handled = true; 
                 return;
             }
 
             if (e.KeyCode == Keys.Down && e.Control && e.Shift)
             {
                 MoveToBottom();
+                e.Handled = true; 
                 return;
             }
 
             if (e.KeyCode == Keys.Up && e.Control)
             {
                 MoveUp();
+                e.Handled = true; 
                 return;
             }
 
             if (e.KeyCode == Keys.Down && e.Control)
             {
                 MoveDown();
+                e.Handled = true; 
                 return;
             }
 
             if (e.KeyCode == Keys.Left && e.Control)
             {
                 MoveToLeft();
+                e.Handled = true; 
                 return;
             }
 
             if (e.KeyCode == Keys.Right && e.Control)
             {
                 MoveToRight();
+                e.Handled = true; 
                 return;
             }
 
             if (e.KeyValue == 113)
             {
                 _treeViewLibrary.SelectedNode.BeginEdit();
+                e.Handled = true;
                 return;
             }
             if (e.KeyCode == Keys.Delete && e.Shift)
             {
                 RemoveNode(_treeViewLibrary.SelectedNode, true);
+                e.Handled = true;
                 return;
             }
             if (e.KeyCode == Keys.V && e.Control && e.Shift)
@@ -1437,6 +1445,8 @@ namespace CodeLibrary
                 {
                     PasteClipBoardEachLine();
                 }
+                e.Handled = true;
+                return;
             }
 
             if (e.KeyCode == Keys.V && e.Control)
@@ -1457,13 +1467,20 @@ namespace CodeLibrary
                 if (Clipboard.ContainsAudio())
                 {
                 }
+                e.Handled = true;
                 return;
             }
 
             if (e.KeyCode == Keys.Delete)
             {
                 DeleteSelectedNode();
+                e.Handled = true;
+                return;
             }
+
+            e.Handled = false;
+
+
         }
 
         private void TreeViewLibrary_MouseUp(object sender, MouseEventArgs e)
