@@ -11,7 +11,9 @@ namespace CodeLibrary
         private readonly string _Content = @"
 ----------------------------------------------------------------------
 Version 2.x:
--   Improved TreeView behavior: changed behavior of the short cut keys - they now respond to KeyDown instead of the KeyUp event for better response
+-   Improved TreeView behavior
+    - changed behavior of the short cut keys - they now respond to KeyDown instead of the KeyUp event for better response
+    - key down is now marked das handled, when it was handled
 
 -   New Template Function: SplitUpperCase, splits 'ThisIsAName' to 'This Is A Name'
 
