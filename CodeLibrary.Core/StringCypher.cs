@@ -116,6 +116,7 @@ namespace CodeLibrary.Core
             return Convert.ToBase64String(result);
         }
 
+
         private static byte[] Encrypt(byte[] data, string passPhrase)
         {
             // Salt and IV is randomly generated each time, but is preprended to encrypted cipher text

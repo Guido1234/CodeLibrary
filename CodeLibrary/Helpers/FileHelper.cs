@@ -1,4 +1,5 @@
 ﻿using CodeLibrary.Core;
+using CodeLibrary.Core.DevToys;
 using CodeLibrary.Editor;
 using CodeLibrary.Helpers;
 using DevToys;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Windows.Forms;
-
+ 
 namespace CodeLibrary
 {
     public class FileHelper
@@ -331,6 +332,8 @@ namespace CodeLibrary
 
         public void SaveFile(bool saveas)
         {
+            
+
             _textBoxHelper.SaveState();
 
             string _selectedfile = CurrentFile;
@@ -368,6 +371,11 @@ namespace CodeLibrary
                 }
             }
 
+            Log.Info($"Saving file: {_selectedfile}");
+
+            StopWatch _watch = new StopWatch();
+            _watch.Start();
+
             SecureString _securepw = null;
             if (!string.IsNullOrEmpty(_passwordHelper.UsbKeyId))
             {
@@ -395,10 +403,26 @@ namespace CodeLibrary
             _mainform.SaveEditor();
             CodeLib.Instance.Save(_collection);
 
+            _watch.Stop();
+            Log.Info($"Prepare SaveFile() {_watch.Duration}");
+
+            _watch.Start();
             BackupHelper backupHelper = new BackupHelper(CurrentFile);
             backupHelper.Backup();
+            _watch.Stop();
+            Log.Info($"Backup() {_watch.Duration}");
 
+            _watch.Start();
             Save(_collection, _selectedfile, _securepw);
+            _watch.Stop();
+            Log.Info($"Save() {_watch.Duration}");
+
+
+            //_watch.Start();
+            //SaveTest(_collection, _selectedfile, _securepw);
+            //_watch.Stop();
+            //Log.Info($"SaveTest() {_watch.Duration}");
+
         }
 
         internal void ShowIcon()
@@ -408,6 +432,8 @@ namespace CodeLibrary
 
         private static CodeSnippetCollection ReadCollectionOld(string filename, SecureString password, out bool succes)
         {
+            Log.Info($"ReadCollectionOld() {filename}");
+
             succes = true;
             string _data = File.ReadAllText(filename, Encoding.Default);
             try
@@ -442,14 +468,20 @@ namespace CodeLibrary
             }
         }
 
-        private static CodeSnippetCollection TryDecrypt(string data, SecureString password, out bool succes)
+        private static CodeSnippetCollection TryDecrypt(string data, SecureString password, bool base64, out bool succes)
         {
             try
             {
-                data = Utils.FromBase64(data);
+                if (base64)
+                {
+                    data = Utils.FromBase64(data);
+                }
                 data = StringCipher.Decrypt(data, password);
                 CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(data);
-                _collection.FromBase64();
+                if (base64)
+                {
+                    _collection.FromBase64();
+                }
                 succes = true;
                 return _collection;
             }
@@ -622,6 +654,9 @@ namespace CodeLibrary
             EndUpdate();
         }
 
+        // No Container
+        //  Direct to file 
+
         private CodeSnippetCollection ReadCollection(string filename, SecureString password, out bool succes)
         {
             string usbKeyId = null;
@@ -629,12 +664,14 @@ namespace CodeLibrary
             string _fileData = string.Empty;
             SecureString _usbKeyPassword = null;
             FileContainer _container = new FileContainer();
-
+            VersionNumber _fileVersion = new VersionNumber(0,0,0,0);
+            VersionNumber _versionNoBase64 = new VersionNumber(2, 4, 0, 0);
             try
             {
                 _fileData = File.ReadAllText(filename, Encoding.Default);
                 _container = Utils.FromJson<FileContainer>(_fileData);
                 usbKeyId = _container.UsbKeyId;
+                _fileVersion = new VersionNumber(_container.Version);
             }
             catch
             {
@@ -658,7 +695,7 @@ namespace CodeLibrary
                     }
                     _usbKeyPassword = StringCipher.ToSecureString(Utils.ByteArrayToString(_key));
 
-                    CodeSnippetCollection _result1 = TryDecrypt(_container.Data, _usbKeyPassword, out succes);
+                    CodeSnippetCollection _result1 = TryDecrypt(_container.Data, _usbKeyPassword, (_fileVersion < _versionNoBase64), out succes);
                     if (succes)
                     {
                         _passwordHelper.Password = null;
@@ -682,7 +719,7 @@ namespace CodeLibrary
                 }
 
             retryPassword:
-                CodeSnippetCollection _result = TryDecrypt(_container.Data, password, out succes);
+                CodeSnippetCollection _result = TryDecrypt(_container.Data, password, (_fileVersion < _versionNoBase64), out succes);
                 if (succes)
                 {
                     _passwordHelper.Password = password;
@@ -709,8 +746,21 @@ namespace CodeLibrary
             {
                 try
                 {
-                    CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(Utils.FromBase64(_container.Data));
-                    _collection.FromBase64();
+                    string _data = null;
+                    if (_fileVersion < _versionNoBase64)
+                    {
+                        _data = Utils.FromBase64(_container.Data);
+                    }
+                    else
+                    {
+                        _data =_container.Data;
+                    }
+
+                    CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(_data);
+                    if (_fileVersion < _versionNoBase64)
+                    {
+                        _collection.FromBase64();
+                    }
                     _passwordHelper.Password = null;
                     _passwordHelper.UsbKeyId = null;
                     _passwordHelper.ShowKey();
@@ -727,37 +777,44 @@ namespace CodeLibrary
 
         private void Save(CodeSnippetCollection collection, string fileName, SecureString usbKeyPW)
         {
-            collection.ToBase64();
+            StopWatch _watch = new StopWatch();
+
+            _watch.Start();
+
             string _json = Utils.ToJson(collection);
 
             if (_passwordHelper.Password != null)
             {
                 _json = StringCipher.Encrypt(_json, _passwordHelper.Password);
+                // _data = Utils.ToBase64(_json); // already done by Encrypt
             }
 
             if (usbKeyPW != null)
             {
                 _json = StringCipher.Encrypt(_json, usbKeyPW);
+                // _data = Utils.ToBase64(_json); // already done by Encrypt
             }
 
-            collection.FromBase64();
-
-            string _base64Json = Utils.ToBase64(_json);
+            string _data = _json;
 
             FileContainer _fileContainer = new FileContainer()
             {
                 Version = Config.CurrentVersion().ToString(),
                 Encrypted = (_passwordHelper.Password != null) || !string.IsNullOrEmpty(_passwordHelper.UsbKeyId),
-                Data = _base64Json,
+                Data = _data,
                 UsbKeyId = _passwordHelper.UsbKeyId
             };
 
-            string _json2 = Utils.ToJson(_fileContainer);
+            _json = Utils.ToJson(_fileContainer);
 
             try
             {
-                File.WriteAllText(fileName, _json2);
+                File.WriteAllText(fileName, _json);
                 CodeLib.Instance.Changed = false;
+
+                _watch.Stop();
+
+                Console.WriteLine(_watch.Duration);
             }
             catch (UnauthorizedAccessException)
             {
@@ -769,6 +826,52 @@ namespace CodeLibrary
                 return;
             }
         }
+
+
+        private void SaveTest(CodeSnippetCollection collection, string fileName, SecureString usbKeyPW)
+        {
+            StopWatch _watch = new StopWatch();
+
+            _watch.Start();
+
+            byte[] _splitter = new byte[] { 0,0,0 };
+               
+
+            FileInfo _file = new FileInfo(Path.Combine(new FileInfo(fileName).Directory.FullName, "SaveTest.json" ));
+
+            using (FileStream _fileStream = new FileStream(_file.FullName, FileMode.OpenOrCreate))
+            {
+                // Add Header
+
+                // Include CodeSnippetCollection properties in header
+
+                foreach (CodeSnippet snippet in collection.Items)
+                {
+
+                    string _json = Utils.ToJson(snippet);
+                    byte[] _data = Utils.StringToByteArray(_json);
+
+                    // Add Encryption
+
+                    _fileStream.Write(_data, 0, _data.Length);
+                    _fileStream.Write(_splitter, 0, 3);
+
+                }
+
+
+            }
+
+
+
+
+        }
+
+
+        
+
+
+
+
 
         private void SetTitle()
         {
