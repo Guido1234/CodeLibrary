@@ -87,20 +87,6 @@ namespace CodeLibrary.Core
                 return (List<T>)serializer.ReadObject(memoryStream);
         }
 
-
-        public static T FromJsonStream<T>(MemoryStream memoryStream)
-        {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-            return (T)serializer.ReadObject(memoryStream);
-        }
-
-        public static List<T> FromJsonStreamToList<T>(MemoryStream memoryStream)
-        {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<T>));
-            return (List<T>)serializer.ReadObject(memoryStream);
-        }
-
-
         public static string GetCurrentUserRegisterKey(string regpath, string key, string defaultvalue)
         {
             if (string.IsNullOrEmpty(regpath))
@@ -512,33 +498,5 @@ namespace CodeLibrary.Core
                     return streamReader.ReadToEnd();
             }
         }
-
-
-        public static StreamReader ToJsonStream<T>(T items)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-                serializer.WriteObject(stream, items);
-                stream.Position = 0;
-                using (StreamReader streamReader = new StreamReader(stream))
-                    return streamReader;
-            }
-        }
-
-        public static StreamReader ToJsonStream<T>(IEnumerable<T> items)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IEnumerable<T>));
-                serializer.WriteObject(stream, items);
-                stream.Position = 0;
-                using (StreamReader streamReader = new StreamReader(stream))
-                    return streamReader;
-            }
-        }
-
-
-
     }
 }

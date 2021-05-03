@@ -33,7 +33,6 @@ namespace CodeLibrary.Core
         [DataMember(Name = "Counter")]
         public int Counter { get; set; }
 
-        // #TODO ignore for fileversion version 2.4 and higher
         public void FromBase64()
         {
             if (Version == 0)
@@ -57,7 +56,6 @@ namespace CodeLibrary.Core
             Version = 1;
         }
 
-        // #TODO ignore for fileversion version 2.4 and higher
         public void ToBase64()
         {
             foreach (CodeSnippet item in Items)
