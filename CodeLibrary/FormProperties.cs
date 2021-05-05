@@ -58,10 +58,10 @@ namespace CodeLibrary
 
         private void Defaults_Load(object sender, EventArgs e)
         {
-            lbName.Text = Snippet.Path;
+            lbName.Text = Snippet.GetPath();
             tbName.Text = Snippet.DefaultChildName ?? string.Empty;
-            tbCode.Text = Snippet.DefaultChildCode ?? string.Empty;
-            rtf.Rtf = Snippet.DefaultChildRtf ?? string.Empty;
+            tbCode.Text = Snippet.GetDefaultChildCode() ?? string.Empty;
+            rtf.Rtf = Snippet.GetDefaultChildRtf() ?? string.Empty;
             lblModifiedOn.Text = $"Modified on: {Snippet.CodeLastModificationDate:yyyy-MM-dd HH:mm:ss}";
             cbExpand.Checked = Snippet.Expanded;
             checkBoxCodeType.Checked = Snippet.DefaultChildCodeTypeEnabled;
@@ -106,33 +106,33 @@ namespace CodeLibrary
                 Snippet.DefaultChildCodeType = (CodeType)_defaultTypeComboBoxHelper.GetValue();
                 Snippet.CodeType = _newType;
 
-                
+                bool _changed = false;
 
                 if (_newType == CodeType.RTF && _oldType != CodeType.RTF)
                 {
-                    _richTextBox.Text = Snippet.Code;
-                    Snippet.RTF = _richTextBox.Rtf;
+                    _richTextBox.Text = Snippet.GetCode();
+                    Snippet.SetRtf(_richTextBox.Rtf, out _changed);
                 }
                 else if (_oldType == CodeType.RTF && _newType != CodeType.RTF)
                 {
-                    _richTextBox.Rtf = Snippet.RTF;
-                    Snippet.Code = _richTextBox.Text;
+                    _richTextBox.Rtf = Snippet.GetRTF();
+                    Snippet.SetCode(_richTextBox.Text, out _changed); 
                 }
 
 
                 Snippet.DefaultChildName = tbName.Text ?? string.Empty;
-                Snippet.DefaultChildCode = tbCode.Text ?? string.Empty;
+                Snippet.SetDefaultChildCode(tbCode.Text ?? string.Empty, out _changed);
 
                 if (Snippet.DefaultChildCodeType == CodeType.RTF)
                 {
                     if (!string.IsNullOrEmpty(rtf.Text))
                     {
-                        Snippet.DefaultChildRtf = rtf.Rtf;
+                        Snippet.SetDefaultChildRtf(rtf.Rtf, out _changed);
                     }
                 }
                 else
                 {
-                    Snippet.DefaultChildRtf = string.Empty;
+                    Snippet.SetDefaultChildRtf(string.Empty, out _changed);
                 }
                 Snippet.DefaultChildCodeTypeEnabled = checkBoxCodeType.Checked;
 

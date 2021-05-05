@@ -238,6 +238,7 @@ namespace CodeLibrary.Editor
         {
             SaveState();
 
+
             if (snippet.CodeType == CodeType.RTF)
             {
                 _ActiveTextBoxHelper = _RtfEditorHelper;

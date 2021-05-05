@@ -19,8 +19,8 @@ namespace CodeLibrary.Core
         {
             RegisterLookup(LOOKUP_NAME, p => p.Name);
             RegisterLookup(LOOKUP_TIMERACTIVE, p => p.AlarmActive);
-            RegisterLookup(LOOKUP_PATH, p => p.Path.ToLower());
-            RegisterLookup(LOOKUP_PARENT_PATH, p => Utils.ParentPath( p.Path, '\\').ToLower());
+            RegisterLookup(LOOKUP_PATH, p => p.GetPath().ToLower());
+            RegisterLookup(LOOKUP_PARENT_PATH, p => Utils.ParentPath( p.GetPath(), '\\').ToLower());
             RegisterLookup(LOOKUP_SHORTCUT, p => p.ShortCutKeys);
             RegisterLookup(LOOKUP_REFERENCELINKID, p => p.ReferenceLinkId); 
         }
@@ -59,7 +59,7 @@ namespace CodeLibrary.Core
         {
             foreach (CodeSnippet item in this)
             {
-                int _index = item.Code.IndexOf(text, StringComparison.OrdinalIgnoreCase);
+                int _index = item.GetCode().IndexOf(text, StringComparison.OrdinalIgnoreCase);
 
                 if (_index > -1)
                 {
@@ -72,7 +72,7 @@ namespace CodeLibrary.Core
         {
             foreach (var item in this)
             {
-                if (item.Code.Contains(text))
+                if (item.GetCode().Contains(text))
                 {
                     yield return item;
                 }
@@ -83,7 +83,7 @@ namespace CodeLibrary.Core
         {
             foreach (var item in this)
             {
-                if (Utils.MatchPattern(item.Code, pattern))
+                if (Utils.MatchPattern(item.GetCode(), pattern))
                 {
                     yield return item;
                 }

@@ -25,7 +25,7 @@ namespace CodeLibrary
         private String _AutoSaveFileName = string.Empty;
         private string _Find = string.Empty;
         private DateTime _lastAutoSavedDate = new DateTime();
-        private DateTime _lastOpenedDate = DateTime.Now;
+        internal DateTime _lastOpenedDate = DateTime.Now;
         private Cursor _PrevCursor;
         private int _updating = 0;
 
@@ -80,11 +80,11 @@ namespace CodeLibrary
 
             if (string.IsNullOrWhiteSpace(find))
             {
-                items = CodeLib.Instance.CodeSnippets.OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.Path, '\\').Length).ToList();
+                items = CodeLib.Instance.CodeSnippets.OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.GetPath(), '\\').Length).ToList();
             }
             else
             {
-                items = FindNodes(find).OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.Path, '\\').Length).ToList();
+                items = FindNodes(find).OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.GetPath(), '\\').Length).ToList();
             }
             Dictionary<string, TreeNode> _foundNodes = new Dictionary<string, TreeNode>();
 
@@ -96,13 +96,13 @@ namespace CodeLibrary
                     snippet.Id = Guid.NewGuid().ToString();
 
                 TreeNodeCollection parentCollection = _treeViewLibrary.Nodes;
-                string parentPath = Utils.ParentPath(snippet.Path, '\\');
+                string parentPath = Utils.ParentPath(snippet.GetPath(), '\\');
 
-                string name = Utils.PathName(snippet.Path, '\\');
+                string name = Utils.PathName(snippet.GetPath(), '\\');
                 if (snippet.CodeType == CodeType.ReferenceLink)
                 {
                     var _refSnippet = CodeLib.Instance.CodeSnippets.Get(snippet.ReferenceLinkId);
-                    name = Utils.PathName(_refSnippet.Path, '\\');
+                    name = Utils.PathName(_refSnippet.GetPath(), '\\');
                 }
 
                 TreeNode parent = LocalUtils.GetNodeByParentPath(_treeViewLibrary.Nodes, parentPath);
@@ -162,17 +162,17 @@ namespace CodeLibrary
 
         public List<CodeSnippet> FindNodes(string find)
         {
-            DictionaryList<CodeSnippet, string> _items = CodeLib.Instance.CodeSnippets.Where(p => LocalUtils.LastPart(p.Path).ToLower().Contains(find.ToLower())).ToDictionaryList(p => p.Id);
-            _items.RegisterLookup("PATH", p => p.Path);
+            DictionaryList<CodeSnippet, string> _items = CodeLib.Instance.CodeSnippets.Where(p => LocalUtils.LastPart(p.GetPath()).ToLower().Contains(find.ToLower())).ToDictionaryList(p => p.Id);
+            _items.RegisterLookup("PATH", p => p.GetPath());
 
-            DictionaryList<CodeSnippet, string> _paths = new DictionaryList<CodeSnippet, string>(p => p.Path);
+            DictionaryList<CodeSnippet, string> _paths = new DictionaryList<CodeSnippet, string>(p => p.GetPath());
             foreach (CodeSnippet item in _items)
             {
-                List<CodeSnippet> _parents = GetParents(item.Path);
+                List<CodeSnippet> _parents = GetParents(item.GetPath());
 
                 foreach (CodeSnippet parent in _parents)
                 {
-                    if (!_paths.ContainsKey(parent.Path) && (_items.Lookup("PATH", parent.Path).FirstOrDefault() == null))
+                    if (!_paths.ContainsKey(parent.GetPath()) && (_items.Lookup("PATH", parent.GetPath()).FirstOrDefault() == null))
                         _paths.Add(parent);
                 }
             }
@@ -245,20 +245,16 @@ namespace CodeLibrary
         {
             BeginUpdate();
             bool _succes = false;
+
+
             CodeSnippetCollection _collection = ReadCollection(filename, _passwordHelper.Password, out _succes);
-            if (_succes == false)
-            {
-                _collection = ReadCollectionOld(filename, _passwordHelper.Password, out _succes);
-            }
 
             if (_succes == false)
             {
-                MessageBox.Show($"Could not open the file '{filename}'", "Error opening file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                NewDoc();
-                EndUpdate();
+                FileHelperLegacy.OpenFileLegacy(this, filename, _passwordHelper, _mainform, TreeHelper, out _succes);
                 return;
             }
-
+            
             CodeLib.Instance.Load(_collection);
 
             if (!CodeLib.Instance.CodeSnippets.ContainsKey(Constants.TRASHCAN))
@@ -286,6 +282,120 @@ namespace CodeLibrary
             _lastOpenedDate = DateTime.Now;
             SetTitle();
         }
+
+
+
+
+        public CodeSnippetCollection ReadCollection(string filename, SecureString password, out bool succes)
+        {
+            string usbKeyId = null;
+            succes = true;
+            string _fileData = string.Empty;
+            SecureString _usbKeyPassword = null;
+            FileContainer _container = new FileContainer();
+            VersionNumber _minimalVersion = new VersionNumber(2, 5, 0, 0);
+
+            try
+            {
+                _fileData = File.ReadAllText(filename, Encoding.Default);
+                _container = Utils.FromJson<FileContainer>(_fileData);
+                usbKeyId = _container.UsbKeyId;
+                VersionNumber _fileVersion = new VersionNumber(_container.Version);
+                if (_fileVersion < _minimalVersion)
+                {
+                    succes = false;
+                    return null;
+                }
+
+            }
+            catch
+            {
+                succes = false;
+                return null;
+            }
+
+            if (_container.Encrypted)
+            {
+                if (!string.IsNullOrEmpty(_container.UsbKeyId))
+                {
+                    bool _canceled;
+                    usbKeyId = _container.UsbKeyId;
+
+                    byte[] _key = _passwordHelper.GetUsbKey(_container.UsbKeyId, false, out _canceled);
+                    if (_canceled)
+                    {
+                        succes = false;
+                        usbKeyId = null;
+                        return null;
+                    }
+                    _usbKeyPassword = StringCipher.ToSecureString(Utils.ByteArrayToString(_key));
+
+                    CodeSnippetCollection _result1 = FileHelper.TryDecrypt(_container.Data, _usbKeyPassword, out succes);
+                    if (succes)
+                    {
+                        _passwordHelper.Password = null;
+                        _passwordHelper.UsbKeyId = usbKeyId;
+                        _passwordHelper.ShowKey();
+                        return _result1;
+                    }
+                    else
+                    {
+                        MessageBox.Show(_mainform, $"Could not open file {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        _passwordHelper.Password = null;
+                        _passwordHelper.UsbKeyId = null;
+                        _passwordHelper.ShowKey();
+                    }
+                }
+
+                // Decrypt with given password.
+                if (password == null)
+                {
+                    goto setPassword;
+                }
+
+            retryPassword:
+                CodeSnippetCollection _result = FileHelper.TryDecrypt(_container.Data, password, out succes);
+                if (succes)
+                {
+                    _passwordHelper.Password = password;
+                    _passwordHelper.UsbKeyId = null;
+                    _passwordHelper.ShowKey();
+                    return _result;
+                }
+
+            setPassword:
+                FormSetPassword _formSet = new FormSetPassword();
+                DialogResult _dg = _formSet.ShowDialog();
+                if (_dg == DialogResult.OK)
+                {
+                    password = _formSet.Password;
+                    goto retryPassword;
+                }
+                else
+                {
+                    succes = false;
+                    return null;
+                }
+            }
+            else
+            {
+                try
+                {
+                    CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(Utils.FromBase64(_container.Data));
+                    _passwordHelper.Password = null;
+                    _passwordHelper.UsbKeyId = null;
+                    _passwordHelper.ShowKey();
+                    succes = true;
+                    return _collection;
+                }
+                catch
+                {
+                    succes = false;
+                    return null;
+                }
+            }
+        }
+
 
         public void Reload()
         {
@@ -406,50 +516,14 @@ namespace CodeLibrary
             _StateIconHelper.Changed = CodeLib.Instance.Changed;
         }
 
-        private static CodeSnippetCollection ReadCollectionOld(string filename, SecureString password, out bool succes)
-        {
-            succes = true;
-            string _data = File.ReadAllText(filename, Encoding.Default);
-            try
-            {
-                if (password != null)
-                {
-                    _data = StringCipher.Decrypt(_data, password);
-                }
-            }
-            catch
-            {
-                MessageBox.Show($"Could not decrypt: '{filename}' with the current password! ", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                succes = false;
-                return null;
-            }
-            try
-            {
-                CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(_data);
-                _collection.FromBase64();
-                if (_collection.Items == null)
-                {
-                    succes = false;
-                    return null;
-                }
-                succes = true;
-                return _collection;
-            }
-            catch
-            {
-                succes = false;
-                return null;
-            }
-        }
 
-        private static CodeSnippetCollection TryDecrypt(string data, SecureString password, out bool succes)
+        internal static CodeSnippetCollection TryDecrypt(string data, SecureString password, out bool succes)
         {
             try
             {
                 data = Utils.FromBase64(data);
                 data = StringCipher.Decrypt(data, password);
                 CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(data);
-                _collection.FromBase64();
                 succes = true;
                 return _collection;
             }
@@ -506,6 +580,7 @@ namespace CodeLibrary
             }
         }
 
+        // #TODO verhuizen naar TreeviewHelper
         private void FormToCodeCollection(TreeNodeCollection nodes)
         {
             int _order = 0;
@@ -513,7 +588,8 @@ namespace CodeLibrary
             {
                 CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
 
-                _snippet.Path = node.FullPath;
+                bool _changed = false;
+                _snippet.SetPath(node.FullPath, out _changed);
                 _snippet.Name = node.Name;
 
                 if (string.IsNullOrWhiteSpace(_Find))
@@ -531,33 +607,7 @@ namespace CodeLibrary
             }
         }
 
-        private void FormToCodeCollection(TreeNodeCollection nodes, TreeNode root)
-        {
-            string _rootpath = $"##_{root.FullPath.TrimEnd(new char[] { '\\' })}";
-            int _order = 0;
-            foreach (TreeNode node in nodes)
-            {
-                CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
 
-                string _fullpath = $"##_{node.FullPath}";
-                string _path = _fullpath.Replace(_rootpath, string.Empty).TrimStart(new char[] { '\\' });
-
-                _snippet.Path = _path;
-                _snippet.Name = node.Name;
-                if (string.IsNullOrWhiteSpace(_Find))
-                    _snippet.Order = _order;
-
-                _order++;
-
-                if (_snippet.CodeType == CodeType.System && _snippet.Id == Constants.TRASHCAN)
-                    _snippet.Order = -2;
-
-                if (_snippet.CodeType == CodeType.System && _snippet.Id == Constants.CLIPBOARDMONITOR)
-                    _snippet.Order = -1;
-
-                FormToCodeCollection(node.Nodes, root);
-            }
-        }
 
         private string GetAutoSaveFileName()
         {
@@ -622,112 +672,9 @@ namespace CodeLibrary
             EndUpdate();
         }
 
-        private CodeSnippetCollection ReadCollection(string filename, SecureString password, out bool succes)
-        {
-            string usbKeyId = null;
-            succes = true;
-            string _fileData = string.Empty;
-            SecureString _usbKeyPassword = null;
-            FileContainer _container = new FileContainer();
-
-            try
-            {
-                _fileData = File.ReadAllText(filename, Encoding.Default);
-                _container = Utils.FromJson<FileContainer>(_fileData);
-                usbKeyId = _container.UsbKeyId;
-            }
-            catch
-            {
-                succes = false;
-                return null;
-            }
-
-            if (_container.Encrypted)
-            {
-                if (!string.IsNullOrEmpty(_container.UsbKeyId))
-                {
-                    bool _canceled;
-                    usbKeyId = _container.UsbKeyId;
-
-                    byte[] _key = _passwordHelper.GetUsbKey(_container.UsbKeyId, false, out _canceled);
-                    if (_canceled)
-                    {
-                        succes = false;
-                        usbKeyId = null;
-                        return null;
-                    }
-                    _usbKeyPassword = StringCipher.ToSecureString(Utils.ByteArrayToString(_key));
-
-                    CodeSnippetCollection _result1 = TryDecrypt(_container.Data, _usbKeyPassword, out succes);
-                    if (succes)
-                    {
-                        _passwordHelper.Password = null;
-                        _passwordHelper.UsbKeyId = usbKeyId;
-                        _passwordHelper.ShowKey();
-                        return _result1;
-                    }
-                    else
-                    {
-                        MessageBox.Show(_mainform, $"Could not open file {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        _passwordHelper.Password = null;
-                        _passwordHelper.UsbKeyId = null;
-                        _passwordHelper.ShowKey();
-                    }
-                }
-
-                // Decrypt with given password.
-                if (password == null)
-                {
-                    goto setPassword;
-                }
-
-            retryPassword:
-                CodeSnippetCollection _result = TryDecrypt(_container.Data, password, out succes);
-                if (succes)
-                {
-                    _passwordHelper.Password = password;
-                    _passwordHelper.UsbKeyId = null;
-                    _passwordHelper.ShowKey();
-                    return _result;
-                }
-
-            setPassword:
-                FormSetPassword _formSet = new FormSetPassword();
-                DialogResult _dg = _formSet.ShowDialog();
-                if (_dg == DialogResult.OK)
-                {
-                    password = _formSet.Password;
-                    goto retryPassword;
-                }
-                else
-                {
-                    succes = false;
-                    return null;
-                }
-            }
-            else
-            {
-                try
-                {
-                    CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(Utils.FromBase64(_container.Data));
-                    _collection.FromBase64();
-                    _passwordHelper.Password = null;
-                    _passwordHelper.UsbKeyId = null;
-                    _passwordHelper.ShowKey();
-                    succes = true;
-                    return _collection;
-                }
-                catch
-                {
-                    succes = false;
-                    return null;
-                }
-            }
-        }
 
         private void Save(CodeSnippetCollection collection, string fileName, SecureString usbKeyPW)
         {
-            collection.ToBase64();
             string _json = Utils.ToJson(collection);
 
             if (_passwordHelper.Password != null)
@@ -739,8 +686,6 @@ namespace CodeLibrary
             {
                 _json = StringCipher.Encrypt(_json, usbKeyPW);
             }
-
-            collection.FromBase64();
 
             string _base64Json = Utils.ToBase64(_json);
 
@@ -770,7 +715,7 @@ namespace CodeLibrary
             }
         }
 
-        private void SetTitle()
+        internal void SetTitle()
         {
             _mainform.Text = $"Code Library ( {CurrentFile} )";
         }

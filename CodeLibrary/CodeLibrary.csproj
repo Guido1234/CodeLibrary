@@ -169,6 +169,7 @@
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="CodeInsight\TemplateCodeInsightHelper.cs" />
     <Compile Include="Extensions\ImageExtensions.cs" />
+    <Compile Include="Helpers\Legacy\FileHelperLegacy.cs" />
     <Compile Include="Helpers\MenuHelper.cs" />
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Helpers\StateIconHelper.cs" />

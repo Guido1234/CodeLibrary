@@ -34,11 +34,11 @@ namespace CodeLibrary
 
             if (string.IsNullOrWhiteSpace(find))
             {
-                items = CodeLib.Instance.CodeSnippets.OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.Path, '\\').Length).ToList();
+                items = CodeLib.Instance.CodeSnippets.OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.GetPath(), '\\').Length).ToList();
             }
             else
             {
-                items = FindNodes(find).OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.Path, '\\').Length).ToList();
+                items = FindNodes(find).OrderBy(p => p.Order).OrderBy(p => Utils.SplitPath(p.GetPath(), '\\').Length).ToList();
             }
             Dictionary<string, TreeNode> _foundNodes = new Dictionary<string, TreeNode>();
 
@@ -55,8 +55,8 @@ namespace CodeLibrary
                 }
 
                 TreeNodeCollection parentCollection = treeview.Nodes;
-                string parentPath = Utils.ParentPath(snippet.Path, '\\');
-                string name = Utils.PathName(snippet.Path, '\\');
+                string parentPath = Utils.ParentPath(snippet.GetPath(), '\\');
+                string name = Utils.PathName(snippet.GetPath(), '\\');
 
                 TreeNode parent = LocalUtils.GetNodeByParentPath(treeview.Nodes, parentPath);
                 if (parent != null)
@@ -78,19 +78,20 @@ namespace CodeLibrary
             return _foundNodes;
         }
 
+        // #TODO GetPath will be expensive !!!!
         public List<CodeSnippet> FindNodes(string find)
         {
-            DictionaryList<CodeSnippet, string> _items = CodeLib.Instance.CodeSnippets.Where(p => LocalUtils.LastPart(p.Path).ToLower().Contains(find.ToLower())).ToDictionaryList(p => p.Id);
-            _items.RegisterLookup("PATH", p => p.Path);
+            DictionaryList<CodeSnippet, string> _items = CodeLib.Instance.CodeSnippets.Where(p => LocalUtils.LastPart(p.GetPath()).ToLower().Contains(find.ToLower())).ToDictionaryList(p => p.Id);
+            _items.RegisterLookup("PATH", p => p.GetPath());
 
-            DictionaryList<CodeSnippet, string> _paths = new DictionaryList<CodeSnippet, string>(p => p.Path);
+            DictionaryList<CodeSnippet, string> _paths = new DictionaryList<CodeSnippet, string>(p => p.GetPath());
             foreach (CodeSnippet item in _items)
             {
-                List<CodeSnippet> _parents = GetParents(item.Path);
+                List<CodeSnippet> _parents = GetParents(item.GetPath());
 
                 foreach (CodeSnippet parent in _parents)
                 {
-                    if (!_paths.ContainsKey(parent.Path) && (_items.Lookup("PATH", parent.Path).FirstOrDefault() == null))
+                    if (!_paths.ContainsKey(parent.GetPath()) && (_items.Lookup("PATH", parent.GetPath()).FirstOrDefault() == null))
                         _paths.Add(parent);
                 }
             }

@@ -197,8 +197,8 @@ namespace CodeLibrary.Editor
             {
                 return false;
             }
-            _result = _StateSnippet.Code != _tb.Text;
-            _StateSnippet.Code = _tb.Text;
+            _StateSnippet.SetCode(_tb.Text, out _result);
+
             _StateSnippet.Wordwrap = _tb.WordWrap;
             _StateSnippet.CurrentLine = _tb.CurrentLineNumber();
             if (_result)
@@ -226,9 +226,10 @@ namespace CodeLibrary.Editor
 
             _TextBoxHelper.SetEditorView(snippet);
 
-            _tb.Text = snippet.Code;
+            string _text = snippet.GetCode(); 
+            _tb.Text = !string.IsNullOrEmpty(_text) ? _text : "";
             _tb.ClearUndo();
-            _mainform.tbPath.Text = snippet.Path;// + $"    [C: {snippet.CreationDate},M:{snippet.CodeLastModificationDate:yyyy-MM-dd HH:mm:ss}]";
+            _mainform.tbPath.Text = snippet.GetPath();// + $"    [C: {snippet.CreationDate},M:{snippet.CodeLastModificationDate:yyyy-MM-dd HH:mm:ss}]";
             _tb.WordWrap = snippet.Wordwrap;
             _tb.SelectionStart = 0;
             _tb.SelectionLength = 0;
@@ -334,7 +335,7 @@ namespace CodeLibrary.Editor
             if (_snippet != null)
             {
                 StringTemplate stringtemplate = new StringTemplate();
-                string result = stringtemplate.Format(_snippet.Code, _tb.SelectedText);
+                string result = stringtemplate.Format(_snippet.GetCode(), _tb.SelectedText);
                 _tb.SelectedText = result;
                 _tb.Focus();
                 return true;
@@ -377,7 +378,7 @@ namespace CodeLibrary.Editor
                 switch (targetType)
                 {
                     case CodeType.MarkDown:
-                        _result = string.Format(@"![{0}](data:image/png;base64,{1})", snippet.Path, _base64);
+                        _result = string.Format(@"![{0}](data:image/png;base64,{1})", snippet.GetPath(), _base64);
                         break;
 
                     default:
@@ -387,7 +388,7 @@ namespace CodeLibrary.Editor
             }
             else
             {
-                _result = snippet.Code;
+                _result = snippet.GetCode();
             }
             return _result;
         }

@@ -99,10 +99,8 @@ namespace CodeLibrary.Editor
                 return false;
             }
 
-            _result = _StateSnippet.RTF != _rtf.Rtf;
-
-            _StateSnippet.RTF = _rtf.Rtf;
-            _StateSnippet.Code = _rtf.Text;
+            _StateSnippet.SetRtf(_rtf.Rtf, out _result);
+            _StateSnippet.SetCode(_rtf.Text, out _result);
             if (_result)
             {
                 _StateSnippet.CodeLastModificationDate = DateTime.Now;
@@ -126,7 +124,7 @@ namespace CodeLibrary.Editor
             _supressTextChanged = true;
 
             _StateSnippet = snippet;
-            _mainform.tbPath.Text = snippet.Path;
+            _mainform.tbPath.Text = snippet.GetPath();
             _mainform.rtfEditor.ClearUndo();
             _mainform.rtfEditor.ResetText();
 
@@ -140,7 +138,7 @@ namespace CodeLibrary.Editor
                 _mainform.rtfEditor.Theme = Config.Theme;
             }
 
-            _mainform.rtfEditor.Rtf = snippet.RTF;
+            _mainform.rtfEditor.Rtf = snippet.GetRTF();
 
             _mainform.rtfEditor.Zoom = Config.Zoom;
 
@@ -231,7 +229,7 @@ namespace CodeLibrary.Editor
             if (_snippet != null)
             {
                 StringTemplate stringtemplate = new StringTemplate();
-                string result = stringtemplate.Format(_snippet.Code, _rtf.SelectedText);
+                string result = stringtemplate.Format(_snippet.GetCode(), _rtf.SelectedText);
                 _rtf.SelectedText = result;
                 _rtf.Focus();
                 return true;

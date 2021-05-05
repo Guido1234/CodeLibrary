@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Security.AccessControl;
@@ -492,11 +493,61 @@ namespace CodeLibrary.Core
             using (MemoryStream stream = new MemoryStream())
             {
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-                serializer.WriteObject(stream, items);
+                serializer.WriteObject(stream, items );
                 stream.Position = 0;
                 using (StreamReader streamReader = new StreamReader(stream))
                     return streamReader.ReadToEnd();
             }
         }
+
+
+
+        public static string CompressString(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return string.Empty;
+
+            byte[] buffer = Encoding.UTF8.GetBytes(s);
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (GZipStream gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+                    gZipStream.Write(buffer, 0, buffer.Length);
+
+                memoryStream.Position = 0;
+
+                byte[] compressedData = new byte[memoryStream.Length];
+                memoryStream.Read(compressedData, 0, compressedData.Length);
+
+                byte[] gZipBuffer = new byte[compressedData.Length + 4];
+                Buffer.BlockCopy(compressedData, 0, gZipBuffer, 4, compressedData.Length);
+                Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gZipBuffer, 0, 4);
+                return Convert.ToBase64String(gZipBuffer);
+            }
+        }
+
+
+        public static string DecompressString(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return string.Empty;
+            }
+            byte[] gZipBuffer = Convert.FromBase64String(s);
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                int dataLength = BitConverter.ToInt32(gZipBuffer, 0);
+                memoryStream.Write(gZipBuffer, 4, gZipBuffer.Length - 4);
+
+                byte[] buffer = new byte[dataLength];
+
+                memoryStream.Position = 0;
+                using (GZipStream gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+                    gZipStream.Read(buffer, 0, buffer.Length);
+
+                return Encoding.UTF8.GetString(buffer);
+            }
+        }
+
+
     }
 }

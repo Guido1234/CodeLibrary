@@ -127,7 +127,7 @@ namespace CodeLibrary
                     {
                         FastColoredTextBox _fb = new FastColoredTextBox();
                         _fb.Language = LocalUtils.CodeTypeToLanguage(_oldType);
-                        _fb.Text = snippet.Code;
+                        _fb.Text = snippet.GetCode();
                         _fb.Refresh();
                     }
 
@@ -139,14 +139,14 @@ namespace CodeLibrary
 
                     if (newType == CodeType.RTF && _oldType != CodeType.RTF)
                     {
-                        _richTextBox.Text = snippet.Code;
-                        snippet.RTF = _richTextBox.Rtf;
+                        _richTextBox.Text = snippet.GetCode();
+                        snippet.SetRtf(_richTextBox.Rtf, out bool _changed);
                     }
                     else if (_oldType == CodeType.RTF && newType != CodeType.RTF)
                     {
-                        _richTextBox.Rtf = snippet.RTF;
-                        snippet.Code = _richTextBox.Text;
-                        snippet.RTF = string.Empty;
+                        _richTextBox.Rtf = snippet.GetRTF();
+                        snippet.SetCode(_richTextBox.Text, out bool _changed);
+                        snippet.SetRtf(string.Empty, out _changed);
                     }
                 }
                 _textBoxHelper.ChangeView(newType);
@@ -160,7 +160,7 @@ namespace CodeLibrary
 
         public TreeNode CreateNewNode(TreeNodeCollection parent, CodeType codetype, string name, string text, string rtf, string referenceId = null)
         {
-            CodeSnippet snippet = new CodeSnippet() { Code = text, CodeType = codetype, Locked = false, Name = name, RTF = rtf, ReferenceLinkId = referenceId };
+            CodeSnippet snippet = new CodeSnippet(name, text, rtf, string.Empty) { CodeType = codetype, Locked = false,  ReferenceLinkId = referenceId };
             if (snippet.CodeType == CodeType.HTML || snippet.CodeType == CodeType.MarkDown)
             {
                 snippet.HtmlPreview = true;
@@ -169,7 +169,8 @@ namespace CodeLibrary
 
             int _imageIndex = LocalUtils.GetImageIndex(snippet);
 
-            TreeNode _node = parent.Add(snippet.Name, snippet.Name, _imageIndex, _imageIndex);
+            string _name = snippet.Name;
+            TreeNode _node = parent.Add(_name, _name, _imageIndex, _imageIndex);
             _node.Name = snippet.Id;
             UpdateNodePath(_node);
             CodeLib.Instance.TreeNodes.Add(_node);
@@ -325,15 +326,15 @@ namespace CodeLibrary
             }
 
             CodeSnippet _snippet = FromNode(node);
-            if (!string.IsNullOrEmpty(_snippet.DefaultChildCode))
+            if (!string.IsNullOrEmpty(_snippet.GetDefaultChildCode()))
             {
                 try
                 {
-                    return string.Format(_snippet.DefaultChildCode, DateTime.Now, nodecount);
+                    return string.Format(_snippet.GetDefaultChildCode(), DateTime.Now, nodecount);
                 }
                 catch
                 {
-                    return _snippet.DefaultChildCode;
+                    return _snippet.GetDefaultChildCode();
                 }
             }
 
@@ -389,8 +390,8 @@ namespace CodeLibrary
             }
 
             CodeSnippet _snippet = FromNode(node);
-            if (!string.IsNullOrEmpty(_snippet.DefaultChildRtf))
-                return _snippet.DefaultChildRtf;
+            if (!string.IsNullOrEmpty(_snippet.GetDefaultChildRtf()))
+                return _snippet.GetDefaultChildRtf();
 
             if (node.Parent == null)
                 return defaultDefault;
@@ -1017,10 +1018,11 @@ namespace CodeLibrary
 
         private void AddImageNode(TreeNode parentNode, byte[] _imageData, string name)
         {
-            CodeSnippet snippet = new CodeSnippet() { Code = "", CodeType = CodeType.Image, Locked = false, Name = name, Blob = _imageData };
+            CodeSnippet snippet = new CodeSnippet(name, string.Empty, string.Empty, string.Empty) { CodeType = CodeType.Image, Locked = false,  Blob = _imageData };
             CodeLib.Instance.CodeSnippets.Add(snippet);
 
             int _imageIndex = LocalUtils.GetImageIndex(snippet);
+            
             TreeNode _node = parentNode.Nodes.Add(snippet.Name, snippet.Name, _imageIndex, _imageIndex);
             _node.Name = snippet.Id;
             UpdateNodePath(_node);
@@ -1514,7 +1516,7 @@ namespace CodeLibrary
         private void UpdateNodePath(TreeNode node)
         {
             CodeSnippet _snippet = CodeLib.Instance.CodeSnippets.Get(node.Name);
-            _snippet.Path = node.FullPath;
+            _snippet.SetPath(node.FullPath, out bool _changed);
 
             foreach (TreeNode child in node.Nodes)
             {

@@ -10,7 +10,15 @@ namespace CodeLibrary
     {
         private readonly string _Content = @"
 ----------------------------------------------------------------------
-Version 2.x:
+Version 2.5:
+-   Changed file format
+    -   DataContract serialization names shortened.
+    -   Removed Base64 for individual text fields at saving and loading.
+
+-   CodeSnippet
+    -   exetended Code, Rtf, Path with Base64 en Compression
+
+Version 2.3:
 -   Improved TreeView behavior
     - changed behavior of the short cut keys - they now respond to KeyDown instead of the KeyUp event for better response
     - key down is now marked das handled, when it was handled

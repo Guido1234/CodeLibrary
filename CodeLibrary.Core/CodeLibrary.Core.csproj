@@ -48,9 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackupInfo.cs" />
+    <Compile Include="DevToys\PocoMapper.cs" />
     <Compile Include="Library\CodeLib.cs" />
+    <Compile Include="Legacy\CodeSnippetOld.cs" />
     <Compile Include="Library\CodeSnippet.cs" />
-    <Compile Include="Files\CodeSnippetCollection.cs" />
+    <Compile Include="Legacy\CodeSnippetCollectionOld.cs" />
+    <Compile Include="Library\CodeSnippetCollection.cs" />
     <Compile Include="Library\CodeSnippetDictionaryList.cs" />
     <Compile Include="Library\CodeSnippetSearch.cs" />
     <Compile Include="Config.cs" />
@@ -80,5 +83,6 @@
     <Compile Include="UsbKeyDrive\UsbKeyDriveMessages.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

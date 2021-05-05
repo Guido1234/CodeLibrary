@@ -59,17 +59,138 @@ namespace CodeLibrary.Core
             _Updating--;
         }
 
+        // #LEGACY
+        public void Cleanup(CodeSnippetCollectionOld collection)
+        {
+            foreach (var _snip in collection.Items)
+            {
+                if (_snip.Code.Contains ("Ãƒ"))
+                {
+                    _snip.Code = "";
+                }
+                if (_snip.RTF != null)
+                {
+                    if (_snip.RTF.Contains("Ãƒ"))
+                    {
+                        _snip.RTF = "";
+                    }
+                }
+                if (_snip.Name.Contains("Ãƒ"))
+                {
+                    _snip.Name = "";
+                }
+                if (_snip.Path.Contains("Ãƒ"))
+                {
+                    _snip.Path = "";
+                }
+            }
+
+            // Ãƒ
+        }
+
+        public void LoadLegacy(CodeSnippetCollectionOld collection)
+        {
+            BeginUpdate();
+
+            Cleanup(collection);
+
+            Counter = collection.Counter;
+
+            CodeSnippetCollection _newCollection = new CodeSnippetCollection();
+            _newCollection.Items.Clear();
+
+            foreach (CodeSnippetOld _old in collection.Items)
+            {
+                if (string.IsNullOrWhiteSpace(_old.Path))
+                    _old.Path = Constants.UNNAMED;
+
+                CodeSnippet _new = new CodeSnippet()
+                {       
+                    DefaultChildCodeType = _old.DefaultChildCodeType, 
+                    DefaultChildCodeTypeEnabled = _old.DefaultChildCodeTypeEnabled, 
+                    DefaultChildName = _old.DefaultChildName, 
+                    Name = _old.Name,             
+                    Blob = _old.Blob,  
+                    AlarmActive = _old.AlarmActive,
+                    AlarmDate = _old.AlarmDate,
+                    CodeLastModificationDate = _old.CodeLastModificationDate,
+                    CodeType = _old.CodeType,
+                    CreationDate = _old.CreationDate,
+                    CurrentLine = _old.CurrentLine,
+                    Expanded = _old.Expanded,
+                    Flag = _old.Flag,
+                    HtmlPreview = _old.HtmlPreview,
+                    Id = _old.Id,
+                    Important = _old.Important,
+                    Locked = _old.Locked,
+                    Order = _old.Order,
+                    ReferenceLinkId = _old.ReferenceLinkId,
+                    RTFAlwaysWhite = _old.RTFAlwaysWhite,
+                    RTFOwnTheme = _old.RTFOwnTheme,
+                    RTFTheme = _old.RTFTheme,
+                    ShortCutKeys = _old.ShortCutKeys,
+                    Wordwrap = _old.Wordwrap
+                };
+
+                if (_old.Path.Equals(@"Trashcan"))
+                {
+
+                }
+
+                if (_old.Path.Equals(@"C#\Classes\VersionNumber"))
+                {
+
+                }
+
+                bool _changed = false;
+                _new.SetPath(_old.Path, out _changed);
+                _new.SetCode(_old.Code, out _changed);
+                _new.SetRtf(_old.RTF, out _changed);
+                _new.SetDefaultChildCode(_old.DefaultChildCode, out _changed);
+                _new.SetDefaultChildRtf(_old.DefaultChildRtf, out _changed);
+
+
+                _newCollection.Items.Add(_new);
+
+
+            }
+
+            TreeNodes.Clear();
+            CodeSnippets.Clear();
+            CodeSnippets.AddRange(_newCollection.Items);
+
+            if (Counter < collection.Items.Count)
+            {
+                Counter = collection.Items.Count;
+            }
+
+            if (ClipboardMonitor != null)
+            {
+                ClipboardMonitor.Order = -1;
+                ClipboardMonitor.SetPath("Clipboard Monitor", out bool _changed);
+            }
+            if (Trashcan != null)
+            {
+                Trashcan.Order = -2;
+                Trashcan.SetPath("Trashcan", out bool _changed);
+            }
+
+            EndUpdate();
+        }
+
+
         public void Load(CodeSnippetCollection collection)
         {
             BeginUpdate();
 
             Counter = collection.Counter;
 
-
             foreach (CodeSnippet snippet in collection.Items)
             {
-                if (string.IsNullOrWhiteSpace(snippet.Path))
-                    snippet.Path = Constants.UNNAMED;
+                if (string.IsNullOrWhiteSpace(snippet.GetPath()))
+                    snippet.SetPath(Constants.UNNAMED, out bool _changed);
+
+                snippet.Refresh();
             }
 
             TreeNodes.Clear();
@@ -84,16 +205,17 @@ namespace CodeLibrary.Core
             if (ClipboardMonitor != null)
             {
                 ClipboardMonitor.Order = -1;
-                ClipboardMonitor.Path = "Clipboard Monitor";
+                ClipboardMonitor.SetPath("Clipboard Monitor", out bool _changed);
             }
             if (Trashcan != null)
             {
                 Trashcan.Order = -2;
-                Trashcan.Path = "Trashcan";
+                Trashcan.SetPath("Trashcan", out bool _changed);
             }
 
             EndUpdate();
         }
+
 
         public void New()
         {
@@ -107,6 +229,7 @@ namespace CodeLibrary.Core
             CodeSnippets.Refresh();
             TreeNodes.Refresh();
         }
+
 
         public void Save(CodeSnippetCollection collection)
         {

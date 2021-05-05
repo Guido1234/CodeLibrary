@@ -46,7 +46,7 @@ namespace CodeLibrary.Helpers
             else
             {
                 CodeSnippet _clipboardSnippet = CodeLib.Instance.ClipboardMonitor;
-                _clipboardSnippet.Code = _clipboardSnippet.Code + _text + "\r\n";
+                _clipboardSnippet.SetCode(_clipboardSnippet.GetCode() + _text + "\r\n", out bool _changed);
             }
             _prevClipboard = _text;
         }
@@ -61,7 +61,7 @@ namespace CodeLibrary.Helpers
             else
             {
                 CodeSnippet _clipboardSnippet = CodeLib.Instance.ClipboardMonitor;
-                _clipboardSnippet.Code = string.Empty;
+                _clipboardSnippet.SetCode(string.Empty, out bool _changed);
             }
         }
 
