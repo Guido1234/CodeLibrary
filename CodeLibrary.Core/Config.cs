@@ -9,10 +9,10 @@ namespace CodeLibrary.Core
     public static class Config
     {
         public static string AppFolder { get; set; }
-       
-        // public static bool DarkMode { get; set; } = true;
 
-        // public static bool HighContrastMode { get; set; } = true;
+        public static string BackupLocation { get; set; }
+
+        public static EBackupMode BackupMode { get; set; }
 
         public static ETheme Theme { get; set; } = ETheme.Dark;
 
@@ -50,6 +50,9 @@ namespace CodeLibrary.Core
             string regpath = Regpath();
             LastOpenedDir = Utils.GetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDDIR);
             LastOpenedFile = Utils.GetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDFILE);
+
+            BackupLocation = Utils.GetCurrentUserRegisterKey(regpath, Constants.BACKUPLOCATION);
+
             OpenDefaultOnStart = ConvertUtility.ToBoolean(Utils.GetCurrentUserRegisterKey(regpath, Constants.OPENDEFAULTONSTART), false);
             Zoom = ConvertUtility.ToInt32(Utils.GetCurrentUserRegisterKey(regpath, Constants.ZOOM), 100);
 
@@ -57,19 +60,19 @@ namespace CodeLibrary.Core
             {
                 SortMode = (ESortMode)Enum.Parse(typeof(ESortMode), Utils.GetCurrentUserRegisterKey(regpath, Constants.SORTMODE));
             }
-            catch
-            {
-
-            }
+            catch { }
 
             try
             {
                 Theme = (ETheme)Enum.Parse(typeof(ETheme), Utils.GetCurrentUserRegisterKey(regpath, Constants.THEME));
             }
-            catch
-            {
+            catch { }
 
+            try
+            {
+                BackupMode = (EBackupMode)Enum.Parse(typeof(EBackupMode), Utils.GetCurrentUserRegisterKey(regpath, Constants.BACKUPMODE));
             }
+            catch { }
 
             DefaultNoteType = Utils.GetCurrentUserRegisterKey(regpath, Constants.DEFAULT_NOTE_TYPE);
 
@@ -100,9 +103,11 @@ namespace CodeLibrary.Core
 
             Utils.SetCurrentUserRegisterKey(regpath, Constants.THEME, Theme.ToString());
             Utils.SetCurrentUserRegisterKey(regpath, Constants.SORTMODE, SortMode.ToString());
+            Utils.SetCurrentUserRegisterKey(regpath, Constants.BACKUPMODE, BackupMode.ToString());
 
             Utils.SetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDDIR, LastOpenedDir);
             Utils.SetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDFILE, LastOpenedFile);
+            Utils.SetCurrentUserRegisterKey(regpath, Constants.BACKUPLOCATION, BackupLocation);
             Utils.SetCurrentUserRegisterKey(regpath, Constants.OPENDEFAULTONSTART, OpenDefaultOnStart.ToString());
             Utils.SetCurrentUserRegisterKey(regpath, Constants.ZOOM, Zoom.ToString());
             Utils.SetCurrentUserRegisterKey(regpath, Constants.SPLITTERDISTANCE, SplitterDistance.ToString());

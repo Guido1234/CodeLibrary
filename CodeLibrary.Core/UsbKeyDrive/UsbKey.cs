@@ -55,7 +55,7 @@ namespace CodeLibrary.Core
             UsbDriveInfo _driveInfo = new UsbDriveInfo();
             if (_driveInfo.GetUsbKeyDrives().Count == 0)
             {
-                error = UsbKeyDriveErrorEnum.NoUsbKeyDrives;
+                error = UsbKeyDriveErrorEnum.UsbKeyRequiredToOpen;
                 return null;
             }
             if (_driveInfo.GetUsbKeyDrives().Count > 1)

@@ -45,6 +45,7 @@ namespace CodeLibrary.Helpers
                 case UsbKeyDriveErrorEnum.MultipleUsbKeyDrives:
                 case UsbKeyDriveErrorEnum.ExceptionReadingKeyFile:
                 case UsbKeyDriveErrorEnum.CannotFindKeyOnUsbKeyDrive:
+                case UsbKeyDriveErrorEnum.UsbKeyRequiredToOpen:
                     if (silent)
                     {
                         canceled = true;

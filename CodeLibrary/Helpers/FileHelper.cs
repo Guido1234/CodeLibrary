@@ -423,21 +423,6 @@ namespace CodeLibrary
             }
         }
 
-        public void RestoreBackup(string file)
-        {
-            if (string.IsNullOrEmpty(file))
-            {
-                return;
-            }
-
-            FormBackupRestore _f = new FormBackupRestore(file);
-            var _result = _f.ShowDialog();
-            if (_result == DialogResult.OK)
-            {
-                CurrentFile = file;
-                LoadBackup(_f.Selected.Path);
-            }
-        }
 
         public void SaveFile(bool saveas)
         {

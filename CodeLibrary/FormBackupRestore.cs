@@ -95,5 +95,11 @@ namespace CodeLibrary
             lbBackups.ItemSelected += LbBackups_ItemSelected;
             lbBackups.Refresh();
         }
+
+        private void btConfig_Click(object sender, EventArgs e)
+        {
+            FormBackupRestoreSettings _f = new FormBackupRestoreSettings();
+            _f.ShowDialog();
+        }
     }
 }

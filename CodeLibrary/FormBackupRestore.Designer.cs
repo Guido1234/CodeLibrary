@@ -34,16 +34,17 @@ namespace CodeLibrary
             this.btRestore = new System.Windows.Forms.Button();
             this.lbName = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btConfig = new System.Windows.Forms.Button();
+            this.btBrowse = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lbBackups = new CodeLibrary.Controls.CollectionListBox();
-            this.btBrowse = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // btCancel
             // 
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btCancel.Location = new System.Drawing.Point(617, 391);
+            this.btCancel.Location = new System.Drawing.Point(628, 412);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(75, 23);
             this.btCancel.TabIndex = 1;
@@ -55,7 +56,7 @@ namespace CodeLibrary
             // 
             this.btRestore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btRestore.Enabled = false;
-            this.btRestore.Location = new System.Drawing.Point(536, 391);
+            this.btRestore.Location = new System.Drawing.Point(547, 412);
             this.btRestore.Name = "btRestore";
             this.btRestore.Size = new System.Drawing.Size(75, 23);
             this.btRestore.TabIndex = 2;
@@ -79,13 +80,35 @@ namespace CodeLibrary
             this.textBox1.BackColor = System.Drawing.SystemColors.Control;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(71, 388);
+            this.textBox1.Location = new System.Drawing.Point(71, 409);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(445, 41);
             this.textBox1.TabIndex = 5;
             this.textBox1.Text = "Backup restore does not change the current file, it only loads the backup into me" +
     "mory.if you want to revert to original then exit without saving.\r\n";
+            // 
+            // btConfig
+            // 
+            this.btConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btConfig.Image = global::CodeLibrary.Properties.Resources.cog_16x16;
+            this.btConfig.Location = new System.Drawing.Point(662, 6);
+            this.btConfig.Name = "btConfig";
+            this.btConfig.Size = new System.Drawing.Size(41, 23);
+            this.btConfig.TabIndex = 8;
+            this.btConfig.UseVisualStyleBackColor = true;
+            this.btConfig.Click += new System.EventHandler(this.btConfig_Click);
+            // 
+            // btBrowse
+            // 
+            this.btBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btBrowse.Image = global::CodeLibrary.Properties.Resources.folder_star_16x16;
+            this.btBrowse.Location = new System.Drawing.Point(616, 6);
+            this.btBrowse.Name = "btBrowse";
+            this.btBrowse.Size = new System.Drawing.Size(41, 23);
+            this.btBrowse.TabIndex = 7;
+            this.btBrowse.UseVisualStyleBackColor = true;
+            this.btBrowse.Click += new System.EventHandler(this.btBrowse_Click);
             // 
             // pictureBox1
             // 
@@ -120,26 +143,16 @@ namespace CodeLibrary
             this.lbBackups.ShowRefresh = false;
             this.lbBackups.ShowSearch = false;
             this.lbBackups.ShowToolstrip = false;
-            this.lbBackups.Size = new System.Drawing.Size(621, 333);
+            this.lbBackups.Size = new System.Drawing.Size(632, 354);
             this.lbBackups.Sorting = System.Windows.Forms.SortOrder.Descending;
             this.lbBackups.TabIndex = 0;
-            // 
-            // btBrowse
-            // 
-            this.btBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btBrowse.Image = global::CodeLibrary.Properties.Resources.folder_star_16x16;
-            this.btBrowse.Location = new System.Drawing.Point(651, 6);
-            this.btBrowse.Name = "btBrowse";
-            this.btBrowse.Size = new System.Drawing.Size(41, 23);
-            this.btBrowse.TabIndex = 7;
-            this.btBrowse.UseVisualStyleBackColor = true;
-            this.btBrowse.Click += new System.EventHandler(this.btBrowse_Click);
             // 
             // FormBackupRestore
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(705, 426);
+            this.ClientSize = new System.Drawing.Size(716, 447);
+            this.Controls.Add(this.btConfig);
             this.Controls.Add(this.btBrowse);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.textBox1);
@@ -166,5 +179,6 @@ namespace CodeLibrary
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button btBrowse;
+        private System.Windows.Forms.Button btConfig;
     }
 }

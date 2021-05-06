@@ -17,6 +17,7 @@ namespace CodeLibrary.Core
             _Messages.Add(UsbKeyDriveErrorEnum.MultipleUsbKeyDrives, "There needs to be only one USB Flash Drive used as a USBKey, please remove the USBKeys you are not using.");
             _Messages.Add(UsbKeyDriveErrorEnum.NoUsbDrives, "A USB Flash Drive is required to be inserted in a USB port.");
             _Messages.Add(UsbKeyDriveErrorEnum.NoUsbKeyDrives, "There are no USBKeys available. please insert a USBKey or create one.");
+            _Messages.Add(UsbKeyDriveErrorEnum.UsbKeyRequiredToOpen, "There is no USBKey detected, this document requires a valid USBKey to open.");
         }
 
         public string GetMessage(UsbKeyDriveErrorEnum error) => _Messages[error];

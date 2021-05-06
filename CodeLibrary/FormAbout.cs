@@ -18,6 +18,11 @@ Version 2.5:
 -   CodeSnippet
     -   exetended Code, Rtf, Path with Base64 en Compression
 
+-   Restore Backup
+    -   Configure settings to backup on a different location then file location.
+
+-   UsbKEY correct message when no UsbKEY is present for the document.
+
 Version 2.3:
 -   Improved TreeView behavior
     - changed behavior of the short cut keys - they now respond to KeyDown instead of the KeyUp event for better response

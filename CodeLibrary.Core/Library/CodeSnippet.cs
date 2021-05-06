@@ -164,6 +164,7 @@ namespace CodeLibrary.Core
         public CodeSnippet(string name, string code, string rtf, string path) : this()
         {
             bool _changed;
+            Name = name;
             SetCode(code, out _changed);
             SetRtf(rtf, out _changed);
             SetPath(path, out _changed);
@@ -171,66 +172,66 @@ namespace CodeLibrary.Core
 
 
 
-        public void SetCode(string code, out bool changed)
+        public void SetCode(string value, out bool changed)
         {
-            if (string.IsNullOrEmpty(code))
+            if (string.IsNullOrEmpty(value))
             {
-                code = string.Empty;
+                value = string.Empty;
             }
-            changed = !code.Equals(CacheCode);
-            if (string.IsNullOrEmpty(code))
+            changed = !value.Equals(CacheCode);
+            if (string.IsNullOrEmpty(value))
             {
                 Code = string.Empty;
                 CacheCode = string.Empty;
                 return;
             }
-            Code = Utils.ToBase64(Utils.CompressString(code));
-            CacheCode = null;
+            Code = Utils.ToBase64(Utils.CompressString(value));
+            CacheCode = value;
         }
 
 
-        public void SetDefaultChildCode(string code, out bool changed)
+        public void SetDefaultChildCode(string value, out bool changed)
         {
-            if (string.IsNullOrEmpty(code))
+            if (string.IsNullOrEmpty(value))
             {
-                code = string.Empty;
+                value = string.Empty;
             }
-            changed = !code.Equals(CacheCode);
-            if (string.IsNullOrEmpty(code))
+            changed = !value.Equals(CacheCode);
+            if (string.IsNullOrEmpty(value))
             {
                 DefaultChildCode = string.Empty;
                 CacheDefaultChildCode = string.Empty;
                 return;
             }
-            DefaultChildCode = Utils.ToBase64(Utils.CompressString(code));
-            CacheDefaultChildCode = null;
+            DefaultChildCode = Utils.ToBase64(Utils.CompressString(value));
+            CacheDefaultChildCode = value;
         }
 
-        public void SetPath(string path, out bool changed)
+        public void SetPath(string value, out bool changed)
         {
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(value))
             {
-                path = string.Empty;
+                value = string.Empty;
             }
 
-            changed = !path.Equals(CachePath);
-            Path = Utils.ToBase64(path); 
-            CachePath = null;
+            changed = !value.Equals(CachePath);
+            Path = Utils.ToBase64(value); 
+            CachePath = value;
         }
 
-        public void SetRtf(string rtf, out bool changed)
+        public void SetRtf(string value, out bool changed)
         {
-            if (string.IsNullOrEmpty(rtf))
+            if (string.IsNullOrEmpty(value))
             {
-                rtf = string.Empty;
+                value = string.Empty;
             }
 
             changed = false;
-            if (!string.IsNullOrEmpty(rtf))
+            if (!string.IsNullOrEmpty(value))
             {
                 try
                 {
-                    if (string.IsNullOrEmpty(rtf))
+                    if (string.IsNullOrEmpty(value))
                     {
                         RTF = string.Empty;
                         CacheRTF = string.Empty;
@@ -238,28 +239,28 @@ namespace CodeLibrary.Core
                     }
 
 
-                    changed = !rtf.Equals(CacheRTF);
-                    RTF = Utils.ToBase64(Utils.CompressString(rtf));
-                    CacheRTF = null;
+                    changed = !value.Equals(CacheRTF);
+                    RTF = Utils.ToBase64(Utils.CompressString(value));
+                    CacheRTF = value;
                 }
                 catch { }
             }
         }
 
 
-        public void SetDefaultChildRtf(string rtf, out bool changed)
+        public void SetDefaultChildRtf(string value, out bool changed)
         {
-            if (string.IsNullOrEmpty(rtf))
+            if (string.IsNullOrEmpty(value))
             {
-                rtf = string.Empty;
+                value = string.Empty;
             }
 
             changed = false;
-            if (!string.IsNullOrEmpty(rtf))
+            if (!string.IsNullOrEmpty(value))
             {
                 try
                 {
-                    if (string.IsNullOrEmpty(rtf))
+                    if (string.IsNullOrEmpty(value))
                     {
                         DefaultChildRtf = string.Empty;
                         CacheDefaultChildRtf = string.Empty;
@@ -267,9 +268,9 @@ namespace CodeLibrary.Core
                     }
 
 
-                    changed = !rtf.Equals(CacheDefaultChildRtf);
-                    DefaultChildRtf = Utils.ToBase64(Utils.CompressString(rtf));
-                    CacheDefaultChildRtf = null;
+                    changed = !value.Equals(CacheDefaultChildRtf);
+                    DefaultChildRtf = Utils.ToBase64(Utils.CompressString(value));
+                    CacheDefaultChildRtf = value;
                 }
                 catch { }
             }

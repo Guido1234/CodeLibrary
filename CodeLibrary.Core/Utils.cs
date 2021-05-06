@@ -72,6 +72,116 @@ namespace CodeLibrary.Core
             return false;
         }
 
+
+        /// <summary>
+        /// <para>when path does not exist, it returns the closest directory to the specified path</para>
+        /// this function is usefull when starting a browse file / directory dialog.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code lang="cs">
+        /// string s = GetExistingPath(@"D:\temp\test");
+        ///
+        /// // returns: "E:\temp\test" when test exists
+        /// // returns: "E:\temp" when test does not exist.
+        /// // returns: "E:" when temp does not exist.
+        /// // returns: Environment.CurrentDirectory when path is null or empty.
+        /// // returns: Environment.CurrentDirectory when E: does not exist
+        /// // returns: DesktopDirectory when Environment.CurrentDirectory does not exist
+        /// </code>
+        /// </example>
+        public static string GetExistingPath(string path)
+        {
+            // Remove invalid chars
+            path = NormalizeFullPath(path, ' ');
+            if (string.IsNullOrEmpty(path))
+            {
+                // Get currentdirectory when empty
+                path = Environment.CurrentDirectory;
+            }
+            if (string.IsNullOrEmpty(path))
+            {
+                // when still empty get desktop directory.
+                path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            }
+
+            // use FormatPath object to itterate through parts.
+
+            string[] items = SplitPath(path);
+
+            // while not exist shrink the path.
+
+            foreach (string p in items)
+            {
+                FileOrDirectory exist = IsFileOrDirectory(p);
+                if (exist == FileOrDirectory.Directory || exist == FileOrDirectory.File)
+                {
+                    path = p;
+                }
+            }
+            if (string.IsNullOrEmpty(path))
+            {
+                // apperently the path was not valid in it's whole.
+                path = Environment.CurrentDirectory;
+            }
+            if (string.IsNullOrEmpty(path))
+            {
+                path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            }
+            return path;
+        }
+
+        /// <summary>
+        /// Fixes a full path, removes invalid chars like :\/?*|: from string.
+        /// </summary>
+        /// <param name="fullpath">full path to normalize.</param>
+        /// <returns>string.Empty when fullpath is null or empty.</returns>
+        public static string NormalizeFullPath(string fullpath)
+        {
+            return NormalizeFullPath(fullpath, ' ');
+        }
+
+        /// <summary>
+        /// Fixes a full path, removes invalid chars like :\/?*|: from string.
+        /// </summary>
+        /// <param name="fullpath">full path to normalize.</param>
+        /// <param name="invalidCharReplacement">Replacementchar for invalid chars.</param>
+        /// <returns>string.Empty when fullpath is null or empty.</returns>
+        public static string NormalizeFullPath(string fullpath, char invalidCharReplacement)
+        {
+            if (string.IsNullOrEmpty(fullpath))
+            {
+                return string.Empty;
+            }
+            int filenameIndex = fullpath.LastIndexOf(Path.DirectorySeparatorChar);
+
+            char[] chpath = fullpath.ToCharArray();
+            char[] invalidPathChars = Path.GetInvalidPathChars();
+            char[] invalidFileChars = Path.GetInvalidFileNameChars();
+
+            for (int ii = 0; ii < chpath.Length; ii++)
+            {
+                if (ii <= filenameIndex)
+                {
+                    for (int xx = 0; xx < invalidPathChars.Length; xx++)
+                    {
+                        if (chpath[ii] == invalidPathChars[xx])
+                            chpath[ii] = invalidCharReplacement;
+                    }
+                }
+                else
+                {
+                    for (int xx = 0; xx < invalidFileChars.Length; xx++)
+                    {
+                        if (chpath[ii] == invalidFileChars[xx])
+                            chpath[ii] = invalidCharReplacement;
+                    }
+                }
+            }
+            return new string(chpath);
+        }
+
         public static string FromBase64(string text) => ByteArrayToString(Convert.FromBase64String(text));
 
         public static T FromJson<T>(string json)

@@ -29,6 +29,15 @@ namespace CodeLibrary.Core
         UnSuported = 9999
     }
 
+    public enum EBackupMode
+    {
+        FileLocation = 0,
+        SpecifiedDirectory = 1,
+        Both = 2,
+        Off = 4        
+    }
+
+
     public enum ESortMode
     {
         Alphabetic = 0,

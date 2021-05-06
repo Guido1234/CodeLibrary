@@ -135,6 +135,12 @@
     <Compile Include="FormOverwrite.Designer.cs">
       <DependentUpon>FormOverwrite.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormBackupRestoreSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBackupRestoreSettings.Designer.cs">
+      <DependentUpon>FormBackupRestoreSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -218,6 +224,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormSetPassword.resx">
       <DependentUpon>FormSetPassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormBackupRestoreSettings.resx">
+      <DependentUpon>FormBackupRestoreSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>

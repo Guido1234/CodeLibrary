@@ -10,6 +10,7 @@
         MultipleUsbDrives = 5,
         ExceptionReadingKeyFile = 6,
         ExceptionWritingKeyFile = 7,
-        ExceptionCreatingKeyDrive = 8
+        ExceptionCreatingKeyDrive = 8,
+        UsbKeyRequiredToOpen = 9
     }
 } 
