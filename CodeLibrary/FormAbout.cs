@@ -10,10 +10,11 @@ namespace CodeLibrary
     {
         private readonly string _Content = @"
 ----------------------------------------------------------------------
-Version 2.5:
--   Changed file format
-    -   DataContract serialization names shortened.
-    -   Removed Base64 for individual text fields at saving and loading.
+Version 3.0:
+-   New file format
+    -  Uses binaryformatter
+    -  Save and Encryption within one FileStream
+    -  All string conversions are removed when saving.
 
 -   CodeSnippet
     -   exetended Code, Rtf, Path with Base64 en Compression

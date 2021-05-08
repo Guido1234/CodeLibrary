@@ -49,6 +49,9 @@
   <ItemGroup>
     <Compile Include="BackupInfo.cs" />
     <Compile Include="DevToys\PocoMapper.cs" />
+    <Compile Include="DevToys\StopWatch.cs" />
+    <Compile Include="EncryptedBinaryFile.cs" />
+    <Compile Include="Files\FileHeader.cs" />
     <Compile Include="Library\CodeLib.cs" />
     <Compile Include="Legacy\CodeSnippetOld.cs" />
     <Compile Include="Library\CodeSnippet.cs" />
@@ -67,7 +70,7 @@
     <Compile Include="DevToys\VersionNumber.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="EnumComboBoxHelper.cs" />
-    <Compile Include="Files\FileContainer.cs" />
+    <Compile Include="Legacy\FileContainer.cs" />
     <Compile Include="Idle.cs" />
     <Compile Include="ITextBoxHelper.cs" />
     <Compile Include="ComboBoxHelper.cs" />

@@ -7,6 +7,7 @@ namespace CodeLibrary.Core
 
     // #TODO naar Lecacy
     [DataContract()]
+    [Serializable()]
     public class CodeSnippetCollection
     {
         public CodeSnippetCollection()
@@ -14,7 +15,7 @@ namespace CodeLibrary.Core
             Items = new List<CodeSnippet> { CodeSnippet.TrashcanSnippet() };
         }
 
-        // #TODO Move to CodeSnippetDictionaryList
+
         [DataMember(Name = "AutoBackup")]
         public bool AutoBackup { get; set; }
 

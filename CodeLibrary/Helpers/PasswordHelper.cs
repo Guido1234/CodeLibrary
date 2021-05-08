@@ -22,6 +22,7 @@ namespace CodeLibrary.Helpers
         public void ClearPassWord()
         {
             Password = null;
+            UsbKeyId = null;
             ShowKey();
         }
 

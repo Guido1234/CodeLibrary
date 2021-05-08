@@ -1,11 +1,11 @@
-﻿using CodeLibrary.Core.DevToys;
-using System;
+﻿using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
 
 namespace CodeLibrary.Core
 {
+    [Serializable()]
     [DataContract()]
     public class CodeSnippet
     {
@@ -185,7 +185,7 @@ namespace CodeLibrary.Core
                 CacheCode = string.Empty;
                 return;
             }
-            Code = Utils.ToBase64(Utils.CompressString(value));
+            Code = Utils.CompressString(value);
             CacheCode = value;
         }
 
@@ -203,7 +203,7 @@ namespace CodeLibrary.Core
                 CacheDefaultChildCode = string.Empty;
                 return;
             }
-            DefaultChildCode = Utils.ToBase64(Utils.CompressString(value));
+            DefaultChildCode = Utils.CompressString(value);
             CacheDefaultChildCode = value;
         }
 
@@ -240,7 +240,7 @@ namespace CodeLibrary.Core
 
 
                     changed = !value.Equals(CacheRTF);
-                    RTF = Utils.ToBase64(Utils.CompressString(value));
+                    RTF = Utils.CompressString(value);
                     CacheRTF = value;
                 }
                 catch { }
@@ -269,7 +269,7 @@ namespace CodeLibrary.Core
 
 
                     changed = !value.Equals(CacheDefaultChildRtf);
-                    DefaultChildRtf = Utils.ToBase64(Utils.CompressString(value));
+                    DefaultChildRtf = Utils.CompressString(value);
                     CacheDefaultChildRtf = value;
                 }
                 catch { }
@@ -292,7 +292,7 @@ namespace CodeLibrary.Core
                 CacheCode = string.Empty;
                 if (!string.IsNullOrEmpty(Code))
                 {
-                    CacheCode = Utils.DecompressString(Utils.FromBase64(Code));
+                    CacheCode = Utils.DecompressString(Code);
                 }
             }
             return CacheCode;
@@ -305,7 +305,7 @@ namespace CodeLibrary.Core
                 CacheDefaultChildCode = string.Empty;
                 if (!string.IsNullOrEmpty(DefaultChildCode))
                 {
-                    CacheDefaultChildCode = Utils.DecompressString(Utils.FromBase64(DefaultChildCode));
+                    CacheDefaultChildCode = Utils.DecompressString(DefaultChildCode);
                 }
             }
             return CacheDefaultChildCode;
@@ -334,7 +334,7 @@ namespace CodeLibrary.Core
                 {
                     try
                     {
-                        CacheRTF = Utils.DecompressString(Utils.FromBase64(RTF));
+                        CacheRTF = Utils.DecompressString(RTF);
                     }
                     catch
                     { }
@@ -353,7 +353,7 @@ namespace CodeLibrary.Core
                 {
                     try
                     {
-                        CacheDefaultChildRtf = Utils.DecompressString(Utils.FromBase64(DefaultChildRtf));
+                        CacheDefaultChildRtf = Utils.DecompressString(DefaultChildRtf);
                     }
                     catch
                     { }

@@ -2,6 +2,7 @@
 {
     public class Constants
     {
+        public const string FILEHEADERIDENTIFIER = "CODELIBRARYDOCUMENT";
         public const string CLIPBOARDMONITOR = "CLIPBOARDMONITOR";
         public const string CLIPBOARDMONITOR_TITLE = "Clipboard Monitor";
         public const string CODELIBRARY = "CodeLibrary";

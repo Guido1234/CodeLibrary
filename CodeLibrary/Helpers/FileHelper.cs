@@ -1,4 +1,6 @@
 ﻿using CodeLibrary.Core;
+using CodeLibrary.Core.DevToys;
+using CodeLibrary.Core.Files;
 using CodeLibrary.Editor;
 using CodeLibrary.Helpers;
 using DevToys;
@@ -241,20 +243,36 @@ namespace CodeLibrary
             }
         }
 
+
+
+
+
+
+
         public void OpenFile(string filename)
         {
+
             BeginUpdate();
             bool _succes = false;
 
+            FileReadResult readResult;
 
-            CodeSnippetCollection _collection = ReadCollection(filename, _passwordHelper.Password, out _succes);
+            CodeSnippetCollection _collection = ReadCollection(filename, out readResult);
 
-            if (_succes == false)
+            switch (readResult)
             {
-                FileHelperLegacy.OpenFileLegacy(this, filename, _passwordHelper, _mainform, TreeHelper, out _succes);
-                return;
+                case FileReadResult.ErrorUnknownIdentifier:
+                case FileReadResult.ErrorVersionToOld:
+                case FileReadResult.ErrorReadingFile:
+                    FileHelperLegacy.OpenFileLegacy(this, filename, _passwordHelper, _mainform, TreeHelper, out _succes);
+                    EndUpdate();
+                    return;
+                case FileReadResult.FileNotFound:
+                case FileReadResult.OpenCanceled:
+                    EndUpdate();
+                    return;
             }
-            
+
             CodeLib.Instance.Load(_collection);
 
             if (!CodeLib.Instance.CodeSnippets.ContainsKey(Constants.TRASHCAN))
@@ -285,115 +303,139 @@ namespace CodeLibrary
 
 
 
-
-        public CodeSnippetCollection ReadCollection(string filename, SecureString password, out bool succes)
+        public CodeSnippetCollection ReadCollection(string filename,  out FileReadResult readResult)
         {
+            SecureString password = _passwordHelper.Password;
+
             string usbKeyId = null;
-            succes = true;
+            readResult = FileReadResult.Succes;
             string _fileData = string.Empty;
             SecureString _usbKeyPassword = null;
-            FileContainer _container = new FileContainer();
-            VersionNumber _minimalVersion = new VersionNumber(2, 5, 0, 0);
+            VersionNumber _minimalVersion = new VersionNumber(3, 0, 0, 0);
+
+            CodeSnippetCollection _resultCollection = new CodeSnippetCollection();
+
+
+           FileHeader _header = null;
 
             try
             {
-                _fileData = File.ReadAllText(filename, Encoding.Default);
-                _container = Utils.FromJson<FileContainer>(_fileData);
-                usbKeyId = _container.UsbKeyId;
-                VersionNumber _fileVersion = new VersionNumber(_container.Version);
-                if (_fileVersion < _minimalVersion)
+                EncryptedBinaryFile<CodeSnippetCollection, FileHeader> _readHeader = new EncryptedBinaryFile<CodeSnippetCollection, FileHeader>(filename, null);
+                _header = _readHeader.ReadHeader();
+                if (!_header.Identifier.Equals(Constants.FILEHEADERIDENTIFIER))
                 {
-                    succes = false;
+                    readResult = FileReadResult.ErrorUnknownIdentifier;
                     return null;
                 }
 
+                VersionNumber _fileVersion = new VersionNumber(_header.Version);
+                if (_fileVersion < _minimalVersion)
+                {
+                    readResult = FileReadResult.ErrorVersionToOld;
+                    return null;
+                }
             }
             catch
             {
-                succes = false;
+                readResult = FileReadResult.ErrorReadingFile;
                 return null;
             }
 
-            if (_container.Encrypted)
-            {
-                if (!string.IsNullOrEmpty(_container.UsbKeyId))
-                {
-                    bool _canceled;
-                    usbKeyId = _container.UsbKeyId;
+            EncryptedBinaryFile<CodeSnippetCollection, FileHeader> _reader = new EncryptedBinaryFile<CodeSnippetCollection, FileHeader>(filename, null);
 
-                    byte[] _key = _passwordHelper.GetUsbKey(_container.UsbKeyId, false, out _canceled);
-                    if (_canceled)
+            switch (_header.FileEncyptionMode)
+            {
+                case FileEncyptionMode.DefaultEncryption:
+                    _reader = new EncryptedBinaryFile<CodeSnippetCollection, FileHeader>(filename, null);
+                    try
                     {
-                        succes = false;
-                        usbKeyId = null;
+                        _resultCollection = _reader.Read();
+                        return _resultCollection; // SUCCES
+                    }
+                    catch 
+                    {
+                        readResult = FileReadResult.ErrorReadingFile;
                         return null;
                     }
-                    _usbKeyPassword = StringCipher.ToSecureString(Utils.ByteArrayToString(_key));
 
-                    CodeSnippetCollection _result1 = FileHelper.TryDecrypt(_container.Data, _usbKeyPassword, out succes);
-                    if (succes)
+
+                case FileEncyptionMode.PasswordEncryption:
+
+                retryPassword:
+                    _reader = new EncryptedBinaryFile<CodeSnippetCollection, FileHeader>(filename, password);
+                    try
                     {
-                        _passwordHelper.Password = null;
-                        _passwordHelper.UsbKeyId = usbKeyId;
+                        _resultCollection = _reader.Read();
+
+                        _passwordHelper.Password = password;
+                        _passwordHelper.UsbKeyId = null;
                         _passwordHelper.ShowKey();
-                        return _result1;
+
+                        return _resultCollection; // SUCCES
+                    }
+                    catch (FileLoadException)
+                    {
+                        readResult = FileReadResult.ErrorReadingFile;
+                        return null;
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        readResult = FileReadResult.ErrorReadingFile;
+                        return null;
+                    }
+                    catch (Exception)
+                    {
+                        goto setPassword;
+                    }
+
+                setPassword:
+                    FormSetPassword _formSet = new FormSetPassword();
+                    DialogResult _dg = _formSet.ShowDialog();
+                    if (_dg == DialogResult.OK)
+                    {
+                        password = _formSet.Password;
+                        goto retryPassword;
                     }
                     else
                     {
-                        MessageBox.Show(_mainform, $"Could not open file {filename}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        _passwordHelper.Password = null;
-                        _passwordHelper.UsbKeyId = null;
-                        _passwordHelper.ShowKey();
+                        readResult = FileReadResult.OpenCanceled;
+                        return null;
                     }
-                }
 
-                // Decrypt with given password.
-                if (password == null)
-                {
-                    goto setPassword;
-                }
 
-            retryPassword:
-                CodeSnippetCollection _result = FileHelper.TryDecrypt(_container.Data, password, out succes);
-                if (succes)
-                {
-                    _passwordHelper.Password = password;
-                    _passwordHelper.UsbKeyId = null;
-                    _passwordHelper.ShowKey();
-                    return _result;
-                }
+                case FileEncyptionMode.UsbKEYEncryption:
+                    bool _canceled;
 
-            setPassword:
-                FormSetPassword _formSet = new FormSetPassword();
-                DialogResult _dg = _formSet.ShowDialog();
-                if (_dg == DialogResult.OK)
-                {
-                    password = _formSet.Password;
-                    goto retryPassword;
-                }
-                else
-                {
-                    succes = false;
-                    return null;
-                }
+                    usbKeyId = _header.UsbKeyId;
+                    byte[] _key = _passwordHelper.GetUsbKey(_header.UsbKeyId, false, out _canceled);
+                    if (_canceled)
+                    {
+                        readResult = FileReadResult.OpenCanceled;
+                        return null;
+                    }
+                    
+                    _usbKeyPassword = StringCipher.ToSecureString(Utils.ByteArrayToString(_key));
+
+                    _reader = new EncryptedBinaryFile<CodeSnippetCollection, FileHeader>(filename, _usbKeyPassword);
+                    try
+                    {
+                        _resultCollection = _reader.Read();
+
+                        _passwordHelper.Password = null;
+                        _passwordHelper.UsbKeyId = _header.UsbKeyId;
+                        _passwordHelper.ShowKey();
+
+                        return _resultCollection; // SUCCES
+                    }
+                    catch 
+                    {
+                        readResult = FileReadResult.ErrorReadingFile;
+                        return null;
+                    }
             }
-            else
-            {
-                try
-                {
-                    CodeSnippetCollection _collection = Utils.FromJson<CodeSnippetCollection>(Utils.FromBase64(_container.Data));
-                    _passwordHelper.Password = null;
-                    _passwordHelper.UsbKeyId = null;
-                    _passwordHelper.ShowKey();
-                    succes = true;
-                    return _collection;
-                }
-                catch
-                {
-                    succes = false;
-                    return null;
-                }
-            }
+            readResult = FileReadResult.ErrorReadingFile;
+            return null;
+
         }
 
 
@@ -445,6 +487,10 @@ namespace CodeLibrary
                 _selectedfile = d.FileName;
             }
 
+            StopWatch _watch = new StopWatch();
+
+            _watch.Start();
+
             if (IsOverwritingNewerFile(_selectedfile))
             {
                 FormOverwrite f = new FormOverwrite();
@@ -463,17 +509,7 @@ namespace CodeLibrary
                 }
             }
 
-            SecureString _securepw = null;
-            if (!string.IsNullOrEmpty(_passwordHelper.UsbKeyId))
-            {
-                bool _canceled = false;
-                byte[] _key = _passwordHelper.GetUsbKey(_passwordHelper.UsbKeyId, false, out _canceled);
-                if (_canceled)
-                {
-                    return;
-                }
-                _securepw = StringCipher.ToSecureString(Utils.ByteArrayToString(_key));
-            }
+
 
             CurrentFile = _selectedfile;
             _lastOpenedDate = DateTime.Now;
@@ -493,7 +529,7 @@ namespace CodeLibrary
             BackupHelper backupHelper = new BackupHelper(CurrentFile);
             backupHelper.Backup();
 
-            Save(_collection, _selectedfile, _securepw);
+            Save(_collection, _selectedfile);
         }
 
         internal void ShowIcon()
@@ -528,17 +564,6 @@ namespace CodeLibrary
                 LastSaved = _lastOpenedDate,
             };
 
-            SecureString _securepw = null;
-            if (!string.IsNullOrEmpty(_passwordHelper.UsbKeyId))
-            {
-                bool _canceled = false;
-                byte[] _key = _passwordHelper.GetUsbKey(_passwordHelper.UsbKeyId, true, out _canceled);
-                if (_canceled)
-                {
-                    return;
-                }
-                _securepw = StringCipher.ToSecureString(Utils.ByteArrayToString(_key));
-            }
 
             FormToCodeCollection(_treeViewLibrary.Nodes);
             if (_treeViewLibrary.SelectedNode != null)
@@ -547,7 +572,7 @@ namespace CodeLibrary
             _mainform.SaveEditor();
             CodeLib.Instance.Save(_collection);
 
-            Save(_collection, _fileName, _securepw);
+            Save(_collection, _fileName); // Quit
         }
 
         private void AutoSaveTimer_Tick(object sender, EventArgs e)
@@ -657,36 +682,41 @@ namespace CodeLibrary
             EndUpdate();
         }
 
-
-        private void Save(CodeSnippetCollection collection, string fileName, SecureString usbKeyPW)
+        private void Save(CodeSnippetCollection collection, string fileName)
         {
-            string _json = Utils.ToJson(collection);
+            SecureString usbKeyPW = null;
+            SecureString _pw = null;
+            FileEncyptionMode _encryptmode = FileEncyptionMode.DefaultEncryption;
+
+            if (!string.IsNullOrEmpty(_passwordHelper.UsbKeyId))
+            {
+                bool _canceled = false;
+                byte[] _key = _passwordHelper.GetUsbKey(_passwordHelper.UsbKeyId, false, out _canceled);
+                if (_canceled)
+                {
+                    return;
+                }
+                usbKeyPW = StringCipher.ToSecureString(Utils.ByteArrayToString(_key));
+            }
 
             if (_passwordHelper.Password != null)
             {
-                _json = StringCipher.Encrypt(_json, _passwordHelper.Password);
+                _pw = _passwordHelper.Password;
+                _encryptmode = FileEncyptionMode.PasswordEncryption;
             }
 
             if (usbKeyPW != null)
             {
-                _json = StringCipher.Encrypt(_json, usbKeyPW);
+                _pw = usbKeyPW;
+                _encryptmode = FileEncyptionMode.UsbKEYEncryption;
             }
 
-            string _base64Json = Utils.ToBase64(_json);
-
-            FileContainer _fileContainer = new FileContainer()
-            {
-                Version = Config.CurrentVersion().ToString(),
-                Encrypted = (_passwordHelper.Password != null) || !string.IsNullOrEmpty(_passwordHelper.UsbKeyId),
-                Data = _base64Json,
-                UsbKeyId = _passwordHelper.UsbKeyId
-            };
-
-            string _json2 = Utils.ToJson(_fileContainer);
+            EncryptedBinaryFile<CodeSnippetCollection, FileHeader> _writer = new EncryptedBinaryFile<CodeSnippetCollection, FileHeader>(fileName, _pw);
+            FileHeader _header = new FileHeader() { Version = Config.CurrentVersion().ToString(), FileEncyptionMode = _encryptmode, UsbKeyId = _passwordHelper.UsbKeyId };
 
             try
             {
-                File.WriteAllText(fileName, _json2);
+                _writer.Save(_header, collection);
                 CodeLib.Instance.Changed = false;
             }
             catch (UnauthorizedAccessException)

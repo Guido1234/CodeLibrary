@@ -185,13 +185,19 @@ namespace CodeLibrary.Core
 
             Counter = collection.Counter;
 
-            foreach (CodeSnippet snippet in collection.Items)
+            try
             {
-                if (string.IsNullOrWhiteSpace(snippet.GetPath()))
-                    snippet.SetPath(Constants.UNNAMED, out bool _changed);
+                foreach (CodeSnippet snippet in collection.Items)
+                {
+                        if (string.IsNullOrWhiteSpace(snippet.GetPath()))
+                            snippet.SetPath(Constants.UNNAMED, out bool _changed);
 
-                snippet.Refresh();
+                        snippet.Refresh();
+
+                }
             }
+            catch { }
+
 
             TreeNodes.Clear();
             CodeSnippets.Clear();
