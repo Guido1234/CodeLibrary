@@ -9,13 +9,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
-using System.Text;
 using System.Windows.Forms;
 
 namespace CodeLibrary
 {
     public class FileHelper
     {
+        internal DateTime _lastOpenedDate = DateTime.Now;
         private readonly int _AutoSaveMinutes = 1;
         private readonly Timer _autoSaveTimer = new Timer();
         private readonly DebugHelper _DebugHelper;
@@ -27,7 +27,6 @@ namespace CodeLibrary
         private String _AutoSaveFileName = string.Empty;
         private string _Find = string.Empty;
         private DateTime _lastAutoSavedDate = new DateTime();
-        internal DateTime _lastOpenedDate = DateTime.Now;
         private Cursor _PrevCursor;
         private int _updating = 0;
 
@@ -243,15 +242,8 @@ namespace CodeLibrary
             }
         }
 
-
-
-
-
-
-
         public void OpenFile(string filename)
         {
-
             BeginUpdate();
             bool _succes = false;
 
@@ -267,6 +259,7 @@ namespace CodeLibrary
                     FileHelperLegacy.OpenFileLegacy(this, filename, _passwordHelper, _mainform, TreeHelper, out _succes);
                     EndUpdate();
                     return;
+
                 case FileReadResult.FileNotFound:
                 case FileReadResult.OpenCanceled:
                     EndUpdate();
@@ -301,9 +294,7 @@ namespace CodeLibrary
             SetTitle();
         }
 
-
-
-        public CodeSnippetCollection ReadCollection(string filename,  out FileReadResult readResult)
+        public CodeSnippetCollection ReadCollection(string filename, out FileReadResult readResult)
         {
             SecureString password = _passwordHelper.Password;
 
@@ -315,8 +306,7 @@ namespace CodeLibrary
 
             CodeSnippetCollection _resultCollection = new CodeSnippetCollection();
 
-
-           FileHeader _header = null;
+            FileHeader _header = null;
 
             try
             {
@@ -349,15 +339,15 @@ namespace CodeLibrary
                     _reader = new EncryptedBinaryFile<CodeSnippetCollection, FileHeader>(filename, null);
                     try
                     {
+                        _passwordHelper.ClearPassWord();
                         _resultCollection = _reader.Read();
                         return _resultCollection; // SUCCES
                     }
-                    catch 
+                    catch
                     {
                         readResult = FileReadResult.ErrorReadingFile;
                         return null;
                     }
-
 
                 case FileEncyptionMode.PasswordEncryption:
 
@@ -375,11 +365,13 @@ namespace CodeLibrary
                     }
                     catch (FileLoadException)
                     {
+                        _passwordHelper.ClearPassWord();
                         readResult = FileReadResult.ErrorReadingFile;
                         return null;
                     }
                     catch (FileNotFoundException)
                     {
+                        _passwordHelper.ClearPassWord();
                         readResult = FileReadResult.ErrorReadingFile;
                         return null;
                     }
@@ -402,7 +394,6 @@ namespace CodeLibrary
                         return null;
                     }
 
-
                 case FileEncyptionMode.UsbKEYEncryption:
                     bool _canceled;
 
@@ -413,7 +404,7 @@ namespace CodeLibrary
                         readResult = FileReadResult.OpenCanceled;
                         return null;
                     }
-                    
+
                     _usbKeyPassword = StringCipher.ToSecureString(Utils.ByteArrayToString(_key));
 
                     _reader = new EncryptedBinaryFile<CodeSnippetCollection, FileHeader>(filename, _usbKeyPassword);
@@ -427,17 +418,18 @@ namespace CodeLibrary
 
                         return _resultCollection; // SUCCES
                     }
-                    catch 
+                    catch
                     {
+                        _passwordHelper.ClearPassWord();
                         readResult = FileReadResult.ErrorReadingFile;
                         return null;
                     }
             }
+
+            _passwordHelper.ClearPassWord();
             readResult = FileReadResult.ErrorReadingFile;
             return null;
-
         }
-
 
         public void Reload()
         {
@@ -464,7 +456,6 @@ namespace CodeLibrary
                 LoadBackup(_f.Selected.Path);
             }
         }
-
 
         public void SaveFile(bool saveas)
         {
@@ -509,8 +500,6 @@ namespace CodeLibrary
                 }
             }
 
-
-
             CurrentFile = _selectedfile;
             _lastOpenedDate = DateTime.Now;
             SetTitle();
@@ -532,12 +521,6 @@ namespace CodeLibrary
             Save(_collection, _selectedfile);
         }
 
-        internal void ShowIcon()
-        {
-            _StateIconHelper.Changed = CodeLib.Instance.Changed;
-        }
-
-
         internal static CodeSnippetCollection TryDecrypt(string data, SecureString password, out bool succes)
         {
             try
@@ -555,6 +538,16 @@ namespace CodeLibrary
             return null;
         }
 
+        internal void SetTitle()
+        {
+            _mainform.Text = $"Code Library ( {CurrentFile} )";
+        }
+
+        internal void ShowIcon()
+        {
+            _StateIconHelper.Changed = CodeLib.Instance.Changed;
+        }
+
         private void AutoSaveFile()
         {
             string _fileName = GetAutoSaveFileName();
@@ -563,7 +556,6 @@ namespace CodeLibrary
             {
                 LastSaved = _lastOpenedDate,
             };
-
 
             FormToCodeCollection(_treeViewLibrary.Nodes);
             if (_treeViewLibrary.SelectedNode != null)
@@ -616,8 +608,6 @@ namespace CodeLibrary
                 FormToCodeCollection(node.Nodes);
             }
         }
-
-
 
         private string GetAutoSaveFileName()
         {
@@ -728,11 +718,6 @@ namespace CodeLibrary
             {
                 return;
             }
-        }
-
-        internal void SetTitle()
-        {
-            _mainform.Text = $"Code Library ( {CurrentFile} )";
         }
     }
 }
