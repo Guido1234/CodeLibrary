@@ -74,6 +74,7 @@
     <Compile Include="Idle.cs" />
     <Compile Include="ITextBoxHelper.cs" />
     <Compile Include="ComboBoxHelper.cs" />
+    <Compile Include="Library\CodeSnippetCollectionExporterService.cs" />
     <Compile Include="MarkDown.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RtfControlStyle.cs" />

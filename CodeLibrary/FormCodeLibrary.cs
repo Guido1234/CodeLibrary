@@ -583,5 +583,10 @@ namespace CodeLibrary
             TreeNode _node = CodeLib.Instance.TreeNodes.Get(_snippet.ReferenceLinkId);
             _treeHelper.SetSelectedNode(_node, false);
         }
+
+        private void exportLibraryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _fileHelper.ExportLibrary();
+        }
     }
 }

@@ -81,6 +81,7 @@
             this.mncDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.mncSep3 = new System.Windows.Forms.ToolStripSeparator();
             this.mncAddReference = new System.Windows.Forms.ToolStripMenuItem();
+            this.mncGotoReference = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.mncClipboard = new System.Windows.Forms.ToolStripMenuItem();
             this.mncPasteImage = new System.Windows.Forms.ToolStripMenuItem();
@@ -173,6 +174,7 @@
             this.mnuDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSep6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAddReference = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuGotoReference = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuClipboard = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuPasteImage = new System.Windows.Forms.ToolStripMenuItem();
@@ -254,8 +256,8 @@
             this.mncClearClipboardMonitor = new System.Windows.Forms.ToolStripMenuItem();
             this.stateIcons = new CodeLibrary.Controls.Controls.StateIcons();
             this.container1 = new CodeLibrary.Controls.Container();
-            this.mnuGotoReference = new System.Windows.Forms.ToolStripMenuItem();
-            this.mncGotoReference = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.mncEdit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -734,7 +736,6 @@
             this.fastColoredTextBox.CharWidth = 8;
             this.fastColoredTextBox.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.fastColoredTextBox.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.fastColoredTextBox.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.fastColoredTextBox.Hotkeys = resources.GetString("fastColoredTextBox.Hotkeys");
             this.fastColoredTextBox.IsReplaceMode = false;
             this.fastColoredTextBox.Language = FastColoredTextBoxNS.Language.CSharp;
@@ -802,17 +803,17 @@
             // mncSep5
             // 
             this.mncSep5.Name = "mncSep5";
-            this.mncSep5.Size = new System.Drawing.Size(193, 6);
+            this.mncSep5.Size = new System.Drawing.Size(170, 6);
             // 
             // mncSep9
             // 
             this.mncSep9.Name = "mncSep9";
-            this.mncSep9.Size = new System.Drawing.Size(193, 6);
+            this.mncSep9.Size = new System.Drawing.Size(170, 6);
             // 
             // mncSep10
             // 
             this.mncSep10.Name = "mncSep10";
-            this.mncSep10.Size = new System.Drawing.Size(193, 6);
+            this.mncSep10.Size = new System.Drawing.Size(170, 6);
             // 
             // mncLibrary
             // 
@@ -841,7 +842,7 @@
             this.mncAdd.Image = global::CodeLibrary.Properties.Resources.page_white_add_32x32;
             this.mncAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncAdd.Name = "mncAdd";
-            this.mncAdd.Size = new System.Drawing.Size(196, 38);
+            this.mncAdd.Size = new System.Drawing.Size(173, 38);
             this.mncAdd.Text = "Add";
             this.mncAdd.Click += new System.EventHandler(this.mncAdd_Click);
             // 
@@ -850,7 +851,7 @@
             this.mncDelete.Image = global::CodeLibrary.Properties.Resources.textfield_delete_32x32;
             this.mncDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncDelete.Name = "mncDelete";
-            this.mncDelete.Size = new System.Drawing.Size(196, 38);
+            this.mncDelete.Size = new System.Drawing.Size(173, 38);
             this.mncDelete.Text = "Delete";
             this.mncDelete.ToolTipText = "Use Shift-Delete for silent delete.";
             this.mncDelete.Click += new System.EventHandler(this.mncDelete_Click);
@@ -858,21 +859,30 @@
             // mncSep3
             // 
             this.mncSep3.Name = "mncSep3";
-            this.mncSep3.Size = new System.Drawing.Size(193, 6);
+            this.mncSep3.Size = new System.Drawing.Size(170, 6);
             // 
             // mncAddReference
             // 
             this.mncAddReference.Image = global::CodeLibrary.Properties.Resources.bullet_link_32x32;
             this.mncAddReference.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncAddReference.Name = "mncAddReference";
-            this.mncAddReference.Size = new System.Drawing.Size(196, 38);
+            this.mncAddReference.Size = new System.Drawing.Size(173, 38);
             this.mncAddReference.Text = "Add Reference";
             this.mncAddReference.Click += new System.EventHandler(this.mncAddReference_Click);
+            // 
+            // mncGotoReference
+            // 
+            this.mncGotoReference.Image = global::CodeLibrary.Properties.Resources.bullet_link_32x32;
+            this.mncGotoReference.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.mncGotoReference.Name = "mncGotoReference";
+            this.mncGotoReference.Size = new System.Drawing.Size(173, 38);
+            this.mncGotoReference.Text = "Goto Reference";
+            this.mncGotoReference.Click += new System.EventHandler(this.mncGotoReference_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(193, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(170, 6);
             // 
             // mncClipboard
             // 
@@ -886,7 +896,7 @@
             this.mncCopyPath,
             this.mncCopyContentsAndMerge});
             this.mncClipboard.Name = "mncClipboard";
-            this.mncClipboard.Size = new System.Drawing.Size(196, 38);
+            this.mncClipboard.Size = new System.Drawing.Size(173, 38);
             this.mncClipboard.Text = "Clipboard";
             // 
             // mncPasteImage
@@ -965,7 +975,7 @@
             this.mncChangeType.Image = global::CodeLibrary.Properties.Resources.document_rename_32x32;
             this.mncChangeType.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncChangeType.Name = "mncChangeType";
-            this.mncChangeType.Size = new System.Drawing.Size(196, 38);
+            this.mncChangeType.Size = new System.Drawing.Size(173, 38);
             this.mncChangeType.Text = "Change Type";
             // 
             // mncTypeFolder
@@ -1118,7 +1128,7 @@
             this.mncQuickRename.Image = global::CodeLibrary.Properties.Resources.textfield_rename_32x32;
             this.mncQuickRename.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncQuickRename.Name = "mncQuickRename";
-            this.mncQuickRename.Size = new System.Drawing.Size(196, 38);
+            this.mncQuickRename.Size = new System.Drawing.Size(173, 38);
             this.mncQuickRename.Text = "Quick Rename";
             // 
             // mncYYYYMMDD
@@ -1173,7 +1183,7 @@
             this.mncMarkImportant.Image = global::CodeLibrary.Properties.Resources.error_32x32;
             this.mncMarkImportant.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncMarkImportant.Name = "mncMarkImportant";
-            this.mncMarkImportant.Size = new System.Drawing.Size(196, 38);
+            this.mncMarkImportant.Size = new System.Drawing.Size(173, 38);
             this.mncMarkImportant.Text = "Mark Important";
             this.mncMarkImportant.Click += new System.EventHandler(this.mncMarkImportant_Click);
             // 
@@ -1190,7 +1200,7 @@
             this.mncMoveLeft,
             this.mncMoveRight});
             this.mncOrdering.Name = "mncOrdering";
-            this.mncOrdering.Size = new System.Drawing.Size(196, 38);
+            this.mncOrdering.Size = new System.Drawing.Size(173, 38);
             this.mncOrdering.Text = "Ordering";
             // 
             // mncSortChildrenAscending
@@ -1268,7 +1278,7 @@
             this.mncProperties.Image = global::CodeLibrary.Properties.Resources.cog_32x32;
             this.mncProperties.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.mncProperties.Name = "mncProperties";
-            this.mncProperties.Size = new System.Drawing.Size(196, 38);
+            this.mncProperties.Size = new System.Drawing.Size(173, 38);
             this.mncProperties.Text = "Properties";
             this.mncProperties.Click += new System.EventHandler(this.mncProperties_Click);
             // 
@@ -1672,6 +1682,15 @@
             this.mnuAddReference.Size = new System.Drawing.Size(248, 38);
             this.mnuAddReference.Text = "Add Reference";
             this.mnuAddReference.Click += new System.EventHandler(this.mnuAddReference_Click);
+            // 
+            // mnuGotoReference
+            // 
+            this.mnuGotoReference.Image = global::CodeLibrary.Properties.Resources.bullet_link_32x32;
+            this.mnuGotoReference.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.mnuGotoReference.Name = "mnuGotoReference";
+            this.mnuGotoReference.Size = new System.Drawing.Size(248, 38);
+            this.mnuGotoReference.Text = "Goto Reference";
+            this.mnuGotoReference.Click += new System.EventHandler(this.mnuGotoReference_Click);
             // 
             // toolStripMenuItem4
             // 
@@ -2118,7 +2137,9 @@
             this.mnuDebugSeparator,
             this.mnuDebug,
             this.toolStripMenuItem2,
-            this.settingsToolStripMenuItem});
+            this.settingsToolStripMenuItem,
+            this.toolStripMenuItem6,
+            this.exportLibraryToolStripMenuItem});
             this.mnuTools.MergeAction = System.Windows.Forms.MergeAction.Replace;
             this.mnuTools.Name = "mnuTools";
             this.mnuTools.Size = new System.Drawing.Size(46, 22);
@@ -2200,13 +2221,13 @@
             // xToolStripMenuItem
             // 
             this.xToolStripMenuItem.Name = "xToolStripMenuItem";
-            this.xToolStripMenuItem.Size = new System.Drawing.Size(81, 22);
+            this.xToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.xToolStripMenuItem.Text = "X";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(81, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             // 
             // toolStripMenuItem2
             // 
@@ -2328,23 +2349,17 @@
             this.container1.TabIndex = 19;
             this.container1.Text = "container2";
             // 
-            // mnuGotoReference
+            // exportLibraryToolStripMenuItem
             // 
-            this.mnuGotoReference.Image = global::CodeLibrary.Properties.Resources.bullet_link_32x32;
-            this.mnuGotoReference.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.mnuGotoReference.Name = "mnuGotoReference";
-            this.mnuGotoReference.Size = new System.Drawing.Size(248, 38);
-            this.mnuGotoReference.Text = "Goto Reference";
-            this.mnuGotoReference.Click += new System.EventHandler(this.mnuGotoReference_Click);
+            this.exportLibraryToolStripMenuItem.Name = "exportLibraryToolStripMenuItem";
+            this.exportLibraryToolStripMenuItem.Size = new System.Drawing.Size(246, 38);
+            this.exportLibraryToolStripMenuItem.Text = "Export Library";
+            this.exportLibraryToolStripMenuItem.Click += new System.EventHandler(this.exportLibraryToolStripMenuItem_Click);
             // 
-            // mncGotoReference
+            // toolStripMenuItem6
             // 
-            this.mncGotoReference.Image = global::CodeLibrary.Properties.Resources.bullet_link_32x32;
-            this.mncGotoReference.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.mncGotoReference.Name = "mncGotoReference";
-            this.mncGotoReference.Size = new System.Drawing.Size(173, 38);
-            this.mncGotoReference.Text = "Goto Reference";
-            this.mncGotoReference.Click += new System.EventHandler(this.mncGotoReference_Click);
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(243, 6);
             // 
             // FormCodeLibrary
             // 
@@ -2623,6 +2638,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuExtensions;
         internal System.Windows.Forms.ToolStripMenuItem mncGotoReference;
         internal System.Windows.Forms.ToolStripMenuItem mnuGotoReference;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem exportLibraryToolStripMenuItem;
     }
 }
 

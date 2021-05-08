@@ -16,6 +16,9 @@ Version 3.0:
     -  Save and Encryption within one FileStream
     -  All string conversions are removed when saving.
 
+-   Export
+    -   Tools => Export: exports entire library to directory/file structure.
+
 -   CodeSnippet
     -   exetended Code, Rtf, Path with Base64 en Compression
 
@@ -23,6 +26,8 @@ Version 3.0:
     -   Configure settings to backup on a different location then file location.
 
 -   UsbKEY correct message when no UsbKEY is present for the document.
+
+
 
 Version 2.3:
 -   Improved TreeView behavior

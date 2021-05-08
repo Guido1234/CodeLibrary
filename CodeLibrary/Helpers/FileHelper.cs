@@ -1,6 +1,7 @@
 ﻿using CodeLibrary.Core;
 using CodeLibrary.Core.DevToys;
 using CodeLibrary.Core.Files;
+using CodeLibrary.Core.Library;
 using CodeLibrary.Editor;
 using CodeLibrary.Helpers;
 using DevToys;
@@ -44,6 +45,23 @@ namespace CodeLibrary
             _autoSaveTimer.Interval = 1000;
             _autoSaveTimer.Tick += AutoSaveTimer_Tick;
             _autoSaveTimer.Start();
+        }
+
+        public void ExportLibrary()
+        {
+            FolderBrowserDialog _dialog = new FolderBrowserDialog();
+            _dialog.Description = "Export to:";
+            var _dialogResult = _dialog.ShowDialog();
+            if (_dialogResult == DialogResult.Cancel)
+            {
+                return;
+            }
+           
+            CodeSnippetCollection _collection = new CodeSnippetCollection();
+            CodeLib.Instance.Save(_collection);
+
+            CodeSnippetCollectionExporterService _export = new CodeSnippetCollectionExporterService(_dialog.SelectedPath, _collection);
+            _export.Export();
         }
 
         public TreeNode ClipBoardMonitorNode { get; set; }
