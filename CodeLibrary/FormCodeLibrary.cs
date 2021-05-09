@@ -161,6 +161,7 @@ namespace CodeLibrary
         {
             if (_exitWithoutSaving)
             {
+                Config.SplitterDistance = this.splitContainerMain.SplitterDistance;
                 Config.Save();
                 return;
             }
@@ -171,7 +172,6 @@ namespace CodeLibrary
             _fileHelper.SaveFile(false);
 
             Config.SplitterDistance = this.splitContainerMain.SplitterDistance;
-
             Config.Save();
         }
 
