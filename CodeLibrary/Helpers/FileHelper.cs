@@ -164,7 +164,7 @@ namespace CodeLibrary
             DialogResult _dialogResult = DialogResult.Yes;
             if (CodeLib.Instance.Changed)
             {
-                _dialogResult = MessageBox.Show(_mainform, "Changes have not been saved, are you sure?", "File not saved", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                _dialogResult = MessageBox.Show(_mainform, "Do you want to exit without saving changes?", "File not saved", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             }
             return _dialogResult;
         }
@@ -225,8 +225,16 @@ namespace CodeLibrary
             return false;
         }
 
-        public void NewDoc()
+        public void NewDoc(bool supressMessage = false)
         {
+            if (supressMessage == false)
+            {
+                if (DiscardChangesDialog() == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
             CurrentFile = null;
             _passwordHelper.UsbKeyId = null;
             _passwordHelper.Password = null;
@@ -237,6 +245,7 @@ namespace CodeLibrary
             CodeLib.Instance.New();
             CodeCollectionToForm(string.Empty);
             TreeHelper.FindNodeByPath("Snippets");
+            CodeLib.Instance.Changed = false;
             _passwordHelper.ShowKey();
             SetTitle();
         }
@@ -280,6 +289,10 @@ namespace CodeLibrary
 
                 case FileReadResult.FileNotFound:
                 case FileReadResult.OpenCanceled:
+                    if (CodeLib.Instance.CodeSnippets.Count == 0)
+                    {
+                        NewDoc(true);
+                    }
                     EndUpdate();
                     return;
             }

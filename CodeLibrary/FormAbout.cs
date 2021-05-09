@@ -27,6 +27,10 @@ Version 3.0:
 
 -   UsbKEY correct message when no UsbKEY is present for the document.
 
+-   Improved NewDocument message flow.
+
+-   Bug: Exit without saving changes showed Save as dialog.
+-   Bug: Exit without saving changes still saved current document.
 
 
 Version 2.3:

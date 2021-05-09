@@ -180,7 +180,13 @@ namespace CodeLibrary
             {
                 if (_fileHelper.DiscardChangesDialog() == DialogResult.No)
                 {
+                    // Are you sure to exit without saving: NO
                     e.Cancel = true;
+                }
+                else
+                {
+                    // Are you sure to exit without saving: YES
+                    _exitWithoutSaving = true;
                 }
             }
         }
