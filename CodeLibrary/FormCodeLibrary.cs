@@ -161,6 +161,7 @@ namespace CodeLibrary
         {
             if (_exitWithoutSaving)
             {
+                Config.Save();
                 return;
             }
 
