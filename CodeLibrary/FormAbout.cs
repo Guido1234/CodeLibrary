@@ -32,6 +32,8 @@ Version 3.0:
 -   Bug: Exit without saving changes showed Save as dialog.
 -   Bug: Exit without saving changes still saved current document.
 
+-   Config Save Bugfix
+
 
 Version 2.3:
 -   Improved TreeView behavior

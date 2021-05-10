@@ -75,8 +75,6 @@ namespace CodeLibrary.Helpers
 
             string _filename = Path.Combine(Application.StartupPath, @"Libraries\CSharp Library.json");
 
-            _fileHelper.SaveFile(false);
-
             if (!File.Exists(_filename))
             {
                 MessageBox.Show($"File '{_filename}' does not exists!.");
@@ -94,8 +92,6 @@ namespace CodeLibrary.Helpers
             }
 
             string _filename = Path.Combine(Application.StartupPath, @"Libraries\Demo.json");
-
-            _fileHelper.SaveFile(false);
 
             if (!File.Exists(_filename))
             {

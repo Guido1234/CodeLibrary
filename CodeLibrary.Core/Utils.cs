@@ -207,10 +207,18 @@ namespace CodeLibrary.Core
                 return string.Empty;
 
             string keyValue = defaultvalue;
-            RegistryKey regKey = Registry.CurrentUser.OpenSubKey(regpath);
+            try
+            {
+                RegistryKey regKey = Registry.CurrentUser.OpenSubKey(regpath);
+                if (regKey != null)
+                {
+                    keyValue = regKey.GetValue(key) as string;
+                }
+            }
+            catch
+            {
 
-            if (regKey != null)
-                keyValue = regKey.GetValue(key) as string;
+            }
 
             return keyValue;
         }
@@ -455,13 +463,12 @@ namespace CodeLibrary.Core
 
         public static void SetCurrentUserRegisterKey(string regpath, string key, string value)
         {
-            if (string.IsNullOrEmpty(regpath))
+            if (string.IsNullOrEmpty(regpath) || string.IsNullOrEmpty(key))
                 return;
 
-            if (string.IsNullOrEmpty(key))
-                return;
+            if (string.IsNullOrEmpty(value))
+                value = string.Empty;
 
-            string keyValue = string.Empty;
             string[] keytree = SplitPath(regpath, '\\');
 
             // Check whether each leave in the tree exists, if not create the leave.
@@ -474,7 +481,9 @@ namespace CodeLibrary.Core
 
             RegistryKey editKey = Registry.CurrentUser.OpenSubKey(regpath, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl);
             if (editKey != null)
+            {
                 editKey.SetValue(key, value);
+            }
         }
 
         public static List<string> Split(string text, string splitter, bool skipEmpty)

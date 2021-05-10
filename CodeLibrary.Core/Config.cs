@@ -104,7 +104,6 @@ namespace CodeLibrary.Core
             Utils.SetCurrentUserRegisterKey(regpath, Constants.THEME, Theme.ToString());
             Utils.SetCurrentUserRegisterKey(regpath, Constants.SORTMODE, SortMode.ToString());
             Utils.SetCurrentUserRegisterKey(regpath, Constants.BACKUPMODE, BackupMode.ToString());
-
             Utils.SetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDDIR, LastOpenedDir);
             Utils.SetCurrentUserRegisterKey(regpath, Constants.LASTOPENEDFILE, LastOpenedFile);
             Utils.SetCurrentUserRegisterKey(regpath, Constants.BACKUPLOCATION, BackupLocation);

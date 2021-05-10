@@ -15,6 +15,9 @@ namespace CodeLibrary.Core
             Items = new List<CodeSnippet> { CodeSnippet.TrashcanSnippet() };
         }
 
+        [DataMember(Name = "DocumentId")]
+        public Guid DocumentId { get; set; }
+
 
         [DataMember(Name = "AutoBackup")]
         public bool AutoBackup { get; set; }

@@ -164,7 +164,7 @@ namespace CodeLibrary
             DialogResult _dialogResult = DialogResult.Yes;
             if (CodeLib.Instance.Changed)
             {
-                _dialogResult = MessageBox.Show(_mainform, "Do you want to exit without saving changes?", "File not saved", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                _dialogResult = MessageBox.Show(_mainform, "Do you want to close this document without saving changes?", "File not saved", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             }
             return _dialogResult;
         }
@@ -595,7 +595,7 @@ namespace CodeLibrary
             _mainform.SaveEditor();
             CodeLib.Instance.Save(_collection);
 
-            Save(_collection, _fileName); // Quit
+            Save(_collection, _fileName); 
         }
 
         private void AutoSaveTimer_Tick(object sender, EventArgs e)

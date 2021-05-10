@@ -14,6 +14,8 @@ namespace CodeLibrary.Core
 
         public int Counter { get; private set; } = 0;
 
+        public Guid DocumentId { get; private set; } = Guid.NewGuid();
+
         private CodeLib()
         {
             CodeSnippets.ItemsRemoved += Libary_ItemsRemoved;
@@ -62,11 +64,24 @@ namespace CodeLibrary.Core
         // #LEGACY
         public void Cleanup(CodeSnippetCollectionOld collection)
         {
+            if (collection == null)
+            {
+                return;
+            }
+
             foreach (var _snip in collection.Items)
             {
-                if (_snip.Code.Contains ("Ãƒ"))
+                if (_snip == null)
                 {
-                    _snip.Code = "";
+                    continue;
+                }
+
+                if (!string.IsNullOrEmpty(_snip.Code))
+                {
+                    if (_snip.Code.Contains("Ãƒ"))
+                    {
+                        _snip.Code = "";
+                    }
                 }
                 if (_snip.RTF != null)
                 {
@@ -75,13 +90,19 @@ namespace CodeLibrary.Core
                         _snip.RTF = "";
                     }
                 }
-                if (_snip.Name.Contains("Ãƒ"))
-                {
-                    _snip.Name = "";
+                if (!string.IsNullOrEmpty(_snip.Name))
+                { 
+                    if (_snip.Name.Contains("Ãƒ"))
+                    {
+                        _snip.Name = "";
+                    }
                 }
-                if (_snip.Path.Contains("Ãƒ"))
+                if (!string.IsNullOrEmpty(_snip.Path))
                 {
-                    _snip.Path = "";
+                    if (_snip.Path.Contains("Ãƒ"))
+                    {
+                        _snip.Path = "";
+                    }
                 }
             }
 
@@ -175,6 +196,8 @@ namespace CodeLibrary.Core
                 Trashcan.SetPath("Trashcan", out bool _changed);
             }
 
+            DocumentId = Guid.NewGuid(); // Legacy always new DocumentId
+
             EndUpdate();
         }
 
@@ -202,6 +225,14 @@ namespace CodeLibrary.Core
             TreeNodes.Clear();
             CodeSnippets.Clear();
             CodeSnippets.AddRange(collection.Items);
+            if (collection.DocumentId.Equals(Guid.Empty))
+            {
+                DocumentId = Guid.NewGuid();
+            }
+            else
+            {
+                DocumentId = collection.DocumentId;
+            }
 
             if (Counter < collection.Items.Count)
             {
@@ -225,6 +256,7 @@ namespace CodeLibrary.Core
 
         public void New()
         {
+            DocumentId = Guid.NewGuid();
             TreeNodes.Clear();
             CodeSnippets.Clear();
             Defaults();
@@ -242,6 +274,7 @@ namespace CodeLibrary.Core
             collection.Items.Clear();
             collection.Counter = Counter;
             collection.Items.AddRange(CodeSnippets);
+            collection.DocumentId = DocumentId;
         }
 
         private void Defaults()
