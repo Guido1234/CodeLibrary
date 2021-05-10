@@ -34,6 +34,8 @@ Version 3.0:
 
 -   Config Save Bugfix
 
+-   Backups stored in specified location got their own directory based on DocumentId.
+
 
 Version 2.3:
 -   Improved TreeView behavior

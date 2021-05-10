@@ -67,11 +67,15 @@ namespace CodeLibrary
             }
             if (Config.BackupMode == EBackupMode.SpecifiedDirectory || Config.BackupMode == EBackupMode.Both)
             {
-                DirectoryInfo _directory = new DirectoryInfo(Config.BackupLocation);
-                if (_directory.Exists)
+                string documentBackupLocation = Path.Combine(Config.BackupLocation, CodeLib.Instance.DocumentId.ToString());
+
+                DirectoryInfo _directory = new DirectoryInfo(documentBackupLocation);
+                if (!_directory.Exists)
                 {
-                    yield return _directory;
+                    Directory.CreateDirectory(_directory.FullName);
                 }
+                yield return _directory;
+
             }
         }
 
