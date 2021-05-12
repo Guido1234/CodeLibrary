@@ -158,19 +158,60 @@ namespace CodeLibrary.Core
         public CodeSnippet()
         {
             CreationDate = DateTime.Now.ToString("yyyyMMdd HH:mm:ss");
-            Id = Guid.NewGuid().ToString();  
+            Id = Guid.NewGuid().ToString();
+            Name = Id;
         }
 
-        public CodeSnippet(string name, string code, string rtf, string path) : this()
+        public CodeSnippet(string code, string rtf, string path) : this()
         {
             bool _changed;
-            Name = name;
             SetCode(code, out _changed);
             SetRtf(rtf, out _changed);
             SetPath(path, out _changed);
         }
 
-
+        public CodeSnippet Clone()
+        {
+            CodeSnippet _clone = new CodeSnippet();
+            _clone.AlarmActive = AlarmActive;
+            _clone.AlarmDate = AlarmDate;
+            if (Blob != null)
+            {
+                Blob.CopyTo(_clone.Blob, 0);
+            }
+            _clone.CacheCode = null; 
+            _clone.CacheDefaultChildCode = null;
+            _clone.CacheDefaultChildRtf = null;
+            _clone.CachePath = null;
+            _clone.CacheRTF = null;
+            _clone.Code = Code;
+            _clone.CodeLastModificationDate = CodeLastModificationDate;
+            _clone.CodeType = CodeType;
+            _clone.CreationDate = CreationDate;
+            _clone.CurrentLine = CurrentLine;
+            _clone.DefaultChildCode = DefaultChildCode;
+            _clone.DefaultChildCodeType = DefaultChildCodeType;
+            _clone.DefaultChildCodeTypeEnabled = DefaultChildCodeTypeEnabled;
+            _clone.DefaultChildName = DefaultChildName;
+            _clone.DefaultChildRtf = DefaultChildRtf;
+            _clone.Expanded = Expanded;
+            _clone.Flag = Flag;
+            _clone.HtmlPreview = HtmlPreview;
+            _clone.Id = Guid.NewGuid().ToString();
+            _clone.Name = _clone.Id;
+            _clone.Important = Important;
+            _clone.Locked = Locked;
+            _clone.Order = Order;
+            _clone.Path = Path;
+            _clone.ReferenceLinkId = ReferenceLinkId;
+            _clone.RTF = RTF;
+            _clone.RTFAlwaysWhite = RTFAlwaysWhite;
+            _clone.RTFOwnTheme = RTFOwnTheme;
+            _clone.RTFTheme = RTFTheme;
+            _clone.ShortCutKeys = ShortCutKeys;
+            _clone.Wordwrap = Wordwrap;
+            return _clone;
+        }
 
         public void SetCode(string value, out bool changed)
         {

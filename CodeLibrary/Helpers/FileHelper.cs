@@ -62,7 +62,7 @@ namespace CodeLibrary
 
             CodeSnippetCollectionExporterService _export = new CodeSnippetCollectionExporterService(_dialog.SelectedPath, _collection);
             _export.Export();
-        }
+        } 
 
         public TreeNode ClipBoardMonitorNode { get; set; }
 

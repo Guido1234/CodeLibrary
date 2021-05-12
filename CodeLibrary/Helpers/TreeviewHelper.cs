@@ -160,7 +160,7 @@ namespace CodeLibrary
 
         public TreeNode CreateNewNode(TreeNodeCollection parent, CodeType codetype, string name, string text, string rtf, string referenceId = null)
         {
-            CodeSnippet snippet = new CodeSnippet(name, text, rtf, string.Empty) { CodeType = codetype, Locked = false,  ReferenceLinkId = referenceId };
+            CodeSnippet snippet = new CodeSnippet(text, rtf, string.Empty) { CodeType = codetype, Locked = false, ReferenceLinkId = referenceId };
             if (snippet.CodeType == CodeType.HTML || snippet.CodeType == CodeType.MarkDown)
             {
                 snippet.HtmlPreview = true;
@@ -168,10 +168,7 @@ namespace CodeLibrary
             CodeLib.Instance.CodeSnippets.Add(snippet);
 
             int _imageIndex = LocalUtils.GetImageIndex(snippet);
-
-            string _name = snippet.Name;
-            TreeNode _node = parent.Add(_name, _name, _imageIndex, _imageIndex);
-            _node.Name = snippet.Id;
+            TreeNode _node = parent.Add(snippet.Id, name, _imageIndex, _imageIndex);
             UpdateNodePath(_node);
             CodeLib.Instance.TreeNodes.Add(_node);
 
@@ -262,6 +259,24 @@ namespace CodeLibrary
             CodeLib.Instance.TreeNodes.Add(_treeViewLibrary);
 
             SetLibraryMenuState();
+        }
+
+        public TreeNode DuplicateNote(TreeNodeCollection parent, TreeNode source)
+        {
+            CodeSnippet _sourceSnippet = FromNode(source);
+
+            CodeSnippet _newSnippet = _sourceSnippet.Clone();
+
+            CodeLib.Instance.CodeSnippets.Add(_newSnippet);
+
+            int _imageIndex = LocalUtils.GetImageIndex(_newSnippet);
+
+            string _name = _newSnippet.Title();
+            TreeNode _node = parent.Add(_newSnippet.Id, _name, _imageIndex, _imageIndex);
+            UpdateNodePath(_node);
+            CodeLib.Instance.TreeNodes.Add(_node);
+
+            return _node;
         }
 
         public void EmptyTrashcan()
@@ -986,7 +1001,7 @@ namespace CodeLibrary
                 FileInfo _file = new FileInfo(filename);
                 var _type = LocalUtils.CodeTypeByExtension(_file);
 
-                switch (_type)
+                switch (_type) 
                 {
                     case CodeType.Image:
                         byte[] _imageData = File.ReadAllBytes(filename);
@@ -1007,7 +1022,7 @@ namespace CodeLibrary
                     case CodeType.RTF:
                         string _text = File.ReadAllText(filename);
                         CreateNewNode(targetNode.Nodes, _type, _file.Name, _text, _text); // ## LET OP
-                        break;
+                        break; 
 
                     case CodeType.System:
                     case CodeType.UnSuported:
@@ -1018,13 +1033,12 @@ namespace CodeLibrary
 
         private void AddImageNode(TreeNode parentNode, byte[] _imageData, string name)
         {
-            CodeSnippet snippet = new CodeSnippet(name, string.Empty, string.Empty, string.Empty) { CodeType = CodeType.Image, Locked = false,  Blob = _imageData };
+            CodeSnippet snippet = new CodeSnippet(string.Empty, string.Empty, string.Empty) { CodeType = CodeType.Image, Locked = false, Blob = _imageData };
             CodeLib.Instance.CodeSnippets.Add(snippet);
 
             int _imageIndex = LocalUtils.GetImageIndex(snippet);
-            
-            TreeNode _node = parentNode.Nodes.Add(snippet.Name, snippet.Name, _imageIndex, _imageIndex);
-            _node.Name = snippet.Id;
+
+            TreeNode _node = parentNode.Nodes.Add(name, snippet.Name, _imageIndex, _imageIndex);
             UpdateNodePath(_node);
             CodeLib.Instance.TreeNodes.Add(_node);
         }
@@ -1042,6 +1056,26 @@ namespace CodeLibrary
             // call the ContainsNode method recursively using the parent of
             // the second node.
             return ContainsNode(node1, node2.Parent);
+        }
+
+        private void DuplicateNodeTree(TreeNode source, TreeNode target)
+        {
+            if (source == null || target == null)
+            {
+                return;
+            }
+            TreeNode _target = DuplicateNote(target.Nodes, source);
+
+            DuplicateNodeTree(source.Nodes, _target);
+        }
+
+        private void DuplicateNodeTree(TreeNodeCollection sourceNodes, TreeNode target)
+        {
+            foreach (TreeNode node in sourceNodes)
+            {
+                TreeNode _newtarget = DuplicateNote(target.Nodes, node);
+                DuplicateNodeTree(node.Nodes, _newtarget);
+            }
         }
 
         private bool FindNodeById(string id, TreeNode parent)
@@ -1122,7 +1156,6 @@ namespace CodeLibrary
 
             _mainform.mncGotoReference.Visible = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && IsReference(_treeViewLibrary.SelectedNode));
             _mainform.mnuGotoReference.Visible = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && IsReference(_treeViewLibrary.SelectedNode));
-
 
             _mainform.mnuAdd.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode));
             _mainform.mncAdd.Enabled = (!IsTrashcan(_treeViewLibrary.SelectedNode) && !IsClipBoardMonitor(_treeViewLibrary.SelectedNode) && !IsReference(_treeViewLibrary.SelectedNode));
@@ -1246,7 +1279,6 @@ namespace CodeLibrary
 
         private void TreeViewLibrary_DragDrop(object sender, DragEventArgs e)
         {
- 
             // Retrieve the client coordinates of the drop location.
             Point targetPoint = _treeViewLibrary.PointToClient(new Point(e.X, e.Y));
 
@@ -1272,30 +1304,37 @@ namespace CodeLibrary
                 // location and add it to the node at the drop location.
                 if (e.Effect == DragDropEffects.Move)
                 {
-                    if (e.KeyState == 8)
+                    switch (e.KeyState)
                     {
-                        if (targetNode != null)
-                        {
-                            CreateNewNode(targetNode.Nodes, CodeType.ReferenceLink, draggedNode.Text, "", "", draggedNode.Name);
+                        case 12: // Ctrl Shift
+                            // Create Reference Link
+                            if (targetNode != null)
+                            {
+                                CreateNewNode(targetNode.Nodes, CodeType.ReferenceLink, draggedNode.Text, "", "", draggedNode.Name);
+                            }
+                            else
+                            {
+                                CreateNewNode(_treeViewLibrary.Nodes, CodeType.ReferenceLink, draggedNode.Text, "", "", draggedNode.Name);
+                            }
+                            break;
 
-                        }
-                        else
-                        {
-                            CreateNewNode(_treeViewLibrary.Nodes, CodeType.ReferenceLink, draggedNode.Text, "", "", draggedNode.Name);
-                        }
-                    }
-                    else
-                    {
-                        draggedNode.Remove();
-                        if (targetNode != null)
-                        {
-                            targetNode.Nodes.Add(draggedNode);
-                        }
-                        else
-                        {
-                            _treeViewLibrary.Nodes.Add(draggedNode);
-                        }
-                        UpdateNodePath(draggedNode);
+                        case 8: // Ctrl
+                            // Dupplicate Tree
+                            DuplicateNodeTree(draggedNode, targetNode);
+                            break;
+
+                        default:
+                            draggedNode.Remove();
+                            if (targetNode != null)
+                            {
+                                targetNode.Nodes.Add(draggedNode);
+                            }
+                            else
+                            {
+                                _treeViewLibrary.Nodes.Add(draggedNode);
+                            }
+                            UpdateNodePath(draggedNode);
+                            break;
                     }
                 }
 
@@ -1390,42 +1429,42 @@ namespace CodeLibrary
             if (e.KeyCode == Keys.Up && e.Control && e.Shift)
             {
                 MoveToTop();
-                e.Handled = true; 
+                e.Handled = true;
                 return;
             }
 
             if (e.KeyCode == Keys.Down && e.Control && e.Shift)
             {
                 MoveToBottom();
-                e.Handled = true; 
+                e.Handled = true;
                 return;
             }
 
             if (e.KeyCode == Keys.Up && e.Control)
             {
                 MoveUp();
-                e.Handled = true; 
+                e.Handled = true;
                 return;
             }
 
             if (e.KeyCode == Keys.Down && e.Control)
             {
                 MoveDown();
-                e.Handled = true; 
+                e.Handled = true;
                 return;
             }
 
             if (e.KeyCode == Keys.Left && e.Control)
             {
                 MoveToLeft();
-                e.Handled = true; 
+                e.Handled = true;
                 return;
             }
 
             if (e.KeyCode == Keys.Right && e.Control)
             {
                 MoveToRight();
-                e.Handled = true; 
+                e.Handled = true;
                 return;
             }
 
@@ -1481,8 +1520,6 @@ namespace CodeLibrary
             }
 
             e.Handled = false;
-
-
         }
 
         private void TreeViewLibrary_MouseUp(object sender, MouseEventArgs e)

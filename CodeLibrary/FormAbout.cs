@@ -36,6 +36,9 @@ Version 3.0:
 
 -   Backups stored in specified location got their own directory based on DocumentId.
 
+-   Changed shortcut Ctrl DragDrop for reference link to Ctrl-Shift DragDrop
+
+-   New: shortcut Ctrl DragDrop duplicates Note + tree to new location.
 
 Version 2.3:
 -   Improved TreeView behavior
