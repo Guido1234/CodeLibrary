@@ -1038,7 +1038,7 @@ namespace CodeLibrary
 
             int _imageIndex = LocalUtils.GetImageIndex(snippet);
 
-            TreeNode _node = parentNode.Nodes.Add(name, snippet.Name, _imageIndex, _imageIndex);
+            TreeNode _node = parentNode.Nodes.Add(snippet.Id, snippet.Name, _imageIndex, _imageIndex);
             UpdateNodePath(_node);
             CodeLib.Instance.TreeNodes.Add(_node);
         }

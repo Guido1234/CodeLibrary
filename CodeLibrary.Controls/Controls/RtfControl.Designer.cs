@@ -51,7 +51,7 @@ namespace CodeLibrary.Controls.Controls
             this.btIndentPlus = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.cbStyles = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.StyleMenu = new System.Windows.Forms.ToolStripDropDownButton();
             this.updateStyle = new System.Windows.Forms.ToolStripMenuItem();
             this.addStyle = new System.Windows.Forms.ToolStripMenuItem();
             this.removeStyle = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,7 +96,7 @@ namespace CodeLibrary.Controls.Controls
             this.btIndentPlus,
             this.toolStripSeparator4,
             this.cbStyles,
-            this.toolStripDropDownButton1,
+            this.StyleMenu,
             this.btSwitchTheme});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -263,39 +263,39 @@ namespace CodeLibrary.Controls.Controls
             this.cbStyles.Name = "cbStyles";
             this.cbStyles.Size = new System.Drawing.Size(121, 25);
             // 
-            // toolStripDropDownButton1
+            // StyleMenu
             // 
-            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StyleMenu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.StyleMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.updateStyle,
             this.addStyle,
             this.removeStyle});
-            this.toolStripDropDownButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
-            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(50, 19);
-            this.toolStripDropDownButton1.Text = "Styles";
+            this.StyleMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.StyleMenu.Image = ((System.Drawing.Image)(resources.GetObject("StyleMenu.Image")));
+            this.StyleMenu.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.StyleMenu.Name = "StyleMenu";
+            this.StyleMenu.Size = new System.Drawing.Size(50, 19);
+            this.StyleMenu.Text = "Styles";
             // 
             // updateStyle
             // 
             this.updateStyle.Image = global::CodeLibrary.Controls.Properties.Resources.update_16x16;
             this.updateStyle.Name = "updateStyle";
-            this.updateStyle.Size = new System.Drawing.Size(145, 22);
+            this.updateStyle.Size = new System.Drawing.Size(180, 22);
             this.updateStyle.Text = "Update Style";
             // 
             // addStyle
             // 
             this.addStyle.Image = global::CodeLibrary.Controls.Properties.Resources.Add;
             this.addStyle.Name = "addStyle";
-            this.addStyle.Size = new System.Drawing.Size(145, 22);
+            this.addStyle.Size = new System.Drawing.Size(180, 22);
             this.addStyle.Text = "Add Style";
             // 
             // removeStyle
             // 
             this.removeStyle.Image = global::CodeLibrary.Controls.Properties.Resources.Erase;
             this.removeStyle.Name = "removeStyle";
-            this.removeStyle.Size = new System.Drawing.Size(145, 22);
+            this.removeStyle.Size = new System.Drawing.Size(180, 22);
             this.removeStyle.Text = "Remove Style";
             // 
             // btSwitchTheme
@@ -341,7 +341,7 @@ namespace CodeLibrary.Controls.Controls
         private System.Windows.Forms.ToolStripButton btFont;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripComboBox cbStyles;
-        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripDropDownButton StyleMenu;
         private System.Windows.Forms.ToolStripMenuItem addStyle;
         private System.Windows.Forms.ToolStripMenuItem updateStyle;
         private System.Windows.Forms.ToolStripComboBox cmbFont;
