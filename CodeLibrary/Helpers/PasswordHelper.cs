@@ -156,7 +156,7 @@ namespace CodeLibrary.Helpers
 
         internal void ShowKey()
         {
-            _StateIconHelper.Encrypted = Password != null;
+            _StateIconHelper.Encrypted = Password != null || UsbKeyId != null;
             SetPassWordMenuState();
         }
     }

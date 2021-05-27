@@ -1001,7 +1001,7 @@ namespace CodeLibrary
                 FileInfo _file = new FileInfo(filename);
                 var _type = LocalUtils.CodeTypeByExtension(_file);
 
-                switch (_type) 
+                switch (_type)
                 {
                     case CodeType.Image:
                         byte[] _imageData = File.ReadAllBytes(filename);
@@ -1022,7 +1022,7 @@ namespace CodeLibrary
                     case CodeType.RTF:
                         string _text = File.ReadAllText(filename);
                         CreateNewNode(targetNode.Nodes, _type, _file.Name, _text, _text); // ## LET OP
-                        break; 
+                        break;
 
                     case CodeType.System:
                     case CodeType.UnSuported:
@@ -1038,7 +1038,7 @@ namespace CodeLibrary
 
             int _imageIndex = LocalUtils.GetImageIndex(snippet);
 
-            TreeNode _node = parentNode.Nodes.Add(snippet.Id, snippet.Name, _imageIndex, _imageIndex);
+            TreeNode _node = parentNode.Nodes.Add(snippet.Id, name, _imageIndex, _imageIndex);
             UpdateNodePath(_node);
             CodeLib.Instance.TreeNodes.Add(_node);
         }

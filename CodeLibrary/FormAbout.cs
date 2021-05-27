@@ -10,6 +10,10 @@ namespace CodeLibrary
     {
         private readonly string _Content = @"
 ----------------------------------------------------------------------
+Version 3.x:
+-   Bug fix: Paste image in treeview wrong ID / Name.
+-   Bug fix: Key icon not showing when using usbKey.
+
 Version 3.0:
 -   New file format
     -  Uses binaryformatter
